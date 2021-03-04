@@ -7,7 +7,7 @@
         </div>
         <div class="content">
           <div class="content-title">
-            {{ timeFix }}，{{ user.name }}！
+            {{ timeFix }}，{{ name }}！
           </div>
           <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
         </div>
@@ -193,6 +193,7 @@ export default {
   computed: {
     ...mapState({
       nickname: (state) => state.user.nickname,
+      name: (state) => state.user.name,
       welcome: (state) => state.user.welcome
     }),
     currentUser () {
