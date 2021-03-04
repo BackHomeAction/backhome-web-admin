@@ -43,7 +43,7 @@ export const asyncRouterMap = [
         name: 'userAdmin',
         redirect: '/userAdmin/volunteer',
         component: RouteView,
-        meta: { title: '用户管理', keepAlive: true, icon: bxAnaalyse, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '用户管理', keepAlive: true, icon: 'team', roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/userAdmin/volunteer/:pageNo([1-9]\\d*)?',
