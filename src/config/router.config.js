@@ -37,6 +37,23 @@ export const asyncRouterMap = [
           }
         ]
       },
+      // userAdmin
+      {
+        path: '/userAdmin',
+        name: 'userAdmin',
+        redirect: '/userAdmin/volunteer',
+        component: RouteView,
+        meta: { title: '用户管理', keepAlive: true, icon: bxAnaalyse, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        children: [
+          {
+            path: '/userAdmin/volunteer/:pageNo([1-9]\\d*)?',
+            name: 'VolunteerUserAdmin',
+            hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
+            component: () => import('@/views/userAdmin/volunteer'),
+            meta: { title: '志愿者管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+          }
+        ]
+      },
       // // forms
       // {
       //   path: '/form',

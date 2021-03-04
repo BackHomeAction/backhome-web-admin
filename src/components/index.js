@@ -25,6 +25,9 @@ import TagSelect from '@/components/TagSelect'
 import StandardFormRow from '@/components/StandardFormRow'
 import ArticleListContent from '@/components/ArticleListContent'
 
+// custom
+import RegionSelector from '@/components/RegionSelector'
+
 import Dialog from '@/components/Dialog'
 
 export {
@@ -51,6 +54,8 @@ export {
   TagSelect,
   StandardFormRow,
   ArticleListContent,
+
+  RegionSelector,
 
   Dialog
 }
