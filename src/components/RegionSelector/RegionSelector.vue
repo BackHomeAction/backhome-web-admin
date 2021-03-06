@@ -1,12 +1,15 @@
 <template>
-  <a-cascader
-    :options="options"
-    :load-data="loadData"
-    :default-value="value"
-    placeholder="请选择"
-    change-on-select
-    @change="onChange"
-  />
+  <div>
+    <div v-if="value.length===3 && !isEdit">{{ `${value[0]} ${value[1]} ${value[2]}` }} <a @click="isEdit = true">修改</a></div>
+    <a-cascader
+      v-if="!value.length || isEdit"
+      :options="options"
+      :load-data="loadData"
+      placeholder="请选择"
+      change-on-select
+      @change="onChange"
+    />
+  </div>
 </template>
 
 <script>
@@ -38,6 +41,7 @@ export default {
   },
   data () {
     return {
+      isEdit: false,
       options: []
     }
   },
@@ -51,6 +55,7 @@ export default {
   methods: {
     onChange (value) {
       // console.log(value)
+      this.isEdit = true
       this.$emit('input', value)
     },
     async initData () {

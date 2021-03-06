@@ -1,23 +1,19 @@
 <template>
-  <page-header-wrapper>
-    <a-card :bordered="false">
-      <component @onEdit="handleEdit" @onGoBack="handleGoBack" :record="record" :is="currentComponet"></component>
-    </a-card>
-  </page-header-wrapper>
+  <a-card :bordered="false">
+    <component @onEdit="handleEdit" @onGoBack="handleGoBack" :record="record" :is="currentComponet"></component>
+  </a-card>
 </template>
 
 <script>
 // 动态切换组件
 import List from './components/List'
 import Edit from './components/Edit'
-import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 
 export default {
   name: 'VolunteerUserAdmin',
   components: {
     List,
-    Edit,
-    PageHeaderWrapper
+    Edit
   },
   data () {
     return {

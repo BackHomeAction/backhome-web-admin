@@ -1,13 +1,39 @@
 import request from '@/utils/request'
 
 const userAdminApi = {
-  VolunteerList: '/admin/volunteer'
+  Volunteer: '/admin/volunteer',
+  VolunteerById: '/admin/volunteer/id'
+
 }
 
-export function getVolunteerList (parameter) {
+export function getVolunteerList (params) {
   return request({
-    url: userAdminApi.VolunteerList,
+    url: userAdminApi.Volunteer,
     method: 'get',
-    params: parameter
+    params
+  })
+}
+
+export function getVolunteerByID (params) {
+  return request({
+    url: userAdminApi.VolunteerById,
+    method: 'get',
+    params
+  })
+}
+
+export function addVolunteer (data) {
+  return request({
+    url: userAdminApi.Volunteer,
+    method: 'post',
+    data
+  })
+}
+
+export function editVolunteer (data) {
+  return request({
+    url: userAdminApi.Volunteer,
+    method: 'put',
+    data
   })
 }

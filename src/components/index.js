@@ -27,6 +27,8 @@ import ArticleListContent from '@/components/ArticleListContent'
 
 // custom
 import RegionSelector from '@/components/RegionSelector'
+import PageGoBackTop from '@/components/PageGoBackTop'
+import ImageCropper from '@/components/ImageCropper'
 
 import Dialog from '@/components/Dialog'
 
@@ -56,6 +58,8 @@ export {
   ArticleListContent,
 
   RegionSelector,
+  PageGoBackTop,
+  ImageCropper,
 
   Dialog
 }

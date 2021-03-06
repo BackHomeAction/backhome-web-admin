@@ -115,7 +115,7 @@ const statusMap = {
 }
 
 export default {
-  name: 'TableList',
+  name: 'VolunteerUserAdminList',
   components: {
     STable,
     RegionSelector
