@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     onChange (value) {
-      console.log(value)
+      // console.log(value)
       this.$emit('input', value)
     },
     async initData () {

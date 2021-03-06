@@ -50,7 +50,7 @@
 
     <div class="table-operator">
       <a-button type="primary" icon="plus" @click="handleEdit()">新建</a-button>
-      <a-button type="default" @click="handleEdit()">批量导入</a-button>
+      <a-button type="default" @click="handleEdit()" v-role="['superAdmin', 'admin']">批量导入</a-button>
     </div>
 
     <s-table
