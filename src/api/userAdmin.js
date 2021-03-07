@@ -2,8 +2,8 @@ import request from '@/utils/request'
 
 const userAdminApi = {
   Volunteer: '/admin/volunteer',
-  VolunteerById: '/admin/volunteer/id'
-
+  VolunteerById: '/admin/volunteer/id',
+  VolunteerAvatar: '/admin/volunteer/avatar'
 }
 
 export function getVolunteerList (params) {
@@ -33,6 +33,14 @@ export function addVolunteer (data) {
 export function editVolunteer (data) {
   return request({
     url: userAdminApi.Volunteer,
+    method: 'put',
+    data
+  })
+}
+
+export function changeVolunteerAvatar (data) {
+  return request({
+    url: userAdminApi.VolunteerAvatar,
     method: 'put',
     data
   })

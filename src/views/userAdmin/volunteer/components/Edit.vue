@@ -2,9 +2,9 @@
   <a-spin :spinning="isLoading">
     <page-go-back-top @back="$emit('onGoBack')" />
     <a-row :gutter="32" type="flex" justify="center">
-      <a-col :md="6" :xl="4" style="display: flex; flex-direction: column; align-items: center">
+      <a-col v-if="record && record.id && record.volunteer" :md="6" :xl="4" style="display: flex; flex-direction: column; align-items: center">
         <a-avatar :size="120" :src="form.avatarUrl" />
-        <a-button style="margin-top: 30px;" @click="showAvatarUploader = true">
+        <a-button style="margin-top: 30px;" @click="showAvatarUploader = true" :loading="isChangingAvatar">
           更换头像
         </a-button>
       </a-col>
@@ -16,7 +16,7 @@
           <a-form-model-item label="身份证号" required prop="idcard">
             <a-input v-model="form.idcard" placeholder="请输入" />
           </a-form-model-item>
-          <a-form-model-item label="手机号" prop="phone">
+          <a-form-model-item label="手机号" prop="phone" v-if="record && record.id && record.volunteer">
             <a-input v-model="form.phone" placeholder="请输入" />
           </a-form-model-item>
           <a-form-model-item label="地区" prop="region">
@@ -32,12 +32,12 @@
               </a-radio>
             </a-radio-group>
           </a-form-model-item>
-          <a-form-model-item label="状态" prop="state">
+          <a-form-model-item label="状态" prop="state" v-if="record && record.id && record.volunteer">
             <a-radio-group v-model="form.state">
               <a-radio :value="1">
                 启用
               </a-radio>
-              <a-radio :value="0">
+              <a-radio :value="2">
                 停用
               </a-radio>
             </a-radio-group>
@@ -60,7 +60,7 @@
 
 <script>
 import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
-import { getVolunteerByID, addVolunteer, editVolunteer } from '@/api/userAdmin'
+import { getVolunteerByID, addVolunteer, editVolunteer, changeVolunteerAvatar } from '@/api/userAdmin'
 
 export default {
   name: 'VolunteerUserAdminEdit',
@@ -75,6 +75,7 @@ export default {
     return {
       isLoading: false,
       isSubmitting: false,
+      isChangingAvatar: false,
       showAvatarUploader: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
@@ -107,14 +108,16 @@ export default {
         const submitForm = {}
         submitForm.name = this.form.name
         submitForm.idcard = this.form.idcard
-        submitForm.state = this.form.state
-        this.form.phone && (submitForm.phone = this.form.phone)
         this.form.sex && (submitForm.sex = this.form.sex)
-        this.form.avatarUrl && (submitForm.avatarUrl = this.form.avatarUrl)
         if (this.form.region) {
           submitForm.province = this.form.region[0]
           submitForm.city = this.form.region[1]
           submitForm.district = this.form.region[2]
+        }
+        if (this.record && this.record.id && this.record.volunteer) {
+          submitForm.volunteer = {}
+          this.form.phone && (submitForm.volunteer.phone = this.form.phone)
+          submitForm.volunteer.state = this.form.state
         }
 
         console.log(submitForm)
@@ -139,8 +142,22 @@ export default {
         this.isSubmitting = false
       })
     },
-    handleAvataruploaded (url) {
-      this.form.avatarUrl = url
+    async handleAvataruploaded (url) {
+      this.isChangingAvatar = true
+      try {
+        await changeVolunteerAvatar({
+          id: this.record.id,
+          avatarUrl: url
+        })
+        this.form.avatarUrl = url
+        this.$notification.success({
+          message: '成功',
+          description: `更换头像成功`
+        })
+      } catch (e) {
+        console.log(e)
+      }
+      this.isChangingAvatar = false
     }
   },
   mounted () {

@@ -104,13 +104,13 @@ import { getVolunteerList } from '@/api/userAdmin'
 import { cleanObject } from '@/utils/util'
 
 const statusMap = {
-  0: {
-    status: 'error',
-    text: '已停用'
-  },
   1: {
     status: 'success',
     text: '正常'
+  },
+  2: {
+    status: 'error',
+    text: '已停用'
   }
 }
 
