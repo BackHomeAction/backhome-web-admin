@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <a-card :bordered="false">
     <div class="table-page-search-wrapper">
       <a-form layout="inline">
         <a-row :gutter="48">
@@ -72,9 +72,9 @@
       </span>
       <span slot="action" slot-scope="text, record">
         <template>
-          <a @click="handleEdit(record)">查看</a>
-          <a-divider type="vertical" />
           <a @click="handleEdit(record)">编辑</a>
+          <a-divider type="vertical" v-if="record.volunteer" />
+          <a @click="handleView(record)" v-if="record.volunteer">查看</a>
         </template>
         <!-- <a-dropdown>
           <a class="ant-dropdown-link">
@@ -94,7 +94,7 @@
         </a-dropdown> -->
       </span>
     </s-table>
-  </div>
+  </a-card>
 </template>
 
 <script>
@@ -189,6 +189,9 @@ export default {
   created () {
   },
   methods: {
+    handleView (record) {
+      this.$emit('onView', record)
+    },
     handleEdit (record) {
       this.$emit('onEdit', record)
     },

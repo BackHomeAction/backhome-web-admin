@@ -1,19 +1,19 @@
 <template>
-  <a-card :bordered="false">
-    <component @onEdit="handleEdit" @onGoBack="handleGoBack" :record="record" :is="currentComponet"></component>
-  </a-card>
+  <component @onView="handleView" @onEdit="handleEdit" @onGoBack="handleGoBack" :record="record" :is="currentComponet"></component>
 </template>
 
 <script>
 // 动态切换组件
 import List from './components/List'
 import Edit from './components/Edit'
+import Info from './components/Info'
 
 export default {
   name: 'VolunteerUserAdmin',
   components: {
     List,
-    Edit
+    Edit,
+    Info
   },
   data () {
     return {
@@ -25,6 +25,11 @@ export default {
 
   },
   methods: {
+    handleView (record) {
+      this.record = record || ''
+      this.currentComponet = 'Info'
+      console.log(record)
+    },
     handleEdit (record) {
       this.record = record || ''
       this.currentComponet = 'Edit'

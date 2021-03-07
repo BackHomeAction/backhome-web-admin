@@ -3,7 +3,10 @@ import request from '@/utils/request'
 const userAdminApi = {
   Volunteer: '/admin/volunteer',
   VolunteerById: '/admin/volunteer/id',
-  VolunteerAvatar: '/admin/volunteer/avatar'
+  VolunteerAvatar: '/admin/volunteer/avatar',
+  VolunteerLiveness: '/admin/volunteer/liveness',
+  VolunteerFinishTasksNumber: '/admin/volunteer/case/finishNum',
+  VolunteerTotalTasksNumber: '/admin/volunteer/case/totalNum'
 }
 
 export function getVolunteerList (params) {
@@ -43,5 +46,29 @@ export function changeVolunteerAvatar (data) {
     url: userAdminApi.VolunteerAvatar,
     method: 'put',
     data
+  })
+}
+
+export function getVolunteerOnlineDaysNumber (params) {
+  return request({
+    url: userAdminApi.VolunteerLiveness,
+    method: 'get',
+    params
+  })
+}
+
+export function getVolunteerFinishTasksNumber (params) {
+  return request({
+    url: userAdminApi.VolunteerFinishTasksNumber,
+    method: 'get',
+    params
+  })
+}
+
+export function getVolunteerTotalTasksNumber (params) {
+  return request({
+    url: userAdminApi.VolunteerTotalTasksNumber,
+    method: 'get',
+    params
   })
 }
