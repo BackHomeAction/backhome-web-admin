@@ -100,7 +100,7 @@
 <script>
 // import dayjs from '@/utils/dayjs'
 import { STable, RegionSelector } from '@/components'
-import { getVolunteerList } from '@/api/userAdmin'
+import { getVolunteerList } from '@/api/volunteerAdmin'
 import { cleanObject } from '@/utils/util'
 
 const statusMap = {

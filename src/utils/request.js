@@ -87,7 +87,7 @@ request.interceptors.response.use((response) => {
       isRefreshing = true
       return refreshToken()
         .then((res) => {
-          const { token, refreshToken } = res.data
+          const { token, refreshToken } = res
           if (token && refreshToken) {
             storage.set(ACCESS_TOKEN, token)
             storage.set(REFRESH_TOKEN, refreshToken)
@@ -108,6 +108,10 @@ request.interceptors.response.use((response) => {
           const error = new Error('登录态过期')
           const token = storage.get(ACCESS_TOKEN)
           if (token) {
+            notification.error({
+              message: '登录失效',
+              description: '请重新登录'
+            })
             store.dispatch('Logout').then(() => {
               setTimeout(() => {
                 window.location.reload()

@@ -62,7 +62,7 @@
 
 <script>
 import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
-import { getVolunteerByID, addVolunteer, editVolunteer, changeVolunteerAvatar } from '@/api/userAdmin'
+import { getVolunteerByID, addVolunteer, editVolunteer, changeVolunteerAvatar } from '@/api/volunteerAdmin'
 
 export default {
   name: 'VolunteerUserAdminEdit',

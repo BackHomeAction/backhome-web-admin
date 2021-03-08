@@ -6,7 +6,8 @@ const userAdminApi = {
   VolunteerAvatar: '/admin/volunteer/avatar',
   VolunteerLiveness: '/admin/volunteer/liveness',
   VolunteerFinishTasksNumber: '/admin/volunteer/case/finishNum',
-  VolunteerTotalTasksNumber: '/admin/volunteer/case/totalNum'
+  VolunteerTotalTasksNumber: '/admin/volunteer/case/totalNum',
+  VolunteerTasks: '/admin/volunteer/case'
 }
 
 export function getVolunteerList (params) {
@@ -68,6 +69,14 @@ export function getVolunteerFinishTasksNumber (params) {
 export function getVolunteerTotalTasksNumber (params) {
   return request({
     url: userAdminApi.VolunteerTotalTasksNumber,
+    method: 'get',
+    params
+  })
+}
+
+export function getVolunteerTasks (params) {
+  return request({
+    url: userAdminApi.VolunteerTasks,
     method: 'get',
     params
   })
