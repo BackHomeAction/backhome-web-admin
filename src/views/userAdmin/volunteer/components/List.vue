@@ -1,81 +1,82 @@
 <template>
-  <a-card :bordered="false">
-    <div class="table-page-search-wrapper">
-      <a-form layout="inline">
-        <a-row :gutter="48">
-          <a-col :md="8" :sm="24">
-            <a-form-item label="用户 ID">
-              <a-input v-model="queryParam.id" placeholder="请输入"/>
-            </a-form-item>
-          </a-col>
-          <a-col :md="8" :sm="24">
-            <a-form-item label="姓名">
-              <a-input v-model="queryParam.name" placeholder="请输入" />
-            </a-form-item>
-          </a-col>
-          <template v-if="advanced">
+  <div>
+    <a-card :bordered="false">
+      <div class="table-page-search-wrapper">
+        <a-form layout="inline">
+          <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="状态">
-                <a-select v-model="queryParam.state" placeholder="请选择" default-value="0">
-                  <a-select-option value="0">待注册</a-select-option>
-                  <a-select-option value="1">正常</a-select-option>
-                  <a-select-option value="2">已停用</a-select-option>
-                </a-select>
+              <a-form-item label="用户 ID">
+                <a-input v-model="queryParam.id" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="手机号">
-                <a-input v-model="queryParam.phone" placeholder="请输入"/>
+              <a-form-item label="姓名">
+                <a-input v-model="queryParam.name" placeholder="请输入" />
               </a-form-item>
             </a-col>
-            <a-col :md="16" :sm="24">
-              <a-form-item label="地区">
-                <region-selector v-model="queryParam.region" />
-              </a-form-item>
+            <template v-if="advanced">
+              <a-col :md="8" :sm="24">
+                <a-form-item label="状态">
+                  <a-select v-model="queryParam.state" placeholder="请选择" default-value="0">
+                    <a-select-option value="0">待注册</a-select-option>
+                    <a-select-option value="1">正常</a-select-option>
+                    <a-select-option value="2">已停用</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="手机号">
+                  <a-input v-model="queryParam.phone" placeholder="请输入"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="16" :sm="24">
+                <a-form-item label="地区">
+                  <region-selector v-model="queryParam.region" />
+                </a-form-item>
+              </a-col>
+            </template>
+            <a-col :md="!advanced && 8 || 24" :sm="24">
+              <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
+                <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
+                <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                <a @click="toggleAdvanced" style="margin-left: 8px">
+                  {{ advanced ? '收起' : '展开' }}
+                  <a-icon :type="advanced ? 'up' : 'down'"/>
+                </a>
+              </span>
             </a-col>
+          </a-row>
+        </a-form>
+      </div>
+
+      <div class="table-operator">
+        <a-button type="primary" icon="plus" @click="handleEdit()">新建</a-button>
+        <a-button type="default" @click="showImportModal = true" v-role="['superAdmin', 'admin']">批量导入</a-button>
+      </div>
+
+      <s-table
+        ref="table"
+        size="default"
+        rowKey="id"
+        :columns="columns"
+        :data="loadData"
+      >
+        <span slot="sex" slot-scope="text">
+          {{ text ? (text === 1 ? '男' : '女') : '' }}
+        </span>
+        <span slot="location" slot-scope="text, record">
+          {{ record.province && record.city && record.district ? `${record.province} ${record.city} ${record.district}` : '' }}
+        </span>
+        <span slot="state" slot-scope="text, record">
+          <a-badge v-if="record.volunteer" :status="record.volunteer.state | statusTypeFilter" :text="record.volunteer.state | statusFilter" />
+          <a-badge v-else status="default" text="待注册" />
+        </span>
+        <span slot="action" slot-scope="text, record">
+          <template>
+            <a @click="handleEdit(record)">编辑</a>
+            <a-divider type="vertical" v-if="record.volunteer" />
+            <a @click="handleView(record)" v-if="record.volunteer">查看</a>
           </template>
-          <a-col :md="!advanced && 8 || 24" :sm="24">
-            <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
-              <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-              <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
-              <a @click="toggleAdvanced" style="margin-left: 8px">
-                {{ advanced ? '收起' : '展开' }}
-                <a-icon :type="advanced ? 'up' : 'down'"/>
-              </a>
-            </span>
-          </a-col>
-        </a-row>
-      </a-form>
-    </div>
-
-    <div class="table-operator">
-      <a-button type="primary" icon="plus" @click="handleEdit()">新建</a-button>
-      <a-button type="default" @click="handleEdit()" v-role="['superAdmin', 'admin']">批量导入</a-button>
-    </div>
-
-    <s-table
-      ref="table"
-      size="default"
-      rowKey="id"
-      :columns="columns"
-      :data="loadData"
-    >
-      <span slot="sex" slot-scope="text">
-        {{ text ? (text === 1 ? '男' : '女') : '' }}
-      </span>
-      <span slot="location" slot-scope="text, record">
-        {{ record.province && record.city && record.district ? `${record.province} ${record.city} ${record.district}` : '' }}
-      </span>
-      <span slot="state" slot-scope="text, record">
-        <a-badge v-if="record.volunteer" :status="record.volunteer.state | statusTypeFilter" :text="record.volunteer.state | statusFilter" />
-        <a-badge v-else status="default" text="待注册" />
-      </span>
-      <span slot="action" slot-scope="text, record">
-        <template>
-          <a @click="handleEdit(record)">编辑</a>
-          <a-divider type="vertical" v-if="record.volunteer" />
-          <a @click="handleView(record)" v-if="record.volunteer">查看</a>
-        </template>
         <!-- <a-dropdown>
           <a class="ant-dropdown-link">
             更多 <a-icon type="down" />
@@ -92,9 +93,12 @@
             </a-menu-item>
           </a-menu>
         </a-dropdown> -->
-      </span>
-    </s-table>
-  </a-card>
+        </span>
+      </s-table>
+    </a-card>
+
+    <import-modal :visible="showImportModal" @close="showImportModal = false" @success="handleImportSuccess" />
+  </div>
 </template>
 
 <script>
@@ -102,6 +106,7 @@
 import { STable, RegionSelector } from '@/components'
 import { getVolunteerList } from '@/api/volunteerAdmin'
 import { cleanObject } from '@/utils/util'
+import ImportModal from './ImportModal'
 
 const statusMap = {
   1: {
@@ -118,7 +123,8 @@ export default {
   name: 'VolunteerUserAdminList',
   components: {
     STable,
-    RegionSelector
+    RegionSelector,
+    ImportModal
   },
   filters: {
     statusFilter (type) {
@@ -183,7 +189,8 @@ export default {
           .then(res => {
             return res.data
           })
-      }
+      },
+      showImportModal: false
     }
   },
   created () {
@@ -205,6 +212,10 @@ export default {
     resetSearchForm () {
       this.queryParam = {
       }
+    },
+    handleImportSuccess () {
+      this.showImportModal = false
+      this.$refs.table.refresh()
     }
   }
 }

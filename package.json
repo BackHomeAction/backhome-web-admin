@@ -17,6 +17,7 @@
     "axios": "^0.19.0",
     "core-js": "^3.1.2",
     "dayjs": "^1.10.4",
+    "downloadjs": "^1.4.7",
     "enquire.js": "^2.1.6",
     "jsonp": "^0.2.1",
     "lodash.clonedeep": "^4.5.0",
