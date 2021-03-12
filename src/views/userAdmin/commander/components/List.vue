@@ -44,6 +44,7 @@
             <a-col :md="8" :sm="24" v-if="advanced">
               <a-form-item label="地区">
                 <a-input v-model="search.inplace" placeholder="请输入"/>
+                <region-selector></region-selector>
               </a-form-item>
             </a-col>
             <a-col :md="!advanced && 8 || 24" :sm="24">
@@ -95,7 +96,8 @@ export default {
         },
         {
           title: '姓名',
-          dataIndex: 'name'
+          dataIndex: 'name',
+          width: '100px'
         },
         {
           title: '身份',
@@ -107,7 +109,7 @@ export default {
           title: '指战区域',
           dataIndex: 'address',
           scopedSlots: { customRender: 'location' },
-          width: '400px'
+          width: '200px'
         },
         {
           title: '状态',
@@ -117,7 +119,8 @@ export default {
         },
         {
           title: '注册时间',
-          dataIndex: 'registerTime'
+          dataIndex: 'registerTime',
+          width: '100px'
         },
         {
           title: '操作',

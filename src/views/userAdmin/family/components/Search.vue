@@ -79,7 +79,8 @@ export default {
         },
         {
           title: '姓名',
-          dataIndex: 'name'
+          dataIndex: 'name',
+          width: '150px'
         },
         {
           title: '性别',
@@ -91,22 +92,23 @@ export default {
           title: '位置',
           dataIndex: 'address',
           scopedSlots: { customRender: 'location' },
-          width: '400px'
+          width: '200px'
         },
         {
           title: '状态',
           dataIndex: 'state',
           scopedSlots: { customRender: 'state' },
-          width: '100px'
+          width: '70px'
         },
         {
           title: '注册时间',
-          dataIndex: 'registerTime'
+          dataIndex: 'registerTime',
+          width: '150px'
         },
         {
           title: '操作',
           dataIndex: 'action',
-          width: '150px',
+          width: '100px',
           scopedSlots: { customRender: 'action' }
         }
       ],

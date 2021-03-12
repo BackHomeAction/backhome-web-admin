@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-card :bordered="false">
-      <page-go-back-top @click="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
+      <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
       <a-row :gutter="32" type="flex" justify="center">
         <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
           <a-avatar :size="120" icon="user" />
@@ -89,6 +89,7 @@ export default {
   },
   methods: {
     goBack: function () {
+      console.log(1123)
       this.$emit('onGoBack')
     },
     onSubmit: function () {

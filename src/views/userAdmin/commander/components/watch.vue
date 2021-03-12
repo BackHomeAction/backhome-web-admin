@@ -151,9 +151,6 @@ export default {
     changeChoose: function () {
       console.log(this.chooseWatch)
     },
-    missionTo: function (id) {
-      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: id } })
-    },
     handleToEdit: function () {
       this.$emit('onEdit')
     }

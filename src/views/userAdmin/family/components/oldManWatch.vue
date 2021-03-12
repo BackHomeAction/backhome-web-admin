@@ -4,41 +4,54 @@
 
       <a-row :gutter="48" type="flex" justify="center">
         <a-col :span="22">
+          <!--    <page-go-back-top @click="$emit('onGoBack')" ><a><a-icon type="left" /></a>&nbsp;&nbsp;</page-go-back-top> <a-page-header :title="name"></a-page-header>-->
           <a-page-header style="margin-left: -22px" :title="name" @back="$emit('onGoBack')" />
         </a-col>
-        <a-col :span="2" style="display: flex;align-items: center"><a-button @click="handleToEdit" type="default">编辑</a-button></a-col>
+        <a-col :span="2" style="display: flex;align-items: center"><a-button @click="oldManEdit" type="default">编辑</a-button></a-col>
       </a-row>
       <a-row type="flex" justify="center">
         <a-col >
           <a-descriptions size="small" :column="3" >
-            <a-descriptions-item label="账号">
+            <a-descriptions-item label="性别">
               {{ source[0] }}
             </a-descriptions-item>
-            <a-descriptions-item label="身份">
+            <a-descriptions-item label="身份证号">
               {{ source[1] }}
             </a-descriptions-item>
-            <a-descriptions-item label="指战区域">
+            <a-descriptions-item label="出生日期">
               {{ source[2] }}
             </a-descriptions-item>
-            <a-descriptions-item label="加入时间">
+            <a-descriptions-item label="常居地">
               {{ source[3] }}
             </a-descriptions-item>
-            <a-descriptions-item label="加入时长">
+            <a-descriptions-item label="详细地址">
               {{ source[4] }}
+            </a-descriptions-item>
+            <a-descriptions-item label="常去地点">
+              {{ source[5] }}
             </a-descriptions-item>
           </a-descriptions>
         </a-col>
       </a-row>
+      <a-row :gutter="48" type="flex" >
+        <a-col>
+          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
+        </a-col>
+        <a-col>
+          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
+        </a-col>
+        <a-col>
+          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
+        </a-col>
+        <a-col>
+          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
+        </a-col>
+        <a-col>
+          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
+        </a-col>
+
+      </a-row>
     </a-card>
-    <a-spin :spinning="oldManloading">
-      <a-card :bordered="false" style="margin-top: 30px">
-        <a-page-header title="老人信息"></a-page-header>
-        <a-table size="default" :columns="oldMancol" :data-source="oldData" >
-          <span slot="sex" slot-scope="text">{{ text?'男':'女' }}</span>
-          <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
-        </a-table>
-      </a-card>
-    </a-spin>
     <a-spin :spinning="orLoading">
       <a-card :bordered="false" style="margin-top: 24px;">
         <a-row :gutter="48" style="display: flex;align-items: center">
@@ -87,9 +100,8 @@ import STable from '@/components'
 export default {
   data () {
     return {
-      oldManloading: false,
       name: '赵肖云',
-      source: ['1234567890', '总指战员', '天津市 天津市 西青区', '2021-01-24 21:32:37', '1个月'],
+      source: ['男', '123123123455623', '2021-01-03', '天津市 天津市 西青区', '天津市 天津市 西青区', '天津工业大学'],
       chooseWatch: 0,
       orLoading: false,
       datas: [
@@ -149,63 +161,6 @@ export default {
           scopedSlots: { customRender: 'use' },
           width: '100px'
         }
-      ],
-      oldData: [
-        {
-          name: '老李',
-          sex: 0,
-          birth: '2021-3-12',
-          address: '天津市 天津市西青区',
-          time: '2014-12-24 23:12:00'
-        },
-        {
-          name: '老王',
-          sex: 1,
-          birth: '2021-3-12',
-          address: '天津市 天津市西青区',
-          time: '2014-12-28 23:12:00'
-        },
-        {
-          name: '老八',
-          sex: 0,
-          birth: '2021-4-12',
-          address: '天津市 天津市西青区',
-          time: '2014-12-24 23:12:00'
-        }
-      ],
-      oldMancol: [
-        {
-          title: '姓名',
-          width: '160px',
-          dataIndex: 'name'
-        },
-        {
-          title: '性别',
-          dataIndex: 'sex',
-          scopedSlots: { customRender: 'sex' },
-          width: '250px'
-        },
-        {
-          title: '出生日期 ',
-          dataIndex: 'birth',
-          width: '500px'
-        },
-        {
-          title: '居住地区',
-          dataIndex: 'address',
-          width: '400px'
-        },
-        {
-          title: '创建时间',
-          dataIndex: 'time',
-          width: '400px'
-        },
-        {
-          title: '操作',
-          dataIndex: 'name',
-          scopedSlots: { customRender: 'use' },
-          width: '100px'
-        }
       ]
     }
   },
@@ -217,14 +172,8 @@ export default {
     changeChoose: function () {
       console.log(this.chooseWatch)
     },
-    missionTo: function (id) {
-      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: id } })
-    },
-    handleToEdit: function () {
-      this.$emit('onEdit')
-    },
-    oldManinf: function () {
-      this.$emit('oldView')
+    oldManEdit: function () {
+      this.$emit('oldEdit')
     }
   }
 }
