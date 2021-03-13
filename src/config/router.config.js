@@ -1,6 +1,6 @@
 // eslint-disable-next-line
 import { UserLayout, BasicLayout, PageView } from '@/layouts'
-import { bxAnaalyse, mission, platform } from '@/core/icons'
+import { bxAnaalyse, bxAna, bxPlat, team } from '@/core/icons'
 
 const RouteView = {
   name: 'RouteView',
@@ -42,7 +42,7 @@ export const asyncRouterMap = [
         name: 'userAdmin',
         redirect: '/userAdmin/volunteer',
         component: PageView,
-        meta: { title: '用户管理', keepAlive: true, icon: 'team', roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '用户管理', keepAlive: true, icon: team, roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/userAdmin/volunteer/:pageNo([1-9]\\d*)?',
@@ -69,10 +69,10 @@ export const asyncRouterMap = [
       },
       {
         path: '/missionAdmin',
-        component: PageView,
-        redirect: '/missionAdmin/missionList',
         name: 'missionAdmin',
-        meta: { title: '任务管理', icon: mission, keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        redirect: '/missionAdmin/missionList',
+        component: PageView,
+        meta: { title: '任务管理', keepAlive: true, icon: bxAna, roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/missionAdmin/missionList',
@@ -86,7 +86,6 @@ export const asyncRouterMap = [
             component: () => import('@/views/missionAdmin/faceRecord/index'),
             meta: { title: '人脸识别记录', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           }
-
         ]
       },
       {
@@ -94,7 +93,7 @@ export const asyncRouterMap = [
         component: PageView,
         redirect: '/platformAdmin/announcement',
         name: 'platformAdmin',
-        meta: { title: '平台管理', icon: platform, keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '平台管理', keepAlive: true, icon: bxPlat, roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/platformAdmin/announcement',
