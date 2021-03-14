@@ -6,17 +6,17 @@
         <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
           <a-avatar :size="120" icon="user" />
           <br>
-          <a-button type="default" style="margin-top:5px">更改图片</a-button>
+          <a-button type="default" style="margin-top:5px">更改头像</a-button>
         </a-col>
         <a-col :md="12" :xl="14">
-          <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
+          <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" >
             <a-form-model-item label="姓名" required prop="name">
               <a-input v-model="form.name" placeholder="请输入" />
             </a-form-model-item>
             <a-form-model-item label="身份证号" required prop="idcard">
               <a-input v-model="form.idcard" placeholder="请输入" />
             </a-form-model-item>
-            <a-form-model-item label="手机号" prop="phone" v-if="record && record.id && record.volunteer">
+            <a-form-model-item label="手机号" prop="phone">
               <a-input v-model="form.phone" placeholder="请输入" />
             </a-form-model-item>
             <a-form-model-item label="地区" prop="region">
@@ -46,7 +46,7 @@
               <a-button type="primary" @click="onSubmit" :loading="submitLoad">
                 保存
               </a-button>
-              <a-button type="danger" ghost style="margin-left: 10px;">
+              <a-button type="danger" ghost style="margin-left: 10px;" >
                 删除
               </a-button>
             </a-form-model-item>
@@ -66,6 +66,8 @@ export default {
     return {
       name: '123',
       submitLoad: false,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
       rules: {
         name: [
           { required: true, trigger: 'blur' }

@@ -66,6 +66,8 @@ export default {
     return {
       name: '123',
       submitLoad: false,
+      labelCol: { span: 4 },
+      wrapperCol: { span: 14 },
       rules: {
         name: [
           { required: true, trigger: 'blur' }

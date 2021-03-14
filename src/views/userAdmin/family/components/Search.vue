@@ -30,7 +30,7 @@
             </a-col>
             <a-col :md="8" :sm="24" v-if="advanced">
               <a-form-item label="地区">
-                <a-input v-model="search.inplace" placeholder="请输入"/>
+                <region-selector v-model="datas.at"></region-selector>
               </a-form-item>
             </a-col>
             <a-col :md="!advanced && 8 || 24" :sm="24">
@@ -47,19 +47,24 @@
         </a-form>
       </div>
       <div>
-        <a-table :columns="columns" :data-source="datas">
-          <span slot="sex" slot-scope="text"> {{ text ? (text === 1 ? '男' : '女') : '' }}</span>
-          <span slot="state" slot-scope="text">
-            <a-badge :status="text?'success':'default'" :text="text?'正常':'已停用'"></a-badge>
-          </span>
-          <span slot="action" >
-            <template>
-              <a @click="editPage()">编辑</a>
-              <a-divider type="vertical" />
-              <a @click="watchPage()" >查看</a>
-            </template>
-          </span>
-        </a-table>
+        <a-spin :spinning="loadingPage">
+          <a-table :columns="columns" :data-source="datas">
+            <span slot="sex" slot-scope="text"> {{ text ? (text === 1 ? '男' : '女') : '' }}</span>
+            <span slot="state" slot-scope="text">
+              <a-badge :status="text?'success':'default'" :text="text?'正常':'已停用'"></a-badge>
+            </span>
+            <span slot="location" slot-scope="text">
+              {{ ((text.province)!==null)?(text.province + ' ' + text.city + ' ' + text.district):'' }}
+            </span>
+            <span slot="action" >
+              <template>
+                <a @click="editPage()">编辑</a>
+                <a-divider type="vertical" />
+                <a @click="watchPage()" >查看</a>
+              </template>
+            </span>
+          </a-table>
+        </a-spin>
       </div>
     </a-card>
 
@@ -67,10 +72,23 @@
 </template>
 
 <script>
+import RegionSelector from '@/components/RegionSelector/RegionSelector'
+import { getFamilyData } from '@/api/familyData'
 export default {
+  mounted () {
+    getFamilyData().then(res => {
+      console.log(res)
+      this.datas = res.data.data
+      this.loadingPage = false
+    })
+  },
   name: 'Search',
+  components: {
+    RegionSelector, getFamilyData
+  },
   data () {
     return {
+      loadingPage: true,
       columns: [
         {
           title: '用户 ID',
@@ -80,7 +98,7 @@ export default {
         {
           title: '姓名',
           dataIndex: 'name',
-          width: '150px'
+          width: '120px'
         },
         {
           title: '性别',
@@ -90,7 +108,6 @@ export default {
         },
         {
           title: '位置',
-          dataIndex: 'address',
           scopedSlots: { customRender: 'location' },
           width: '200px'
         },
@@ -98,7 +115,7 @@ export default {
           title: '状态',
           dataIndex: 'state',
           scopedSlots: { customRender: 'state' },
-          width: '70px'
+          width: '100px'
         },
         {
           title: '注册时间',
@@ -112,19 +129,7 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      datas: [
-        {
-          key: '1',
-          id: '1',
-          name: '赵襄',
-          sex: '0',
-          address: '无',
-          action: '',
-          state: '0',
-          registerTime: '2021-01-24 21:32:37'
-
-        }
-      ],
+      datas: [],
       search: {},
       advanced: false
     }
@@ -134,7 +139,6 @@ export default {
       this.advanced = !this.advanced
     },
     searchFamily: function () {
-      console.log(this.search)
     },
     editPage: function () {
       this.$emit('onEdit')

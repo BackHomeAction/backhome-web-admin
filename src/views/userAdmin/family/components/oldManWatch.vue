@@ -79,7 +79,7 @@
           </a-col>
         </a-row>
         <a-row :bordered="false">
-          <a-table size="default" rowKey="id" :columns="columns" :data-source="datas">
+          <a-table size="default" :columns="columns" :data-source="datas">
             <span slot="id" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
             <div slot="state" slot-scope="text">
               <a-badge :status="text?(( text!==1 )?((text===2)?'processing':'default'):'success'):'error'" :text="text?(( text!==1 )?((text===2)?'进行中':'已取消'):'已完成'):'已超时'"> </a-badge>
@@ -106,25 +106,25 @@ export default {
       orLoading: false,
       datas: [
         {
-          id: '#114645',
+          id: '#' + '114645',
           state: 0,
           address: '天津工业大学软件园食堂',
           time: '2011-12-24 23:12:00'
         },
         {
-          id: '#114645',
+          id: '#' + '114645',
           state: 1,
           address: '天津工业大学软件园食堂',
           time: '2011-12-24 23:12:00'
         },
         {
-          id: '#114645',
+          id: '#' + '114645',
           state: 2,
           address: '天津工业大学软件园食堂',
           time: '2011-12-24 23:12:00'
         },
         {
-          id: '#114645',
+          id: '#' + '114645',
           state: 3,
           address: '天津工业大学软件园食堂',
           time: '2011-12-24 23:12:00'

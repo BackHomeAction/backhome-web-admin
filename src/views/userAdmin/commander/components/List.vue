@@ -43,8 +43,7 @@
             </a-col>
             <a-col :md="8" :sm="24" v-if="advanced">
               <a-form-item label="地区">
-                <a-input v-model="search.inplace" placeholder="请输入"/>
-                <region-selector></region-selector>
+                <region-selector />
               </a-form-item>
             </a-col>
             <a-col :md="!advanced && 8 || 24" :sm="24">
@@ -60,19 +59,26 @@
           </a-row>
         </a-form>
       </div>
+      <a-row>
+        <a-col>
+          <a-button type="primary" style="margin-bottom: 10px" ><a-icon type="plus"/>新建</a-button>
+        </a-col>
+      </a-row>
       <div>
-        <a-table :columns="columns" :data-source="datas">
-          <span slot="state" slot-scope="text">
-            <a-badge :status="text?'success':'default'" :text="text?'正常':'已停用'"></a-badge>
-          </span>
-          <span slot="action" >
-            <template>
-              <a @click="editPage()">编辑</a>
-              <a-divider type="vertical" />
-              <a @click="watchPage()" >查看</a>
-            </template>
-          </span>
-        </a-table>
+        <a-spin :spinning="loadingPage">
+          <a-table :columns="columns" :data-source="datas">
+            <span slot="state" slot-scope="text">
+              <a-badge :status="text?'success':'default'" :text="text?'正常':'已停用'"></a-badge>
+            </span>
+            <span slot="action" >
+              <template>
+                <a @click="editPage()">编辑</a>
+                <a-divider type="vertical" />
+                <a @click="watchPage()" >查看</a>
+              </template>
+            </span>
+          </a-table>
+        </a-spin>
       </div>
     </a-card>
 
@@ -81,13 +87,23 @@
 
 <script>
 import RegionSelector from '@/components'
+import { adminList } from '@/api/admin'
 export default {
+  mounted () {
+    adminList().then(res => {
+      console.log(res)
+      this.loadingPage = true
+      this.datas = res.data.data
+      this.loadingPage = false
+    })
+  },
   components: {
-    RegionSelector
+    RegionSelector, adminList
   },
   name: 'Search',
   data () {
     return {
+      loadingPage: true,
       columns: [
         {
           title: '用户 ID',
@@ -96,7 +112,7 @@ export default {
         },
         {
           title: '姓名',
-          dataIndex: 'name',
+          dataIndex: 'userName',
           width: '100px'
         },
         {
@@ -129,19 +145,7 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      datas: [
-        {
-          key: '1',
-          id: '1',
-          name: '赵襄',
-          identity: '系统管理员',
-          address: '全国',
-          action: '',
-          registerTime: '2021-01-24 21:32:37',
-          state: '1'
-
-        }
-      ],
+      datas: [],
       search: {},
       advanced: false
     }
