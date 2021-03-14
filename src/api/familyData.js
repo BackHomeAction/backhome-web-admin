@@ -38,7 +38,7 @@ export function oldManinf (param) {
   return request({
     url: userAPI.OldmanData,
     method: 'get',
-    query: { familyId: param }
+    params: { familyId: param }
   })
 }
 

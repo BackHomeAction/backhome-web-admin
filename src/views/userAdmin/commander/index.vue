@@ -1,6 +1,12 @@
 <template>
   <div>
-    <component @onView="handleView" @onEdit="handleEdit" @onGoBack="handleGoBack" @onWatch="handleWatch" :is="page"></component>
+    <component
+      @onCreate="createPage"
+      @onView="handleView"
+      @onEdit="handleEdit"
+      @onGoBack="handleGoBack"
+      @onWatch="handleWatch"
+      :is="page"></component>
   </div>
 </template>
 
@@ -8,9 +14,10 @@
 import List from '@/views/userAdmin/commander/components/List'
 import watch from '@/views/userAdmin/commander/components/watch'
 import edit from '@/views/userAdmin/commander/components/edit'
+import createPage from '@/views/userAdmin/commander/components/createPage'
 export default {
   components: {
-    List, watch, edit
+    List, watch, edit, createPage
   },
   data () {
     return {
@@ -29,7 +36,11 @@ export default {
     },
     handleWatch: function () {
       this.page = 'watch'
+    },
+    createPage: function () {
+      this.page = 'createPage'
     }
+
   }
 }
 </script>

@@ -61,7 +61,7 @@
       </div>
       <a-row>
         <a-col>
-          <a-button type="primary" style="margin-bottom: 10px" ><a-icon type="plus"/>新建</a-button>
+          <a-button type="primary" style="margin-bottom: 10px" @click="createPages" ><a-icon type="plus"/>新建</a-button>
         </a-col>
       </a-row>
       <div>
@@ -86,7 +86,7 @@
 </template>
 
 <script>
-import RegionSelector from '@/components'
+import { RegionSelector } from '@/components'
 import { adminList } from '@/api/admin'
 export default {
   mounted () {
@@ -96,6 +96,7 @@ export default {
       this.datas = res.data.data
       this.loadingPage = false
     })
+    console.log(123)
   },
   components: {
     RegionSelector, adminList
@@ -119,13 +120,13 @@ export default {
           title: '身份',
           dataIndex: 'identity',
           scopedSlots: { customRender: 'identity' },
-          width: '150px'
+          width: '100px'
         },
         {
           title: '指战区域',
           dataIndex: 'address',
           scopedSlots: { customRender: 'location' },
-          width: '200px'
+          width: '150px'
         },
         {
           title: '状态',
@@ -136,7 +137,7 @@ export default {
         {
           title: '注册时间',
           dataIndex: 'registerTime',
-          width: '100px'
+          width: '150px'
         },
         {
           title: '操作',
@@ -162,6 +163,9 @@ export default {
     },
     watchPage: function () {
       this.$emit('onWatch')
+    },
+    createPages: function () {
+      this.$emit('onCreate')
     }
   }
 }

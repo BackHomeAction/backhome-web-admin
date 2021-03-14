@@ -36,30 +36,30 @@ export const asyncRouterMap = [
           }
         ]
       },
-      // userAdmin
+      // useradmin
       {
-        path: '/userAdmin',
+        path: '/useradmin',
         name: 'userAdmin',
-        redirect: '/userAdmin/volunteer',
+        redirect: '/useradmin/volunteer',
         component: PageView,
         meta: { title: '用户管理', keepAlive: true, icon: team, roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
-            path: '/userAdmin/volunteer/:pageNo([1-9]\\d*)?',
+            path: '/useradmin/volunteer/:pageNo([1-9]\\d*)?',
             name: 'VolunteerUserAdmin',
             hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
             component: () => import('@/views/userAdmin/volunteer'),
             meta: { title: '志愿者管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
-            path: '/userAdmin/family',
+            path: '/useradmin/family',
             name: 'Family',
             hideChildrenInMenu: true, // 强制显示 MenuItem 而不是 SubMenu
             component: () => import('@/views/userAdmin/family/index'),
             meta: { title: '家属账号管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
-            path: '/userAdmin/commander',
+            path: '/useradmin/commander',
             name: 'commander',
             hideChildrenInMenu: true,
             component: () => import('@/views/userAdmin/commander/index'),

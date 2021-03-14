@@ -82,13 +82,13 @@
 <script>
 // eslint-disable-next-line import/no-duplicates
 import PageGoBackTop from '@/components'
-import { oldmanDatas } from '@/api/familyData'
+import { oldManinf } from '@/api/familyData'
 // eslint-disable-next-line import/no-duplicates
 import STable from '@/components'
 export default {
   mounted () {
     console.log('准备接入')
-    oldmanDatas('1').then(res => {
+    oldManinf({ familyId: 1 }).then(res => {
       console.log(res)
     })
   },
@@ -217,7 +217,7 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, STable, oldmanDatas
+    PageGoBackTop, STable, oldManinf
   },
   name: 'Watch',
   methods: {
