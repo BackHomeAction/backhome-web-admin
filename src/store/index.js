@@ -21,10 +21,25 @@ export default new Vuex.Store({
     permission
   },
   state: {
-
+    oldManData: {
+      oldmanWatch: []
+    },
+    familyData: {
+      editUser: [],
+      watchUser: []
+    },
+    commander: {
+      editUser: [],
+      watchUser: []
+    },
+    familyList: [],
+    commanderList: [],
+    mission: {
+      missionWatchList: [],
+      missionList: []
+    }
   },
   mutations: {
-
   },
   actions: {
 

@@ -56,11 +56,11 @@
             <span slot="location" slot-scope="text">
               {{ ((text.province)!==null)?(text.province + ' ' + text.city + ' ' + text.district):'' }}
             </span>
-            <span slot="action" >
+            <span slot="action" slot-scope="text">
               <template>
-                <a @click="editPage()">编辑</a>
+                <a @click="editPage(text)">编辑</a>
                 <a-divider type="vertical" />
-                <a @click="watchPage()" >查看</a>
+                <a @click="watchPage(text)" >查看</a>
               </template>
             </span>
           </a-table>
@@ -77,8 +77,8 @@ import { getFamilyData } from '@/api/familyData'
 export default {
   mounted () {
     getFamilyData().then(res => {
-      console.log(res)
-      this.datas = res.data.data
+      this.$store.state.familyList = res.data.data
+      this.datas = this.$store.state.familyList
       this.loadingPage = false
     })
   },
@@ -101,21 +101,15 @@ export default {
           width: '120px'
         },
         {
-          title: '性别',
-          dataIndex: 'sex',
-          scopedSlots: { customRender: 'sex' },
-          width: '150px'
-        },
-        {
           title: '位置',
           scopedSlots: { customRender: 'location' },
-          width: '200px'
+          width: '230px'
         },
         {
           title: '状态',
           dataIndex: 'state',
           scopedSlots: { customRender: 'state' },
-          width: '100px'
+          width: '130px'
         },
         {
           title: '注册时间',
@@ -124,7 +118,6 @@ export default {
         },
         {
           title: '操作',
-          dataIndex: 'action',
           width: '100px',
           scopedSlots: { customRender: 'action' }
         }
@@ -140,10 +133,12 @@ export default {
     },
     searchFamily: function () {
     },
-    editPage: function () {
+    editPage: function (edit) {
+      this.$store.state.familyData.editUser = edit
       this.$emit('onEdit')
     },
-    watchPage: function () {
+    watchPage: function (watch) {
+      this.$store.state.familyData.watchUser = watch
       this.$emit('onWatch')
     }
   }

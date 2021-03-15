@@ -8,7 +8,7 @@
         <a-row :gutter="32" type="flex" justufy="space-between" >
           <a-col :span="4" >
             <a-form-model-item>
-              <a-avatar :size="150" shape="square" style='margin-left: 40px'><a-icon type="plus" />上传证件照</a-avatar>
+              <a-avatar :size="150" shape="square" style="margin-left: 40px"><a-icon type="plus" />上传证件照</a-avatar>
             </a-form-model-item>
           </a-col>
           <a-col :span="5" >

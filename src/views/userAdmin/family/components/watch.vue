@@ -4,27 +4,30 @@
 
       <a-row :gutter="48" type="flex" justify="center">
         <a-col :span="22">
-          <a-page-header style="margin-left: -22px" :title="name" @back="$emit('onGoBack')" />
+          <a-page-header style="margin-left: -22px" :title="this.source.name" @back="$emit('onGoBack')" />
         </a-col>
         <a-col :span="2" style="display: flex;align-items: center"><a-button @click="handleToEdit" type="default">编辑</a-button></a-col>
       </a-row>
       <a-row type="flex" justify="center">
         <a-col >
           <a-descriptions size="small" :column="3" >
-            <a-descriptions-item label="账号">
-              {{ source[0] }}
+            <a-descriptions-item label="性别">
+              {{ (source.sex===1)?'男':'女' }}
             </a-descriptions-item>
-            <a-descriptions-item label="身份">
-              {{ source[1] }}
+            <a-descriptions-item label="手机号">
+              {{ source.phone }}
             </a-descriptions-item>
-            <a-descriptions-item label="指战区域">
+            <a-descriptions-item label="长居地">
               {{ source[2] }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时间">
-              {{ source[3] }}
+              {{ source.registerTime }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时长">
-              {{ source[4] }}
+              {{ "一个月" }}
+            </a-descriptions-item>
+            <a-descriptions-item label="状态">
+              <a-badge :status="(source.state===1)?'success':'default'" :text="(source.state===1)?'正常':'停用'" > </a-badge>
             </a-descriptions-item>
           </a-descriptions>
         </a-col>
@@ -34,7 +37,7 @@
       <a-card :bordered="false" style="margin-top: 30px">
         <a-page-header title="老人信息"></a-page-header>
         <a-table size="default" :columns="oldMancol" :data-source="oldData" >
-          <span slot="sex" slot-scope="text">{{ text?'男':'女' }}</span>
+          <span slot="sex" slot-scope="text">{{ (text===1)?'男':'女' }}</span>
           <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
         </a-table>
       </a-card>
@@ -67,11 +70,14 @@
         </a-row>
         <a-row :bordered="false">
           <a-table size="default" :columns="columns" :data-source="datas">
-            <span slot="id" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
+            <span slot="id" slot-scope="text"><a @click="missionTo(text)" >{{ '#'+ text }}</a></span>
             <div slot="state" slot-scope="text">
               <a-badge :status="text?(( text!==1 )?((text===2)?'processing':'default'):'success'):'error'" :text="text?(( text!==1 )?((text===2)?'进行中':'已取消'):'已完成'):'已超时'"> </a-badge>
             </div>
-            <span slot="use" slot-scope="text"><a @click="missionTo(text)" >查看</a></span>
+            <div slot-scope="text" slot="where" >
+              <span>{{ text.city ? (text.city + ' ' + text.district + ' ' + text.address): '' }}</span>
+            </div>
+            <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
           </a-table>
         </a-row>
       </a-card>
@@ -82,49 +88,24 @@
 <script>
 // eslint-disable-next-line import/no-duplicates
 import PageGoBackTop from '@/components'
-import { oldManinf } from '@/api/familyData'
+import { familyMission, oldManinf } from '@/api/familyData'
 // eslint-disable-next-line import/no-duplicates
 import STable from '@/components'
 export default {
   mounted () {
-    console.log('准备接入')
-    oldManinf({ familyId: 1 }).then(res => {
-      console.log(res)
-    })
+    this.source = this.$store.state.familyData.watchUser
+    console.log('家属信息')
+    console.log(this.source)
+    this.oldManGet(this.source.id)
+    this.missionListGet(this.source.id)
   },
   data () {
     return {
       oldManloading: false,
-      name: '赵肖云',
-      source: ['1234567890', '总指战员', '天津市 天津市 西青区', '2021-01-24 21:32:37', '1个月'],
+      source: [],
       chooseWatch: 0,
       orLoading: false,
-      datas: [
-        {
-          id: '#114645',
-          state: 0,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#114645',
-          state: 1,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#114645',
-          state: 2,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#114645',
-          state: 3,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        }
-      ],
+      datas: [],
       columns: [
         {
           title: '任务ID',
@@ -140,46 +121,22 @@ export default {
         },
         {
           title: '走失地点',
-          dataIndex: 'address',
-          scopedSlots: { customRender: 'identity' },
+          scopedSlots: { customRender: 'where' },
           width: '500px'
         },
         {
           title: '创建时间',
-          dataIndex: 'time',
+          dataIndex: 'startTime',
           scopedSlots: { customRender: 'time' },
           width: '400px'
         },
         {
           title: '操作',
-          dataIndex: 'id',
           scopedSlots: { customRender: 'use' },
           width: '100px'
         }
       ],
-      oldData: [
-        {
-          name: '老李',
-          sex: 0,
-          birth: '2021-3-12',
-          address: '天津市 天津市西青区',
-          time: '2014-12-24 23:12:00'
-        },
-        {
-          name: '老王',
-          sex: 1,
-          birth: '2021-3-12',
-          address: '天津市 天津市西青区',
-          time: '2014-12-28 23:12:00'
-        },
-        {
-          name: '老八',
-          sex: 0,
-          birth: '2021-4-12',
-          address: '天津市 天津市西青区',
-          time: '2014-12-24 23:12:00'
-        }
-      ],
+      oldData: [],
       oldMancol: [
         {
           title: '姓名',
@@ -194,22 +151,21 @@ export default {
         },
         {
           title: '出生日期 ',
-          dataIndex: 'birth',
+          dataIndex: 'birthDate',
           width: '500px'
         },
         {
           title: '居住地区',
-          dataIndex: 'address',
+          dataIndex: 'province',
           width: '400px'
         },
         {
           title: '创建时间',
-          dataIndex: 'time',
+          dataIndex: 'createdAt',
           width: '400px'
         },
         {
           title: '操作',
-          dataIndex: 'name',
           scopedSlots: { customRender: 'use' },
           width: '100px'
         }
@@ -230,9 +186,25 @@ export default {
     handleToEdit: function () {
       this.$emit('onEdit')
     },
-    oldManinf: function () {
+    oldManinf: function (text) {
+      this.$store.state.oldManData.oldmanWatch = text
       this.$emit('oldView')
+    },
+    oldManGet: function (id) {
+      oldManinf({ familyId: id }).then(res => {
+        // console.log('老人信息')
+        // console.log(res)
+        this.oldData = res.data
+      })
+    },
+    missionListGet: function (id) {
+      familyMission({ familyId: id }).then(res => {
+        console.log('事件列表')
+        console.log(res)
+        this.datas = res.data.data
+      })
     }
+
   }
 }
 </script>

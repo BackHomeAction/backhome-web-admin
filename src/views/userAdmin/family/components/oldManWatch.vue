@@ -56,7 +56,7 @@
       <a-card :bordered="false" style="margin-top: 24px;">
         <a-row :gutter="48" style="display: flex;align-items: center">
           <a-col :span="16">
-            <a-page-header title="管辖任务"></a-page-header>
+            <a-page-header title="关联案件"></a-page-header>
           </a-col>
           <a-col :span="18" style="display: flex;align-items: center">
             <a-radio-group v-model="chooseWatch" @change="changeChoose">

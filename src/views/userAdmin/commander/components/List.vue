@@ -24,16 +24,11 @@
             </a-col>
             <a-col :md="8" :sm="16" v-if="advanced">
               <a-form-item label="身份">
-                <a-select v-model="search.identity" placeholder="请选择" default-value="0">
+                <a-select v-model="search.identity" placeholder="请选择" default-value="0" @change="identifyChange">
                   <a-select-option value="0">系统管理员</a-select-option>
                   <a-select-option value="1">总指战员</a-select-option>
                   <a-select-option value="2">区域指战员</a-select-option>
                 </a-select>
-              </a-form-item>
-            </a-col>
-            <a-col :md="16" :sm="24" v-if="search.identity==2">
-              <a-form-item label="地区">
-                <region-selector v-model="search.region" />
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24" v-if="advanced">
@@ -42,8 +37,8 @@
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24" v-if="advanced">
-              <a-form-item label="地区">
-                <region-selector />
+              <a-form-item label="地区" v-if="showOrigin">
+                <region-selector v-model="search.origin" />
               </a-form-item>
             </a-col>
             <a-col :md="!advanced && 8 || 24" :sm="24">
@@ -70,11 +65,18 @@
             <span slot="state" slot-scope="text">
               <a-badge :status="text?'success':'default'" :text="text?'正常':'已停用'"></a-badge>
             </span>
-            <span slot="action" >
+            <div slot-scope="text" slot="location">
+              <span>{{ text.province ? (text.province+ ' ' +text.city+ ' ' +text.district) : ' ' }}</span>
+            </div>
+            <div slot-scope="text" slot="identity">
+              <span>{{ (text=== 3) ? '总指战员' : ((text=== 5)?'区域指战员':'系统指战员') }}</span>
+            </div>
+            <span slot="sex" slot-scope="sex">{{ (sex=== 1 )?'男':'女'}}</span>
+            <span slot="action" slot-scope="list">
               <template>
-                <a @click="editPage()">编辑</a>
+                <a @click="editPage(list)">编辑</a>
                 <a-divider type="vertical" />
-                <a @click="watchPage()" >查看</a>
+                <a @click="watchPage(list)" >查看</a>
               </template>
             </span>
           </a-table>
@@ -91,9 +93,10 @@ import { adminList } from '@/api/admin'
 export default {
   mounted () {
     adminList().then(res => {
-      console.log(res)
       this.loadingPage = true
-      this.datas = res.data.data
+      console.log(res.data.data)
+      this.$store.state.commanderList.List = res.data.data
+      this.datas = this.$store.state.commanderList.List
       this.loadingPage = false
     })
     console.log(123)
@@ -113,18 +116,23 @@ export default {
         },
         {
           title: '姓名',
-          dataIndex: 'userName',
+          dataIndex: 'name',
           width: '100px'
         },
         {
+          title: '性别',
+          dataIndex: 'sex',
+          width: '80px',
+          scopedSlots: { customRender: 'sex' }
+        },
+        {
           title: '身份',
-          dataIndex: 'identity',
+          dataIndex: 'roleId',
           scopedSlots: { customRender: 'identity' },
           width: '100px'
         },
         {
           title: '指战区域',
-          dataIndex: 'address',
           scopedSlots: { customRender: 'location' },
           width: '150px'
         },
@@ -141,14 +149,14 @@ export default {
         },
         {
           title: '操作',
-          dataIndex: 'action',
           width: '150px',
           scopedSlots: { customRender: 'action' }
         }
       ],
       datas: [],
       search: {},
-      advanced: false
+      advanced: false,
+      showOrigin: false
     }
   },
   methods: {
@@ -158,14 +166,23 @@ export default {
     searchFamily: function () {
       console.log(this.search)
     },
-    editPage: function () {
+    editPage: function (data) {
+      this.$store.state.commander.editUser = data
       this.$emit('onEdit')
     },
-    watchPage: function () {
+    watchPage: function (data) {
+      this.$store.state.commander.watchUser = data
       this.$emit('onWatch')
     },
     createPages: function () {
       this.$emit('onCreate')
+    },
+    identifyChange: function (value) {
+      if (value === '2') {
+        this.showOrigin = true
+      } else {
+        this.showOrigin = false
+      }
     }
   }
 }
