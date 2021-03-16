@@ -6,7 +6,7 @@
         <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
           <a-avatar :url="form.avatarUrl" :size="120" icon="user" />
           <br>
-          <a-button type="default" style="margin-top:5px">更改图片</a-button>
+          <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
         </a-col>
         <a-col :md="12" :xl="14">
           <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
@@ -65,12 +65,13 @@
     <a-modal v-model="visible" title="权限警告" @ok="handleOk">
       <p>系统管理员不得更改超级管理员信息!!!</p>
     </a-modal>
+    <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
 </template>
 
 <script>
-import { PageGoBackTop, RegionSelector } from '@/components'
-import { adminUpdate } from '@/api/admin'
+import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
+import { adminUpdate, adminAvaratChange } from '@/api/admin'
 export default {
   mounted () {
     this.form = this.$store.state.commander.editUser
@@ -85,6 +86,8 @@ export default {
     return {
       visible: false,
       showOrigin: false,
+      showAvatarUploader: false,
+      isChangingAvatar: false,
       name: '123',
       submitLoad: false,
       labelCol: { span: 4 },
@@ -107,9 +110,26 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, RegionSelector
+    PageGoBackTop, RegionSelector, ImageCropper
   },
   methods: {
+    async handleAvataruploaded (url) {
+      this.isChangingAvatar = true
+      try {
+        await adminAvaratChange({
+          id: this.record.id,
+          avatarUrl: url
+        })
+        this.form.avatarUrl = url
+        this.$notification.success({
+          message: '成功',
+          description: `更换头像成功`
+        })
+      } catch (e) {
+        console.log(e)
+      }
+      this.isChangingAvatar = false
+    },
     handleOk: function () {
       this.visible = false
       this.$emit('onGoBack')

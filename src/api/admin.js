@@ -14,6 +14,13 @@ export function adminUpdate (data) {
     data
   })
 }
+export function adminAvaratChange (data) {
+  return request({
+    url: adminAPI.adminUser,
+    method: 'put',
+    data
+  })
+}
 
 export function adminList (param) {
   return request({
