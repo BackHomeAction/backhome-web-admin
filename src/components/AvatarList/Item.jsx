@@ -4,7 +4,7 @@ import { getSlotOptions } from 'ant-design-vue/lib/_util/props-util'
 import { warning } from 'ant-design-vue/lib/vc-util/warning'
 
 export const AvatarListItemProps = {
-  tips: PropTypes.string.def(null),
+  tips: PropTypes.string.def(''),
   src: PropTypes.string.def('')
 }
 

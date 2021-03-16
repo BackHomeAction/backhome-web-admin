@@ -93,3 +93,16 @@ export function scorePassword (pass) {
 
   return parseInt(score)
 }
+
+export function cleanObject (rawObj) {
+  const obj = {}
+  Object.assign(obj, rawObj)
+  var propNames = Object.getOwnPropertyNames(obj)
+  for (var i = 0; i < propNames.length; i++) {
+    var propName = propNames[i]
+    if (obj[propName] === null || obj[propName] === undefined || obj[propName] === '') {
+      delete obj[propName]
+    }
+  }
+  return obj
+}

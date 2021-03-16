@@ -15,15 +15,31 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
+    namespace: true,
     app,
     user,
     permission
   },
   state: {
-
+    oldManData: {
+      oldmanWatch: []
+    },
+    familyData: {
+      editUser: [],
+      watchUser: []
+    },
+    commander: {
+      editUser: [],
+      watchUser: []
+    },
+    familyList: [],
+    commanderList: [],
+    mission: {
+      missionWatchList: [],
+      missionList: []
+    }
   },
   mutations: {
-
   },
   actions: {
 
