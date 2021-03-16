@@ -46,7 +46,7 @@
       <a-card :bordered="false" style="margin-top: 24px;">
         <a-row :gutter="48" style="display: flex;align-items: center">
           <a-col :span="16">
-            <a-page-header title="管辖任务"></a-page-header>
+            <a-page-header title="关联任务"></a-page-header>
           </a-col>
           <a-col :span="18" style="display: flex;align-items: center">
             <a-radio-group v-model="chooseWatch" @change="changeChoose">
@@ -199,8 +199,8 @@ export default {
     },
     missionListGet: function (id) {
       familyMission({ familyId: id }).then(res => {
-        console.log('事件列表')
-        console.log(res)
+        // console.log('事件列表')
+        // console.log(res)
         this.datas = res.data.data
       })
     }

@@ -64,6 +64,7 @@ export const asyncRouterMap = [
             hideChildrenInMenu: true,
             component: () => import('@/views/userAdmin/commander/index'),
             meta: { title: '指战员账号管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+          //  此项需要区域管理员不可见！！！！！
           }
         ]
       },

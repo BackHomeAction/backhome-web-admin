@@ -19,8 +19,8 @@
             <a-form-model-item label="身份" required>
               <a-select v-model="form.roleId" placeholder="请选择" @change="originSelect">
                 <a-select-option :value="3">总指战员</a-select-option>
-                <a-select-option :value="5">区域指战员</a-select-option>
                 <a-select-option :value="4">系统管理员</a-select-option>
+                <a-select-option :value="5">区域指战员</a-select-option>
               </a-select>
             </a-form-model-item>
             <a-form-model-item label="地区" v-if="showOrigin">
@@ -62,26 +62,34 @@
       </a-row>
 
     </a-card>
+    <a-modal v-model="visible" title="权限警告" @ok="handleOk">
+      <p>系统管理员不得更改超级管理员信息!!!</p>
+    </a-modal>
   </div>
-
 </template>
 
 <script>
 import { PageGoBackTop, RegionSelector } from '@/components'
+import { adminUpdate } from '@/api/admin'
 export default {
   mounted () {
     this.form = this.$store.state.commander.editUser
     console.log(this.form)
+    if ((this.$store.state.roleId === 4) && (this.form.roleId === 3)) {
+      this.showModal()
+    }
     this.originSelect(this.form.roleId)
     this.regionPoxyUse(this.form.province, this.form.city, this.form.district)
   },
   data () {
     return {
+      visible: false,
       showOrigin: false,
       name: '123',
       submitLoad: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
+      adminBean: [],
       regionPoxy: [],
       rules: {
         name: [
@@ -102,12 +110,26 @@ export default {
     PageGoBackTop, RegionSelector
   },
   methods: {
+    handleOk: function () {
+      this.visible = false
+      this.$emit('onGoBack')
+    },
+    showModal () {
+      this.visible = true
+    },
     goBack: function () {
       console.log(1123)
       this.$emit('onGoBack')
     },
     onSubmit: function () {
-      console.log(this.form)
+      this.form.province = this.regionPoxy[0]
+      this.form.district = this.regionPoxy[1]
+      this.form.city = this.regionPoxy[2]
+      this.adminBean = this.form
+      var adminBean = this.adminBean
+      adminUpdate({ adminBean }).then(res => {
+        console.log(res)
+      })
     },
     originSelect: function (value) {
       console.log(value)

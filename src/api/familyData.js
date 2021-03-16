@@ -7,8 +7,16 @@ const userAPI = {
   FamilysearchByid: '/admin/family/id',
   OldmanData: '/admin/family/oldMan',
   OldmanDataChange: '/admin/family/oldMan',
-  Familymissionlist: '/admin/family/case'
+  Familymissionlist: '/admin/family/case',
+  OldManCase: '/admin/family/oldMan/case'
 
+}
+export function OldManCase (params) {
+  return request({
+    url: userAPI.OldManCase,
+    method: 'get',
+    params
+  })
 }
 export function familyMission (params) {
   return request({
@@ -58,10 +66,10 @@ export function oldManinfChange (params) {
   })
 }
 
-export function familyDataChange (params) {
+export function familyDataChange (data) {
   return request({
     url: userAPI.FamilyDataChange,
-    method: 'get',
-    params
+    method: 'put',
+    data
   })
 }

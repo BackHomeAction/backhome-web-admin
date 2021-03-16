@@ -4,7 +4,7 @@
       <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
       <a-row :gutter="32" type="flex" justify="center">
         <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
-          <a-avatar :size="120" icon="user" />
+          <a-avatar :src="form.avatarUrl" :size="120" icon="user" />
           <br>
           <a-button type="default" style="margin-top:5px">更改头像</a-button>
         </a-col>
@@ -13,14 +13,18 @@
             <a-form-model-item label="姓名" required prop="name">
               <a-input v-model="form.name" placeholder="请输入" />
             </a-form-model-item>
+            <a-form-model-item label="昵称" required prop="name">
+              <a-input v-model="form.nickName" placeholder="请输入" />
+            </a-form-model-item>
             <a-form-model-item label="身份证号" required prop="idcard">
+              <!--              是否保留-->
               <a-input v-model="form.idcard" placeholder="请输入" />
             </a-form-model-item>
             <a-form-model-item label="手机号" prop="phone">
               <a-input v-model="form.phone" placeholder="请输入" />
             </a-form-model-item>
             <a-form-model-item label="地区" prop="region">
-              <region-selector v-model="form.region" />
+              <region-selector v-model="regionProxy" />
             </a-form-model-item>
             <a-form-model-item label="性别" prop="sex">
               <a-radio-group v-model="form.sex">
@@ -46,7 +50,7 @@
               <a-button type="primary" @click="onSubmit" :loading="submitLoad">
                 保存
               </a-button>
-              <a-button type="danger" ghost style="margin-left: 10px;" >
+              <a-button type="danger" @click="deleted" ghost style="margin-left: 10px;" >
                 删除
               </a-button>
             </a-form-model-item>
@@ -61,10 +65,14 @@
 
 <script>
 import { PageGoBackTop, RegionSelector } from '@/components'
+import { familyDataChange } from '@/api/familyData'
 export default {
+  mounted () {
+    this.dataList()
+  },
   data () {
     return {
-      name: '123',
+      regionProxy: [],
       submitLoad: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
@@ -76,14 +84,7 @@ export default {
           { required: true, trigger: 'blur' }
         ]
       },
-      form: {
-        name: '赵六',
-        idcard: '666667777666677',
-        phone: '4008-123-123',
-        region: [],
-        sex: 1,
-        state: 1
-      }
+      form: []
     }
   },
   components: {
@@ -95,7 +96,30 @@ export default {
       this.$emit('onGoBack')
     },
     onSubmit: function () {
+      if (this.regionProxy === []) {
+        this.$message.info('家属地址不能为空!')
+      } else {
+        this.form.province = this.regionProxy[0]
+        this.form.district = this.regionProxy[1]
+        this.form.city = this.regionProxy[2]
+        var family = this.form
+        familyDataChange({ family }).then(res => {
+          console.log(res)
+        })
+      }
+    },
+    dataList: function () {
+      this.form = this.$store.state.familyData.editUser
       console.log(this.form)
+      this.regionProxy[0] = this.form.province
+      this.regionProxy[1] = this.form.district
+      this.regionProxy[2] = this.form.city
+      if (this.form.province === null) {
+        this.regionProxy = []
+      }
+    },
+    deleted: function () {
+      console.log('删除')
     }
   },
   name: 'Edit'

@@ -4,7 +4,6 @@
 
       <a-row :gutter="48" type="flex" justify="center">
         <a-col :span="22">
-          <!--    <page-go-back-top @click="$emit('onGoBack')" ><a><a-icon type="left" /></a>&nbsp;&nbsp;</page-go-back-top> <a-page-header :title="name"></a-page-header>-->
           <a-page-header style="margin-left: -22px" :title="source.name" @back="$emit('onGoBack')" />
         </a-col>
         <a-col :span="2" style="display: flex;align-items: center"><a-button @click="handleToEdit" type="default">编辑</a-button></a-col>
@@ -61,13 +60,16 @@
           <a-table size="default" :columns="columns" :data-source="datas">
             <span slot="ids" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
             <div slot="state" slot-scope="text">
-              <a-badge :status="text?(( text!==1 )?((text===2)?'processing':'default'):'success'):'error'" :text="text?(( text!==1 )?((text===2)?'进行中':'已取消'):'已完成'):'已超时'"> </a-badge>
+              <a-badge :status="(text !== 1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text !== 1)?(( text!==2 )?((text===3)?'已超时':'已取消'):'已完成'):'进行中'"> </a-badge>
             </div>
             <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
           </a-table>
         </a-row>
       </a-card>
     </a-spin>
+    <a-modal v-model="visible" title="权限警告" @ok="handleOk">
+      <p>系统管理员不得更改超级管理员信息!!!</p>
+    </a-modal>
   </div>
 </template>
 
@@ -77,7 +79,6 @@ import PageGoBackTop from '@/components'
 // eslint-disable-next-line import/no-duplicates
 import STable from '@/components'
 import dayjs from 'dayjs'
-import { missionList } from '@/api/missionList'
 export default {
   mounted () {
     this.source = this.$store.state.commander.watchUser
@@ -87,6 +88,7 @@ export default {
   },
   data () {
     return {
+      visible: false,
       source: [],
       chooseWatch: 0,
       orLoading: false,
@@ -95,25 +97,25 @@ export default {
       datas: [
         {
           id: '#114643',
-          state: 0,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#114644',
           state: 1,
           address: '天津工业大学软件园食堂',
           time: '2011-12-24 23:12:00'
         },
         {
-          id: '#114645',
+          id: '#114644',
           state: 2,
           address: '天津工业大学软件园食堂',
           time: '2011-12-24 23:12:00'
         },
         {
-          id: '#114646',
+          id: '#114645',
           state: 3,
+          address: '天津工业大学软件园食堂',
+          time: '2011-12-24 23:12:00'
+        },
+        {
+          id: '#114646',
+          state: 4,
           address: '天津工业大学软件园食堂',
           time: '2011-12-24 23:12:00'
         }
@@ -152,7 +154,7 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, STable, dayjs, missionList
+    PageGoBackTop, STable, dayjs
   },
   name: 'Watch',
   methods: {
@@ -160,6 +162,10 @@ export default {
       console.log(this.chooseWatch)
     },
     handleToEdit: function () {
+      if ((this.$store.state.roleId === 4) && (this.source.roleId === 3)) {
+        this.showModal()
+      }
+      this.$store.state.commander.editUser = this.source
       this.$emit('onEdit')
     },
     getTime: function () {
@@ -176,9 +182,20 @@ export default {
       }
       this.getInTime = dayjs(time).fromNow(true)
       console.log(this.getInTime)
+    },
+    missionGet: function () {
+    },
+    missionTo: function (text) {
+      var id = text
+      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: id } })
+    },
+    handleOk: function () {
+      this.visible = false
+      this.$emit('onGoBack')
+    },
+    showModal () {
+      this.visible = true
     }
-  },
-  missionGet: function () {
   }
 }
 
