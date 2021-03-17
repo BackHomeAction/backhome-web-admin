@@ -53,7 +53,7 @@
               <a-button type="primary" @click="onSubmit" :loading="submitLoad">
                 保存
               </a-button>
-              <a-button type="danger" ghost style="margin-left: 10px;">
+              <a-button type="danger" ghost style="margin-left: 10px;" @click="modals">
                 删除
               </a-button>
             </a-form-model-item>
@@ -65,13 +65,16 @@
     <a-modal v-model="visible" title="权限警告" @ok="handleOk">
       <p>系统管理员不得更改超级管理员信息!!!</p>
     </a-modal>
+    <a-modal :visible="visibles" title="删除提醒" @ok="deleteAdmin">
+      <p>您确定要删除ID为{{'' + form.id + ''}}的指战员么?</p>
+    </a-modal>
     <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
 </template>
 
 <script>
 import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
-import { adminUpdate, adminAvaratChange } from '@/api/admin'
+import { adminUpdate, adminAvaratChange, adminDelete } from '@/api/admin'
 export default {
   mounted () {
     this.form = this.$store.state.commander.editUser
@@ -85,6 +88,7 @@ export default {
   data () {
     return {
       visible: false,
+      visibles: false,
       showOrigin: false,
       showAvatarUploader: false,
       isChangingAvatar: false,
@@ -145,14 +149,15 @@ export default {
       this.form.province = this.regionPoxy[0]
       this.form.district = this.regionPoxy[1]
       this.form.city = this.regionPoxy[2]
+      this.form.id = parseInt(this.form.id)
       this.adminBean = this.form
       var adminBean = this.adminBean
-      adminUpdate({ adminBean }).then(res => {
+      adminUpdate({ adminBean, id: this.form.id }).then(res => {
         console.log(res)
       })
     },
     originSelect: function (value) {
-      console.log(value)
+      // console.log(value)
       if (value === 5) {
         this.showOrigin = true
       } else {
@@ -162,6 +167,24 @@ export default {
     },
     regionPoxyUse: function (provin, city, district) {
       this.regionPoxy = [provin, city, district]
+    },
+    deleteAdmin: function () {
+      adminDelete({ id: this.form.id }).then(res => {
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '删除成功'
+          })
+        } else {
+          this.$notification.error({
+            message: '失败',
+            description: '删除失败，请联系管理员'
+          })
+        }
+      })
+    },
+    modals: function () {
+      this.visibles = true
     }
   },
   name: 'Edit'

@@ -6,7 +6,7 @@
         <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
           <a-avatar :src="form.avatarUrl" :size="120" icon="user" />
           <br>
-          <a-button type="default" style="margin-top:5px">更改头像</a-button>
+          <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
         </a-col>
         <a-col :md="12" :xl="14">
           <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" >
@@ -57,15 +57,15 @@
           </a-form-model>
         </a-col>
       </a-row>
-
     </a-card>
+    <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
 
 </template>
 
 <script>
-import { PageGoBackTop, RegionSelector } from '@/components'
-import { familyDataChange } from '@/api/familyData'
+import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
+import { familyDataChange, familyChangeAvarat } from '@/api/familyData'
 export default {
   mounted () {
     this.dataList()
@@ -74,6 +74,8 @@ export default {
     return {
       regionProxy: [],
       submitLoad: false,
+      isChangingAvatar: false,
+      showAvatarUploader: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
       rules: {
@@ -88,16 +90,34 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, RegionSelector
+    PageGoBackTop, RegionSelector, ImageCropper
   },
   methods: {
+
+    async handleAvataruploaded (url) {
+      this.isChangingAvatar = true
+      try {
+        await familyChangeAvarat({
+          id: this.form.id,
+          avatarUrl: url
+        })
+        this.form.avatarUrl = url
+        this.$notification.success({
+          message: '成功',
+          description: `更换头像成功`
+        })
+      } catch (e) {
+        console.log(e)
+      }
+      this.isChangingAvatar = false
+    },
     goBack: function () {
       console.log(1123)
       this.$emit('onGoBack')
     },
     onSubmit: function () {
       if (this.regionProxy === []) {
-        this.$message.info('家属地址不能为空!')
+        this.$message.info('家属地区不能为空!')
       } else {
         this.form.province = this.regionProxy[0]
         this.form.district = this.regionProxy[1]
@@ -105,6 +125,18 @@ export default {
         var family = this.form
         familyDataChange({ family }).then(res => {
           console.log(res)
+          if (res.status === 200) {
+            this.$notification.success({
+              message: '成功',
+              description: '即将返回列表'
+            })
+            this.$emit('onView')
+          } else {
+            this.$notification.error({
+              message: '错误',
+              description: '请检查服务器或联系管理员'
+            })
+          }
         })
       }
     },
@@ -119,7 +151,7 @@ export default {
       }
     },
     deleted: function () {
-      console.log('删除')
+    //   未写删除用户的数据接口
     }
   },
   name: 'Edit'

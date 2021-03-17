@@ -24,7 +24,7 @@
               {{ source.registerTime }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时长">
-              {{ "一个月" }}
+              {{ source.registerTime | registerTimeFromNowFilter  }}
             </a-descriptions-item>
             <a-descriptions-item label="状态">
               <a-badge :status="(source.state===1)?'success':'default'" :text="(source.state===1)?'正常':'停用'" > </a-badge>
@@ -91,6 +91,7 @@ import PageGoBackTop from '@/components'
 import { familyMission, oldManinf } from '@/api/familyData'
 // eslint-disable-next-line import/no-duplicates
 import STable from '@/components'
+import dayjs from '@/utils/dayjs'
 export default {
   mounted () {
     this.source = this.$store.state.familyData.watchUser
@@ -98,6 +99,11 @@ export default {
     console.log(this.source)
     this.oldManGet(this.source.id)
     this.missionListGet(this.source.id)
+  },
+  filters: {
+    registerTimeFromNowFilter (val) {
+      return dayjs(val).fromNow(true)
+    }
   },
   data () {
     return {

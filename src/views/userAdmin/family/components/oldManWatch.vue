@@ -22,7 +22,7 @@
               {{ source.birthDate }}
             </a-descriptions-item>
             <a-descriptions-item label="常居地">
-              {{ source.province?( source.province+ ' ' +source.city+ ' ' +source.district ): '' }}
+              {{ source.province?( source.province+ ' ' +source.city+ ' ' +source.district ): '暂无' }}
             </a-descriptions-item>
             <a-descriptions-item label="常去地点">
               <div>
@@ -171,7 +171,7 @@ export default {
       var id = this.source.id
       OldManCase({ oldManId: id }).then(res => {
         console.log('老人事件')
-        console.log(res.data.data)
+        // console.log(res.data.data)
       })
     },
     missionTo: function (id) {

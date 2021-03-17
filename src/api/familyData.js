@@ -42,11 +42,11 @@ export function getFamilyByid (params) {
   })
 }
 
-export function familyChangeAvarat (params) {
+export function familyChangeAvarat (data) {
   return request({
     url: userAPI.FamilyAvarat,
     method: 'put',
-    params
+    data
   })
 }
 

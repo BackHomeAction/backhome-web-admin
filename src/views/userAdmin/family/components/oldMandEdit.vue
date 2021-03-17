@@ -3,6 +3,7 @@
     <div v-if="showMapChoose" style="display: flex;justify-content: center;align-items: center;position: absolute;width: 100%;height: 100%;z-index: 10000;background-color: rgba(0,0,0,.5)">
       <div style="width: 400px;height: 570px;display: flex;justify-content: center;flex-wrap: wrap">
         <iframe id="mapPage" width="100%" height="100%" frameborder="0" src="https://apis.map.qq.com/tools/locpicker?search=1&type=1&radius=2000&key=75ABZ-3LBEJ-4JDF5-FJG6X-QZ4Q7-TDBMN&referer=LAB服创">
+<!--        这里的话就是一个KEY后面要跟着咱们创建的应用名称，我做的这个功能都有，美观的话可以调  -->
         </iframe>
         <a-button title="danger" @click="showMap" style="margin-top: 35px">取消选择</a-button>
       </div>
@@ -15,7 +16,10 @@
         <a-row :gutter="32" type="flex" justufy="space-between" >
           <a-col >
             <a-form-model-item>
-              <a><a-avatar :size="150" shape="square" ><a-icon type="plus" />上传证件照</a-avatar></a>
+              <a>
+                <a-avatar v-if="oldMan.identificationPhoto" :size="150" shape="square" :src="oldMan.identificationPhoto" @click="showPhoto(2)"></a-avatar>
+                <a-avatar v-if="!(oldMan.identificationPhoto)" :size="150" shape="square" @click="showPhoto(2)"><a-icon type="plus" />上传证件照</a-avatar>
+              </a>
             </a-form-model-item>
           </a-col>
           <a-col :span="5" >
@@ -67,7 +71,7 @@
               style="margin-right: 20px"
               :size="150"
               shape="square" ></a-avatar>
-            <a-button type="dashed" ><a-icon type="plus" />添加生活照</a-button>
+            <a-button type="dashed" @click="showPhoto(1)" :loading="isChangingAvatar" ><a-icon type="plus" />添加生活照</a-button>
           </a-col>
         </a-row>
         <a-row style="margin-top: 30px" >
@@ -90,16 +94,19 @@
         </div>
       </a-row>
     </a-card>
-
+    <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
 </template>
 <script src="https://map.qq.com/api/gljs?v=1.exp&key=75ABZ-3LBEJ-4JDF5-FJG6X-QZ4Q7-TDBMN"></script>
 <script>
-import { PageGoBackTop, RegionSelector } from '@/components'
+import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
 export default {
   created () {
+    //天坑：如果想从VUE内部监听dom外部对象，必须挂在created上，否则会提示你挂的任何东西都不是函数，好家伙，坑中坑
+    //腾讯地图我的自己的KEY有流量限制，非常不稳，咱们的那个我不知道应用名字，所以没法用qwq，然后城市的字段只有城市名字，咱们如果要判断从数组中删除的话需要去掉两个字段，或者只用
+    //经度或者纬度进行比较，因为这个是唯一值（基本是）
     window.addEventListener('message',(events) => {
-      console.log(events.data)
+      console.log(events.data.latlng.lat)
       this.newAction.name=events.data.poiname
       this.newAction.address=events.data.poiaddress
       this.newAction.city=events.data.cityname
@@ -116,7 +123,10 @@ export default {
   name: 'OldMandEdit',
   data () {
     return {
+      iden : 0,
       showMapChoose: false,
+      isChangingAvatar: false,
+      showAvatarUploader: false,
       oldMan: [],
       inLineText: '请输入',
       region: [],
@@ -146,14 +156,19 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, RegionSelector
-  },
-  computed: {
-    newAction: function () {
-      console.log("变了变了！")
-    }
+    PageGoBackTop, RegionSelector, ImageCropper
   },
   methods: {
+    handleAvataruploaded: function(url) {
+      this.isChangingAvatar = true
+      if(this.iden==1){
+        this.oldMan.lifePhoto.push(url)
+      }
+      if(this.iden==2){
+        this.oldMan.identificationPhoto = url
+      }
+      this.isChangingAvatar = false
+    },
     goBack: function () {
       this.$emit('oldView')
     },
@@ -186,6 +201,10 @@ export default {
     },
     defaultss: function () {
       this.datas= []
+    },
+    showPhoto(n){
+      this.iden = n
+      this.showAvatarUploader = true
     }
   }
 }

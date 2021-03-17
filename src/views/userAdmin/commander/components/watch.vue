@@ -24,7 +24,7 @@
               {{ source.registerTime }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时长">
-              {{ `${getInTime}` }}
+              {{ source.registerTime | registerTimeFromNowFilter }}
             </a-descriptions-item>
           </a-descriptions>
         </a-col>
@@ -85,6 +85,11 @@ export default {
     // this.getTime()
     // this.missionGet(this.source.id)
     //  这个是指战员的关联案件到时候再说
+  },
+  filters: {
+    registerTimeFromNowFilter (val) {
+      return dayjs(val).fromNow(true)
+    }
   },
   data () {
     return {
@@ -174,7 +179,7 @@ export default {
         this.$notification.open({
           message: '无信息',
           description:
-            '请检查指战员信息或联系系统管理员',
+              '请检查指战员信息或联系系统管理员',
           onClick: () => {
             console.log('Notification Clicked!')
           }

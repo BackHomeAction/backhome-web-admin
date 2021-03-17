@@ -4,9 +4,16 @@ const adminAPI = {
   adminList: '/admin/all',
   adminUser: '/admin',
   adminCreate: '/admin/admin/add',
-  adminUpdate: '/admin/update'
+  adminUpdate: '/admin/update',
+  adminDelete: '/admin/del'
 }
-
+export function adminDelete (data) {
+  return request({
+    url: adminAPI.adminDelete,
+    method: 'delete',
+    data
+  })
+}
 export function adminUpdate (data) {
   return request({
     url: adminAPI.adminUpdate,
