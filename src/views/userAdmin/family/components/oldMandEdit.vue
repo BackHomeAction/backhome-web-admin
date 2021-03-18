@@ -73,7 +73,7 @@
           </a-col>
         </a-row>
         <a-row style="margin-top: 30px" >
-          <a-table :pagination="oldPage" rowKey="id" :columns="colmuns" :data-source="datas">
+          <a-table key="key" :pagination="oldPage" :columns="colmuns" :data-source="datas">
             <div slot="action" slot-scope="text">
               <a @click="deleteWhere(text)">删除</a>
             </div>
@@ -108,7 +108,7 @@ export default {
   },
   mounted () {
     this.oldMan = this.$store.state.oldManData.oldmanEdit
-    console.log(this.oldMan)
+    console.log(this.oldMan.offerPlace.length)
     console.log("前面")
     this.dataList()
   },
@@ -187,7 +187,7 @@ export default {
            this.datas.splice(i=i,1)
           i= -2
         }
-        this.oldPage.total = this.datas.length
+        // this.oldPage.total = this.datas.length
         this.oldPage.pageSize = 5
       }
     },
@@ -199,11 +199,13 @@ export default {
       this.showAvatarUploader = true
     },
     getOldmanInf: function () {
-        // this.oldMan.province = this.region[0]
-        // this.oldMan.district = this.region[1]
+        this.oldMan.offerPlace = []
+        this.oldMan.province = this.region[0]
+        this.oldMan.district = this.region[1]
         this.oldMan.city = this.region[2]
       this.oldMan.lifePhoto = this.lifePhoto
-      console.log(this.oldMan)
+      this.oldMan.offerPlace = this.datas
+      var  oldMan = this.oldMan
       oldManinfChange({ ...oldMan  }).then(res => {
         console.log(res)
         if(res.status===200){

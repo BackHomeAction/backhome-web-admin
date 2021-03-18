@@ -59,7 +59,7 @@ export default {
   components: {
     RegionSelector, getFamilyData, getFamilyByid
   },
-  data () {
+  data: function () {
     return {
       loadingPage: true,
       WatchPage: {},
@@ -112,8 +112,6 @@ export default {
         console.log(res)
         this.datas = []
         this.datas[0] = res.data
-        this.WatchPage.total = res.data.totalCount
-        this.WatchPage.pageSize = 10
       })
     },
     getAll: function () {
