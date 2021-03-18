@@ -1,69 +1,73 @@
 <template>
-  <a-card :bordered="false">
-    <a-spin :spinning="isLoading">
-      <page-go-back-top @back="$emit('onGoBack')" />
-      <a-row :gutter="32" type="flex" justify="center">
-        <a-col v-if="record && record.id && record.volunteer" :md="6" :xl="4" style="display: flex; flex-direction: column; align-items: center">
-          <a-avatar :size="120" :src="form.avatarUrl" />
-          <a-button style="margin-top: 30px;" @click="showAvatarUploader = true" :loading="isChangingAvatar">
-            更换头像
-          </a-button>
-        </a-col>
-        <a-col :md="12" :xl="14">
-          <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
-            <a-form-model-item label="姓名" required prop="name">
-              <a-input v-model="form.name" placeholder="请输入" />
-            </a-form-model-item>
-            <a-form-model-item label="身份证号" required prop="idcard">
-              <a-input v-model="form.idcard" placeholder="请输入" />
-            </a-form-model-item>
-            <a-form-model-item label="手机号" prop="phone" v-if="record && record.id && record.volunteer">
-              <a-input v-model="form.phone" placeholder="请输入" />
-            </a-form-model-item>
-            <a-form-model-item label="地区" prop="region">
-              <region-selector v-model="form.region" />
-            </a-form-model-item>
-            <a-form-model-item label="性别" prop="sex">
-              <a-radio-group v-model="form.sex">
-                <a-radio :value="1">
-                  男
-                </a-radio>
-                <a-radio :value="2">
-                  女
-                </a-radio>
-              </a-radio-group>
-            </a-form-model-item>
-            <a-form-model-item label="状态" prop="state" v-if="record && record.id && record.volunteer">
-              <a-radio-group v-model="form.state">
-                <a-radio :value="1">
-                  启用
-                </a-radio>
-                <a-radio :value="2">
-                  停用
-                </a-radio>
-              </a-radio-group>
-            </a-form-model-item>
-            <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
-              <a-button type="primary" @click="onSubmit" :loading="isSubmitting">
-                保存
-              </a-button>
-              <a-button type="danger" ghost style="margin-left: 10px;" v-if="record && record.id">
-                删除
-              </a-button>
-            </a-form-model-item>
-          </a-form-model>
-        </a-col>
-      </a-row>
+  <div>
+    <a-card :bordered="false">
+      <a-spin :spinning="isLoading">
+        <page-go-back-top @back="$emit('onGoBack')" />
+        <a-row :gutter="32" type="flex" justify="center">
+          <a-col v-if="record && record.id && record.volunteer" :md="6" :xl="4" style="display: flex; flex-direction: column; align-items: center">
+            <a-avatar :size="120" :src="form.avatarUrl" />
+            <a-button style="margin-top: 30px;" @click="showAvatarUploader = true" :loading="isChangingAvatar">
+              更换头像
+            </a-button>
+          </a-col>
+          <a-col :md="12" :xl="14">
+            <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
+              <a-form-model-item label="姓名" required prop="name">
+                <a-input v-model="form.name" placeholder="请输入" />
+              </a-form-model-item>
+              <a-form-model-item label="身份证号" required prop="idcard">
+                <a-input v-model="form.idcard" placeholder="请输入" />
+              </a-form-model-item>
+              <a-form-model-item label="手机号" prop="phone" v-if="record && record.id && record.volunteer">
+                <a-input v-model="form.phone" placeholder="请输入" />
+              </a-form-model-item>
+              <a-form-model-item label="地区" prop="region">
+                <region-selector v-model="form.region" />
+              </a-form-model-item>
+              <a-form-model-item label="性别" prop="sex">
+                <a-radio-group v-model="form.sex">
+                  <a-radio :value="1">
+                    男
+                  </a-radio>
+                  <a-radio :value="2">
+                    女
+                  </a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+              <a-form-model-item label="状态" prop="state" v-if="record && record.id && record.volunteer">
+                <a-radio-group v-model="form.state">
+                  <a-radio :value="1">
+                    启用
+                  </a-radio>
+                  <a-radio :value="2">
+                    停用
+                  </a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+              <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+                <a-button type="primary" @click="onSubmit" :loading="isSubmitting">
+                  保存
+                </a-button>
+                <a-button @click="visibles = true" type="danger" ghost style="margin-left: 10px;" v-if="record && record.id">
+                  删除
+                </a-button>
+              </a-form-model-item>
+            </a-form-model>
+          </a-col>
+        </a-row>
 
-      <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
-    </a-spin>
-  </a-card>
+        <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
+      </a-spin>
+    </a-card>
+    <a-modal :visible="visibles" title="删除提醒" @ok="deleteVolen">
+      <p>您确定要删除ID为{{ '' + form.id+ '' }}的志愿者么?</p>
+    </a-modal>
+  </div>
 </template>
 
 <script>
 import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
-import { getVolunteerByID, addVolunteer, editVolunteer, changeVolunteerAvatar } from '@/api/volunteerAdmin'
-
+import { getVolunteerByID, addVolunteer, editVolunteer, changeVolunteerAvatar, volDelete } from '@/api/volunteerAdmin'
 export default {
   name: 'VolunteerUserAdminEdit',
   props: {
@@ -75,6 +79,7 @@ export default {
   components: { PageGoBackTop, RegionSelector, ImageCropper },
   data () {
     return {
+      visibles: false,
       isLoading: false,
       isSubmitting: false,
       isChangingAvatar: false,
@@ -101,6 +106,27 @@ export default {
     }
   },
   methods: {
+    deleteVolen: function () {
+      this.visibles = true
+      volDelete({
+        volunteerId: this.form.id
+      }).then(res => {
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '已成功删除'
+          })
+          this.visibles = false
+          this.$emit('onGoBack')
+        } else {
+          this.$notification.error({
+            message: '错误',
+            description: '删除失败，请联系管理员'
+          })
+          this.visibles = false
+        }
+      })
+    },
     async onSubmit () {
       this.$refs.ruleForm.validate(async valid => {
         if (!valid) {

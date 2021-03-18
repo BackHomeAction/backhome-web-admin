@@ -57,7 +57,7 @@
           </a-col>
         </a-row>
         <a-row :bordered="false">
-          <a-table size="default" :columns="columns" :data-source="datas">
+          <a-table :pagination="WatchPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
             <span slot="ids" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
             <div slot="state" slot-scope="text">
               <a-badge :status="(text !== 1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text !== 1)?(( text!==2 )?((text===3)?'已超时':'已取消'):'已完成'):'进行中'"> </a-badge>
@@ -67,24 +67,20 @@
         </a-row>
       </a-card>
     </a-spin>
-    <a-modal v-model="visible" title="权限警告" @ok="handleOk">
+    <a-modal v-model="visible" title="权限警告" @ok="handleOk" >
       <p>系统管理员不得更改超级管理员信息!!!</p>
     </a-modal>
   </div>
 </template>
 
 <script>
-// eslint-disable-next-line import/no-duplicates
-import PageGoBackTop from '@/components'
-// eslint-disable-next-line import/no-duplicates
-import STable from '@/components'
+import { PageGoBackTop } from '@/components'
 import dayjs from 'dayjs'
+import { adminCase } from '@/api/admin'
 export default {
   mounted () {
     this.source = this.$store.state.commander.watchUser
-    // this.getTime()
-    // this.missionGet(this.source.id)
-    //  这个是指战员的关联案件到时候再说
+    this.missionGet(this.source.id)
   },
   filters: {
     registerTimeFromNowFilter (val) {
@@ -95,36 +91,13 @@ export default {
     return {
       visible: false,
       source: [],
+      WatchPage: {},
       chooseWatch: 0,
       orLoading: false,
       getInTime: null,
       familyNum: {},
-      datas: [
-        {
-          id: '#114643',
-          state: 1,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#114644',
-          state: 2,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#114645',
-          state: 3,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#114646',
-          state: 4,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        }
-      ],
+      datas: [],
+      All: [],
       columns: [
         {
           title: '任务ID',
@@ -159,12 +132,22 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, STable, dayjs
+    PageGoBackTop, dayjs, adminCase
   },
   name: 'Watch',
   methods: {
-    changeChoose: function () {
-      console.log(this.chooseWatch)
+    changeChoose: function (e) {
+      this.datas = []
+      adminCase({
+        id: this.source.id,
+        state: e.target.value
+      }).then(res => {
+        this.datas = res.data.data
+        if (res.data.totalCount) {
+          this.WatchPage.total = res.data.totalCount
+          this.WatchPage.pageSize = 10
+        }
+      })
     },
     handleToEdit: function () {
       if ((this.$store.state.roleId === 4) && (this.source.roleId === 3)) {
@@ -188,7 +171,17 @@ export default {
       this.getInTime = dayjs(time).fromNow(true)
       console.log(this.getInTime)
     },
-    missionGet: function () {
+    missionGet: function (e) {
+      adminCase({
+        id: this.source.id
+      }).then(res => {
+        console.log('案件')
+        this.datas = res.data.data
+        if (res.data.data.length) {
+          this.WatchPage.total = res.data.totalCount
+          this.WatchPage.pageSize = 10
+        }
+      })
     },
     missionTo: function (text) {
       var id = text

@@ -1,11 +1,10 @@
 <template>
   <div>
-    <div v-if="showMapChoose" style="display: flex;justify-content: center;align-items: center;position: absolute;width: 100%;height: 100%;z-index: 10000;background-color: rgba(0,0,0,.5)">
-      <div style="width: 400px;height: 570px;display: flex;justify-content: center;flex-wrap: wrap">
+    <div v-if="showMapChoose" style="border: 1px solid black;display: flex;justify-content: center;align-items: center;position: absolute;width: 100%;height: 100%;z-index: 10000;background-color: rgba(0,0,0,.5)">
+      <div style="width: 70%;height: 80%;display: flex;justify-content: center;flex-wrap: wrap">
         <iframe id="mapPage" width="100%" height="100%" frameborder="0" src="https://apis.map.qq.com/tools/locpicker?search=1&type=1&radius=2000&key=75ABZ-3LBEJ-4JDF5-FJG6X-QZ4Q7-TDBMN&referer=LAB服创">
-<!--        这里的话就是一个KEY后面要跟着咱们创建的应用名称，我做的这个功能都有，美观的话可以调  -->
         </iframe>
-        <a-button title="danger" @click="showMap" style="margin-top: 35px">取消选择</a-button>
+        <a-button block type="danger" @click="showMap" style="margin-top: 35px">取消选择</a-button>
       </div>
     </div>
     <a-card :bordered="false">
@@ -56,7 +55,6 @@
             </a-form-model-item>
           </a-col>
           <a-col :span="5" >
-            <!--          位置的问题到时候再说-->
             <a-form-model-item label="家庭住址:" style="margin-top: 15px">
               <a-input v-model="oldMan.address" :placeholder="inLineText" ></a-input>
             </a-form-model-item>
@@ -75,9 +73,9 @@
           </a-col>
         </a-row>
         <a-row style="margin-top: 30px" >
-          <a-table :columns="colmuns" :data-source="datas">
+          <a-table :pagination="oldPage" rowKey="id" :columns="colmuns" :data-source="datas">
             <div slot="action" slot-scope="text">
-              <a @click="deleteElement(text)">删除</a>
+              <a @click="deleteWhere(text)">删除</a>
             </div>
           </a-table>
         </a-row>
@@ -89,7 +87,7 @@
       </a-row>
       <a-row :gutter="32" type="flex" justify="center" style="display: flex;align-items: center;margin-top: 15px" >
         <div>
-          <a-button type="primary" style="margin-right: 35px;margin-top: 30px">保存</a-button>
+          <a-button type="primary" style="margin-right: 35px;margin-top: 30px" @click="getOldmanInf" >保存</a-button>
           <a-button style="margin-left: 35px;margin-top: 30px;" @click="defaultss">Default</a-button>
         </div>
       </a-row>
@@ -100,30 +98,26 @@
 <script src="https://map.qq.com/api/gljs?v=1.exp&key=75ABZ-3LBEJ-4JDF5-FJG6X-QZ4Q7-TDBMN"></script>
 <script>
 import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
+import { oldManinfChange } from '@/api/familyData'
 export default {
-  created () {
-    //天坑：如果想从VUE内部监听dom外部对象，必须挂在created上，否则会提示你挂的任何东西都不是函数，好家伙，坑中坑
-    //腾讯地图我的自己的KEY有流量限制，非常不稳，咱们的那个我不知道应用名字，所以没法用qwq，然后城市的字段只有城市名字，咱们如果要判断从数组中删除的话需要去掉两个字段，或者只用
-    //经度或者纬度进行比较，因为这个是唯一值（基本是）
+ created () {
+    //如果想从VUE内部监听DOM外部对象，必须挂在created上
     window.addEventListener('message',(events) => {
-      console.log(events.data.latlng.lat)
-      this.newAction.name=events.data.poiname
-      this.newAction.address=events.data.poiaddress
-      this.newAction.city=events.data.cityname
-      this.newAction.latitude=events.data.latlng.lat
-      this.newAction.longitude=events.data.latlng.lng
-      this.datas.push(this.newAction)
+      this.addressEdit(events)
     })
   },
   mounted () {
     this.oldMan = this.$store.state.oldManData.oldmanEdit
     console.log(this.oldMan)
+    console.log("前面")
     this.dataList()
   },
   name: 'OldMandEdit',
   data () {
     return {
+      id: null,
       iden : 0,
+      oldPage: {},
       showMapChoose: false,
       isChangingAvatar: false,
       showAvatarUploader: false,
@@ -135,8 +129,8 @@ export default {
         name: '',
         address: '',
         city: '',
-        latitude: null,
-        longitude:null
+        latitude: '',
+        longitude: ''
       },
       colmuns: [
         {
@@ -156,13 +150,15 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, RegionSelector, ImageCropper
+    PageGoBackTop, RegionSelector, ImageCropper, oldManinfChange
   },
   methods: {
     handleAvataruploaded: function(url) {
       this.isChangingAvatar = true
       if(this.iden==1){
-        this.oldMan.lifePhoto.push(url)
+        this.lifePhoto.push(url)
+        // console.log(this.oldMan.lifePhoto)
+        // console.log(this.lifePhoto)
       }
       if(this.iden==2){
         this.oldMan.identificationPhoto = url
@@ -175,8 +171,6 @@ export default {
     dataList: function () {
       this.lifePhoto = JSON.parse(this.oldMan.lifePhoto)
       this.datas = JSON.parse(this.oldMan.offerPlace)
-      console.log('地址栏')
-      console.log(this.datas)
       this.region[0] = this.oldMan.province
       this.region[1] = this.oldMan.district
       this.region[2] = this.oldMan.city
@@ -187,17 +181,15 @@ export default {
     showMap: function () {
       this.showMapChoose = !this.showMapChoose
     },
-    deleteElement: function (text) {
-      console.log(text)
-      var p = 0
-      for(var i=0 ;i !== -1;i++){
-         if((this.datas[i]) === (text)){
-           p = i
-           console.log(p)
-           i = -2
-         }
+    deleteWhere: function (text) {
+      for(var i = 0; i!== -1 ;i++){
+        if(text.address===this.datas[i].address){
+           this.datas.splice(i=i,1)
+          i= -2
+        }
+        this.oldPage.total = this.datas.length
+        this.oldPage.pageSize = 5
       }
-      this.datas = (this.datas.splice(p,1)).sort()
     },
     defaultss: function () {
       this.datas= []
@@ -205,6 +197,41 @@ export default {
     showPhoto(n){
       this.iden = n
       this.showAvatarUploader = true
+    },
+    getOldmanInf: function () {
+        // this.oldMan.province = this.region[0]
+        // this.oldMan.district = this.region[1]
+        this.oldMan.city = this.region[2]
+      this.oldMan.lifePhoto = this.lifePhoto
+      console.log(this.oldMan)
+      oldManinfChange({ ...oldMan  }).then(res => {
+        console.log(res)
+        if(res.status===200){
+          this.$notification.success({
+            message: '成功',
+            description: '修改成功'
+          })
+        } else {
+          this.$notification.error({
+            message: '错误',
+            description: '错误，请联系管理员'
+          })
+        }
+      })
+    },
+    addressEdit: function (e) {
+      this.newAction.name=e.data.poiname
+      this.newAction.address=e.data.poiaddress
+      this.newAction.city=e.data.cityname
+      this.newAction.latitude=e.data.latlng.lat
+      this.newAction.longitude=e.data.latlng.lng
+      this.datas.push(this.newAction)
+      this.newAction = {}
+      if(this.oldPage.total) {
+        this.oldPage.total = this.data.length
+      }
+      this.oldPage.total ++
+      this.oldPage.pageSize = 5
     }
   }
 }

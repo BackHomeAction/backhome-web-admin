@@ -7,9 +7,16 @@ const userAdminApi = {
   VolunteerLiveness: '/admin/volunteer/liveness',
   VolunteerFinishTasksNumber: '/admin/volunteer/case/finishNum',
   VolunteerTotalTasksNumber: '/admin/volunteer/case/totalNum',
-  VolunteerTasks: '/admin/volunteer/case'
+  VolunteerTasks: '/admin/volunteer/case',
+  VolunteerDelete: '/admin/volunteer'
 }
-
+export function volDelete (params) {
+  return request({
+    url: userAdminApi.VolunteerDelete,
+    method: 'delete',
+    params
+  })
+}
 export function getVolunteerList (params) {
   return request({
     url: userAdminApi.Volunteer,

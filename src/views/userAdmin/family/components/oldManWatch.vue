@@ -26,7 +26,7 @@
             </a-descriptions-item>
             <a-descriptions-item label="常去地点">
               <div>
-                <span v-for="(item,id) in this.offerPlace" :key="id">{{ item.name + ','}}</span>
+                <span v-for="(item,id) in this.offerPlace" :key="id">{{ item.name + ',' }}</span>
               </div>
             </a-descriptions-item>
           </a-descriptions>
@@ -68,13 +68,10 @@
           </a-col>
         </a-row>
         <a-row :bordered="false">
-          <a-table size="default" :columns="columns" :data-source="datas">
+          <a-table :pagination="WatchPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
             <span slot="id" slot-scope="text"><a @click="missionTo(text.id)" >{{ '#' + text.id }}</a></span>
             <div slot="state" slot-scope="text">
               <a-badge :status="text?(( text!==1 )?((text===2)?'processing':'default'):'success'):'error'" :text="text?(( text!==1 )?((text===2)?'进行中':'已取消'):'已完成'):'已超时'"> </a-badge>
-            </div>
-            <div slot-scope="text" slot="where">
-              <span>{{ text.city?(text.city+ ' ' +text.district + ' ' + text.address): '' }} </span>
             </div>
             <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
           </a-table>
@@ -85,19 +82,15 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-duplicates
-import PageGoBackTop from '@/components'
-// eslint-disable-next-line import/no-duplicates
-import STable from '@/components'
+import { STable, PageGoBackTop } from '@/components'
+import { adminCase } from '@/api/admin'
 import { OldManCase } from '@/api/familyData'
 export default {
   mounted () {
     this.source = this.$store.state.oldManData.oldmanWatch
     this.caseOfold()
     this.lifephotos = JSON.parse(this.source.lifePhoto)
-    // console.log(this.source.offerPlace)
     this.offerPlace = JSON.parse(this.source.offerPlace)
-    console.log(this.offerPlace)
   },
   data () {
     return {
@@ -105,6 +98,7 @@ export default {
       chooseWatch: 0,
       orLoading: false,
       lifephotos: [],
+      WatchPage: {},
       offerPlace: null,
       showPhoto: true,
       datas: [],
@@ -112,7 +106,7 @@ export default {
         {
           title: '任务ID',
           width: '160px',
-          scopedSlots: { customRender: 'id' }
+          dataIndex: 'id'
         },
         {
           title: '状态',
@@ -122,7 +116,7 @@ export default {
         },
         {
           title: '走失地点',
-          scopedSlots: { customRender: 'where' },
+          dataIndex: 'place',
           width: '500px'
         },
         {
@@ -145,12 +139,17 @@ export default {
   name: 'Watch',
   methods: {
     changeChoose: function () {
-      console.log(this.chooseWatch)
+      adminCase({
+        oldManId: this.source.id,
+        state: this.chooseWatch
+      }).then(res => {
+        this.datas = res.data.data
+        console.log(res)
+        this.WatchPage.pageSize = 10
+      })
     },
     oldManEdit: function () {
       this.$store.state.oldManData.oldmanEdit = this.source
-      console.log('编辑数据')
-      console.log(this.$store.state.oldManData.oldmanEdit)
       this.$emit('oldEdit')
     },
     photoBefore: function () {
@@ -168,10 +167,12 @@ export default {
       }
     },
     caseOfold: function () {
+      console.log(123)
       var id = this.source.id
       OldManCase({ oldManId: id }).then(res => {
-        console.log('老人事件')
-        // console.log(res.data.data)
+        this.datas = res.data.data
+        this.WatchPage.total = res.data.totalCount
+        this.WatchPage.pageSize = 10
       })
     },
     missionTo: function (id) {

@@ -5,7 +5,30 @@ const adminAPI = {
   adminUser: '/admin',
   adminCreate: '/admin/admin/add',
   adminUpdate: '/admin/update',
-  adminDelete: '/admin/del'
+  adminDelete: '/admin/del',
+  adminByid: '/admin/id',
+  adminCase: '/admin/case'
+}
+// export function Case (params) {
+//   return request({
+//     url: adminAPI.Case,
+//     method: 'get',
+//     params
+//   })
+// }
+export function adminCase (params) {
+  return request({
+    url: adminAPI.adminCase,
+    method: 'get',
+    params
+  })
+}
+export function adminByid (params) {
+  return request({
+    url: adminAPI.adminByid,
+    method: 'get',
+    params
+  })
 }
 export function adminDelete (data) {
   return request({
