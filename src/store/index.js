@@ -21,8 +21,10 @@ export default new Vuex.Store({
     permission
   },
   state: {
+    roleId: 0,
     oldManData: {
-      oldmanWatch: []
+      oldmanWatch: [],
+      oldmanEdit: []
     },
     familyData: {
       editUser: [],

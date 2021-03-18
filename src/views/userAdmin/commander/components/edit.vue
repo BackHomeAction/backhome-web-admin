@@ -6,7 +6,7 @@
         <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
           <a-avatar :url="form.avatarUrl" :size="120" icon="user" />
           <br>
-          <a-button type="default" style="margin-top:5px">更改图片</a-button>
+          <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
         </a-col>
         <a-col :md="12" :xl="14">
           <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
@@ -19,8 +19,8 @@
             <a-form-model-item label="身份" required>
               <a-select v-model="form.roleId" placeholder="请选择" @change="originSelect">
                 <a-select-option :value="3">总指战员</a-select-option>
-                <a-select-option :value="5">区域指战员</a-select-option>
                 <a-select-option :value="4">系统管理员</a-select-option>
+                <a-select-option :value="5">区域指战员</a-select-option>
               </a-select>
             </a-form-model-item>
             <a-form-model-item label="地区" v-if="showOrigin">
@@ -53,7 +53,7 @@
               <a-button type="primary" @click="onSubmit" :loading="submitLoad">
                 保存
               </a-button>
-              <a-button type="danger" ghost style="margin-left: 10px;">
+              <a-button type="danger" ghost style="margin-left: 10px;" @click="modals">
                 删除
               </a-button>
             </a-form-model-item>
@@ -62,26 +62,41 @@
       </a-row>
 
     </a-card>
+    <a-modal v-model="visible" title="权限警告" @ok="handleOk">
+      <p>系统管理员不得更改超级管理员信息!!!</p>
+    </a-modal>
+    <a-modal :visible="visibles" title="删除提醒" @ok="deleteAdmin">
+      <p>您确定要删除ID为{{'' + form.id + ''}}的指战员么?</p>
+    </a-modal>
+    <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
-
 </template>
 
 <script>
-import { PageGoBackTop, RegionSelector } from '@/components'
+import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
+import { adminUpdate, adminAvaratChange, adminDelete } from '@/api/admin'
 export default {
   mounted () {
     this.form = this.$store.state.commander.editUser
     console.log(this.form)
+    if ((this.$store.state.roleId === 4) && (this.form.roleId === 3)) {
+      this.showModal()
+    }
     this.originSelect(this.form.roleId)
     this.regionPoxyUse(this.form.province, this.form.city, this.form.district)
   },
   data () {
     return {
+      visible: false,
+      visibles: false,
       showOrigin: false,
+      showAvatarUploader: false,
+      isChangingAvatar: false,
       name: '123',
       submitLoad: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
+      adminBean: [],
       regionPoxy: [],
       rules: {
         name: [
@@ -99,18 +114,50 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, RegionSelector
+    PageGoBackTop, RegionSelector, ImageCropper
   },
   methods: {
+    async handleAvataruploaded (url) {
+      this.isChangingAvatar = true
+      try {
+        await adminAvaratChange({
+          id: this.record.id,
+          avatarUrl: url
+        })
+        this.form.avatarUrl = url
+        this.$notification.success({
+          message: '成功',
+          description: `更换头像成功`
+        })
+      } catch (e) {
+        console.log(e)
+      }
+      this.isChangingAvatar = false
+    },
+    handleOk: function () {
+      this.visible = false
+      this.$emit('onGoBack')
+    },
+    showModal () {
+      this.visible = true
+    },
     goBack: function () {
       console.log(1123)
       this.$emit('onGoBack')
     },
     onSubmit: function () {
-      console.log(this.form)
+      this.form.province = this.regionPoxy[0]
+      this.form.district = this.regionPoxy[1]
+      this.form.city = this.regionPoxy[2]
+      this.form.id = parseInt(this.form.id)
+      this.adminBean = this.form
+      var adminBean = this.adminBean
+      adminUpdate({ adminBean, id: this.form.id }).then(res => {
+        console.log(res)
+      })
     },
     originSelect: function (value) {
-      console.log(value)
+      // console.log(value)
       if (value === 5) {
         this.showOrigin = true
       } else {
@@ -120,6 +167,24 @@ export default {
     },
     regionPoxyUse: function (provin, city, district) {
       this.regionPoxy = [provin, city, district]
+    },
+    deleteAdmin: function () {
+      adminDelete({ id: this.form.id }).then(res => {
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '删除成功'
+          })
+        } else {
+          this.$notification.error({
+            message: '失败',
+            description: '删除失败，请联系管理员'
+          })
+        }
+      })
+    },
+    modals: function () {
+      this.visibles = true
     }
   },
   name: 'Edit'

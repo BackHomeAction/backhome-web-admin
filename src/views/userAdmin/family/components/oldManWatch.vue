@@ -5,51 +5,40 @@
       <a-row :gutter="48" type="flex" justify="center">
         <a-col :span="22">
           <!--    <page-go-back-top @click="$emit('onGoBack')" ><a><a-icon type="left" /></a>&nbsp;&nbsp;</page-go-back-top> <a-page-header :title="name"></a-page-header>-->
-          <a-page-header style="margin-left: -22px" :title="name" @back="$emit('onGoBack')" />
+          <a-page-header style="margin-left: -22px" :title="source.name" @back="$emit('onGoBack')" />
         </a-col>
-        <a-col :span="2" style="display: flex;align-items: center"><a-button @click="oldManEdit" type="default">编辑</a-button></a-col>
+        <a-col :span="2" style="display: flex;align-items: center"><a-button @click="oldManEdit()" type="default">编辑</a-button></a-col>
       </a-row>
       <a-row type="flex" justify="center">
         <a-col >
           <a-descriptions size="small" :column="3" >
             <a-descriptions-item label="性别">
-              {{ source[0] }}
+              {{ source.sex===1?'男':'女' }}
             </a-descriptions-item>
             <a-descriptions-item label="身份证号">
-              {{ source[1] }}
+              {{ source.idcard }}
             </a-descriptions-item>
             <a-descriptions-item label="出生日期">
-              {{ source[2] }}
+              {{ source.birthDate }}
             </a-descriptions-item>
             <a-descriptions-item label="常居地">
-              {{ source[3] }}
-            </a-descriptions-item>
-            <a-descriptions-item label="详细地址">
-              {{ source[4] }}
+              {{ source.province?( source.province+ ' ' +source.city+ ' ' +source.district ): '暂无' }}
             </a-descriptions-item>
             <a-descriptions-item label="常去地点">
-              {{ source[5] }}
+              <div>
+                <span v-for="(item,id) in this.offerPlace" :key="id">{{ item.name + ','}}</span>
+              </div>
             </a-descriptions-item>
           </a-descriptions>
         </a-col>
       </a-row>
       <a-row :gutter="48" type="flex" >
-        <a-col>
-          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
+        <a-col v-if="this.source.identificationPhoto">
+          <a-avatar :src="this.source.identificationPhoto" :size="150" shape="square" ></a-avatar>
         </a-col>
-        <a-col>
-          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
+        <a-col v-for="(item,id) in lifephotos" :key="id">
+          <a-avatar :src="item" shape="square" :size="150"></a-avatar>
         </a-col>
-        <a-col>
-          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
-        </a-col>
-        <a-col>
-          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
-        </a-col>
-        <a-col>
-          <a-avatar shape="square" :size="120" icon="user"></a-avatar>
-        </a-col>
-
       </a-row>
     </a-card>
     <a-spin :spinning="orLoading">
@@ -80,11 +69,14 @@
         </a-row>
         <a-row :bordered="false">
           <a-table size="default" :columns="columns" :data-source="datas">
-            <span slot="id" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
+            <span slot="id" slot-scope="text"><a @click="missionTo(text.id)" >{{ '#' + text.id }}</a></span>
             <div slot="state" slot-scope="text">
               <a-badge :status="text?(( text!==1 )?((text===2)?'processing':'default'):'success'):'error'" :text="text?(( text!==1 )?((text===2)?'进行中':'已取消'):'已完成'):'已超时'"> </a-badge>
             </div>
-            <span slot="use" slot-scope="text"><a @click="missionTo(text)" >查看</a></span>
+            <div slot-scope="text" slot="where">
+              <span>{{ text.city?(text.city+ ' ' +text.district + ' ' + text.address): '' }} </span>
+            </div>
+            <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
           </a-table>
         </a-row>
       </a-card>
@@ -97,44 +89,29 @@
 import PageGoBackTop from '@/components'
 // eslint-disable-next-line import/no-duplicates
 import STable from '@/components'
+import { OldManCase } from '@/api/familyData'
 export default {
+  mounted () {
+    this.source = this.$store.state.oldManData.oldmanWatch
+    this.caseOfold()
+    this.lifephotos = JSON.parse(this.source.lifePhoto)
+    // console.log(this.source.offerPlace)
+    this.offerPlace = JSON.parse(this.source.offerPlace)
+    console.log(this.offerPlace)
+  },
   data () {
     return {
-      name: '赵肖云',
-      source: ['男', '123123123455623', '2021-01-03', '天津市 天津市 西青区', '天津市 天津市 西青区', '天津工业大学'],
+      source: [],
       chooseWatch: 0,
       orLoading: false,
-      datas: [
-        {
-          id: '#' + '114645',
-          state: 0,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#' + '114645',
-          state: 1,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#' + '114645',
-          state: 2,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        },
-        {
-          id: '#' + '114645',
-          state: 3,
-          address: '天津工业大学软件园食堂',
-          time: '2011-12-24 23:12:00'
-        }
-      ],
+      lifephotos: [],
+      offerPlace: null,
+      showPhoto: true,
+      datas: [],
       columns: [
         {
           title: '任务ID',
           width: '160px',
-          dataIndex: 'id',
           scopedSlots: { customRender: 'id' }
         },
         {
@@ -145,19 +122,17 @@ export default {
         },
         {
           title: '走失地点',
-          dataIndex: 'address',
-          scopedSlots: { customRender: 'identity' },
+          scopedSlots: { customRender: 'where' },
           width: '500px'
         },
         {
           title: '创建时间',
-          dataIndex: 'time',
+          dataIndex: 'startTime',
           scopedSlots: { customRender: 'time' },
           width: '400px'
         },
         {
           title: '操作',
-          dataIndex: 'id',
           scopedSlots: { customRender: 'use' },
           width: '100px'
         }
@@ -173,7 +148,34 @@ export default {
       console.log(this.chooseWatch)
     },
     oldManEdit: function () {
+      this.$store.state.oldManData.oldmanEdit = this.source
+      console.log('编辑数据')
+      console.log(this.$store.state.oldManData.oldmanEdit)
       this.$emit('oldEdit')
+    },
+    photoBefore: function () {
+      if (this.source.lifePhoto === null) {
+        console.log('图片组空')
+      } else {
+        var life = JSON.parse(this.source.lifePhoto)
+        console.log(life)
+      }
+      if (this.source.identificationPhoto === null) {
+        console.log('图片组空')
+      } else {
+        var identi = JSON.parse(this.source.identificationPhoto)
+        console.log(identi)
+      }
+    },
+    caseOfold: function () {
+      var id = this.source.id
+      OldManCase({ oldManId: id }).then(res => {
+        console.log('老人事件')
+        // console.log(res.data.data)
+      })
+    },
+    missionTo: function (id) {
+      this.$router.push({ path: '/missionAdmin/missionList/', query: { id } })
     }
   }
 }

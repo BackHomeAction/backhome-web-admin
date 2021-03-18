@@ -71,7 +71,7 @@
             <div slot-scope="text" slot="identity">
               <span>{{ (text=== 3) ? '总指战员' : ((text=== 5)?'区域指战员':'系统指战员') }}</span>
             </div>
-            <span slot="sex" slot-scope="sex">{{ (sex=== 1 )?'男':'女'}}</span>
+            <span slot="sex" slot-scope="sex">{{ (sex=== 1 )?'男':'女' }}</span>
             <span slot="action" slot-scope="list">
               <template>
                 <a @click="editPage(list)">编辑</a>
@@ -90,16 +90,11 @@
 <script>
 import { RegionSelector } from '@/components'
 import { adminList } from '@/api/admin'
+// import { mapState } from 'vuex'
 export default {
   mounted () {
-    adminList().then(res => {
-      this.loadingPage = true
-      console.log(res.data.data)
-      this.$store.state.commanderList.List = res.data.data
-      this.datas = this.$store.state.commanderList.List
-      this.loadingPage = false
-    })
-    console.log(123)
+    this.dataGetFun()
+    this.$store.state.roleId = this.$store.state.user.info.roleId
   },
   components: {
     RegionSelector, adminList
@@ -107,6 +102,7 @@ export default {
   name: 'Search',
   data () {
     return {
+      roleId: null,
       loadingPage: true,
       columns: [
         {
@@ -160,6 +156,15 @@ export default {
     }
   },
   methods: {
+    dataGetFun: function () {
+      adminList().then(res => {
+        this.loadingPage = true
+        console.log(res.data.data)
+        this.$store.state.commanderList.List = res.data.data
+        this.datas = this.$store.state.commanderList.List
+        this.loadingPage = false
+      })
+    },
     changeShow: function () {
       this.advanced = !this.advanced
     },
