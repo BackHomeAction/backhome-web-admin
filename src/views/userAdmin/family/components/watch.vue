@@ -72,7 +72,7 @@
           <a-table :pagination="missionPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
             <span slot="id" slot-scope="text"><a @click="missionTo(text)" >{{ '#'+ text }}</a></span>
             <div slot="state" slot-scope="text">
-              <a-badge :status="text?(( text!==1 )?((text===2)?'processing':'default'):'success'):'error'" :text="text?(( text!==1 )?((text===2)?'进行中':'已取消'):'已完成'):'已超时'"> </a-badge>
+              <a-badge :status="(text!==1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text!==1)?(( text!==2 )?((text===3)?'已归档':'已取消'):'已完成'):'进行中'"> </a-badge>
             </div>
             <div slot-scope="text" slot="where" >
               <span>{{ text.city ? (text.city + ' ' + text.district + ' ' + text.address): '' }}</span>
@@ -203,18 +203,18 @@ export default {
     },
     missionListGet: function (id) {
       familyMission({ familyId: id }).then(res => {
+        console.log('案件在这里')
+        console.log(res)
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize
         this.missionPage.pageSize = 5
       })
     },
     changeChoose: function (e) {
-      console.log(e.target.value)
       familyMission({
         familyId: this.source.id,
         state: e.target.value
       }).then(res => {
-        console.log(res)
         this.datas = []
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize

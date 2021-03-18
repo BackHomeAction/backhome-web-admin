@@ -73,7 +73,7 @@
           </a-col>
         </a-row>
         <a-row style="margin-top: 30px" >
-          <a-table key="key" :pagination="oldPage" :columns="colmuns" :data-source="datas">
+          <a-table :pagination="oldPage" :columns="colmuns" :data-source="datas">
             <div slot="action" slot-scope="text">
               <a @click="deleteWhere(text)">删除</a>
             </div>
@@ -203,9 +203,10 @@ export default {
         this.oldMan.province = this.region[0]
         this.oldMan.district = this.region[1]
         this.oldMan.city = this.region[2]
-      this.oldMan.lifePhoto = this.lifePhoto
-      this.oldMan.offerPlace = this.datas
+      this.oldMan.lifePhoto = JSON.stringify(this.lifePhoto)
+      this.oldMan.offerPlace = JSON.stringify(this.datas)
       var  oldMan = this.oldMan
+
       oldManinfChange({ ...oldMan  }).then(res => {
         console.log(res)
         if(res.status===200){
