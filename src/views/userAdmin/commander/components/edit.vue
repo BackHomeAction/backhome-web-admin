@@ -9,7 +9,7 @@
           <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
         </a-col>
         <a-col :md="12" :xl="14">
-          <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
+          <a-form-model :model="form[0]" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
             <a-form-model-item label="账号" required >
               <a-input v-model="form.userName" placeholder="请输入(登录账号)" />
             </a-form-model-item>
@@ -19,7 +19,7 @@
             <a-form-model-item label="身份" required>
               <a-select v-model="form.roleId" placeholder="请选择" @change="originSelect">
                 <a-select-option :value="3">总指战员</a-select-option>
-                <a-select-option :value="4">系统管理员</a-select-option>
+                <a-select-option :value="4">系统指战员</a-select-option>
                 <a-select-option :value="5">区域指战员</a-select-option>
               </a-select>
             </a-form-model-item>
@@ -65,8 +65,8 @@
     <a-modal v-model="visible" title="权限警告" @ok="handleOk">
       <p>系统管理员不得更改超级管理员信息!!!</p>
     </a-modal>
-    <a-modal :visible="visibles" title="删除提醒" @ok="deleteAdmin">
-      <p>您确定要删除ID为{{'' + form.id + ''}}的指战员么?</p>
+    <a-modal :visible="visibles" title="删除提醒" @ok="deleteAdmin" @cancel="cancel">
+      <p>您确定要删除ID为{{ '' + form.id+ '' }}的指战员么?</p>
     </a-modal>
     <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
@@ -106,11 +106,7 @@ export default {
           { required: true, trigger: 'blur' }
         ]
       },
-      form: [
-        {
-          avatarUrl: ''
-        }
-      ]
+      form: []
     }
   },
   components: {
@@ -121,10 +117,13 @@ export default {
       this.isChangingAvatar = true
       try {
         await adminAvaratChange({
-          id: this.record.id,
+          id: this.form.id,
           avatarUrl: url
         })
         this.form.avatarUrl = url
+        console.log(url)
+        console.log('我的URL')
+        console.log(this.form.avatarUrl)
         this.$notification.success({
           message: '成功',
           description: `更换头像成功`
@@ -145,6 +144,9 @@ export default {
       console.log(1123)
       this.$emit('onGoBack')
     },
+    cancel: function () {
+      this.visibles = false
+    },
     onSubmit: function () {
       this.form.province = this.regionPoxy[0]
       this.form.district = this.regionPoxy[1]
@@ -152,7 +154,7 @@ export default {
       this.form.id = parseInt(this.form.id)
       this.adminBean = this.form
       var adminBean = this.adminBean
-      adminUpdate({ adminBean, id: this.form.id }).then(res => {
+      adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
         console.log(res)
       })
     },
@@ -169,12 +171,15 @@ export default {
       this.regionPoxy = [provin, city, district]
     },
     deleteAdmin: function () {
+      this.visibles = true
       adminDelete({ id: this.form.id }).then(res => {
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',
             description: '删除成功'
           })
+          this.visibles = false
+          this.$emit('onGoBack')
         } else {
           this.$notification.error({
             message: '失败',

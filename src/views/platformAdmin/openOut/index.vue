@@ -1,5 +1,5 @@
 <template>
- <div>openOut</div>
+  <div>openOut</div>
 </template>
 
 <script>

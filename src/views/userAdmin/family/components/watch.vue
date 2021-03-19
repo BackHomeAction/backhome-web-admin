@@ -18,13 +18,13 @@
               {{ source.phone }}
             </a-descriptions-item>
             <a-descriptions-item label="长居地">
-              {{ source[2] }}
+              {{ source.province?( source.province+ ' ' +source.city+ ' ' +source.district ): '' }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时间">
               {{ source.registerTime }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时长">
-              {{ source.registerTime | registerTimeFromNowFilter  }}
+              {{ source.registerTime | registerTimeFromNowFilter }}
             </a-descriptions-item>
             <a-descriptions-item label="状态">
               <a-badge :status="(source.state===1)?'success':'default'" :text="(source.state===1)?'正常':'停用'" > </a-badge>
@@ -36,7 +36,7 @@
     <a-spin :spinning="oldManloading">
       <a-card :bordered="false" style="margin-top: 30px">
         <a-page-header title="老人信息"></a-page-header>
-        <a-table size="default" :columns="oldMancol" :data-source="oldData" >
+        <a-table :pagination="oldPage" rowKey="id" size="default" :columns="oldMancol" :data-source="oldData" >
           <span slot="sex" slot-scope="text">{{ (text===1)?'男':'女' }}</span>
           <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
         </a-table>
@@ -69,10 +69,10 @@
           </a-col>
         </a-row>
         <a-row :bordered="false">
-          <a-table size="default" :columns="columns" :data-source="datas">
+          <a-table :pagination="missionPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
             <span slot="id" slot-scope="text"><a @click="missionTo(text)" >{{ '#'+ text }}</a></span>
             <div slot="state" slot-scope="text">
-              <a-badge :status="text?(( text!==1 )?((text===2)?'processing':'default'):'success'):'error'" :text="text?(( text!==1 )?((text===2)?'进行中':'已取消'):'已完成'):'已超时'"> </a-badge>
+              <a-badge :status="(text!==1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text!==1)?(( text!==2 )?((text===3)?'已归档':'已取消'):'已完成'):'进行中'"> </a-badge>
             </div>
             <div slot-scope="text" slot="where" >
               <span>{{ text.city ? (text.city + ' ' + text.district + ' ' + text.address): '' }}</span>
@@ -86,17 +86,14 @@
 </template>
 
 <script>
-// eslint-disable-next-line import/no-duplicates
-import PageGoBackTop from '@/components'
+import { PageGoBackTop, STable } from '@/components'
 import { familyMission, oldManinf } from '@/api/familyData'
-// eslint-disable-next-line import/no-duplicates
-import STable from '@/components'
 import dayjs from '@/utils/dayjs'
 export default {
   mounted () {
     this.source = this.$store.state.familyData.watchUser
-    console.log('家属信息')
-    console.log(this.source)
+    // console.log('家属信息')
+    // console.log(this.source)
     this.oldManGet(this.source.id)
     this.missionListGet(this.source.id)
   },
@@ -110,6 +107,8 @@ export default {
       oldManloading: false,
       source: [],
       chooseWatch: 0,
+      oldPage: {},
+      missionPage: {},
       orLoading: false,
       datas: [],
       columns: [
@@ -183,9 +182,6 @@ export default {
   },
   name: 'Watch',
   methods: {
-    changeChoose: function () {
-      console.log(this.chooseWatch)
-    },
     missionTo: function (id) {
       this.$router.push({ path: '/missionAdmin/missionList/', query: { id: id } })
     },
@@ -194,23 +190,37 @@ export default {
     },
     oldManinf: function (text) {
       this.$store.state.oldManData.oldmanWatch = text
+      // console.log(text)
+      // console.log('传递之前')
       this.$emit('oldView')
     },
     oldManGet: function (id) {
       oldManinf({ familyId: id }).then(res => {
-        // console.log('老人信息')
-        // console.log(res)
         this.oldData = res.data
+        this.oldPage.total = res.data.length
+        this.oldPage.pageSize = 5
       })
     },
     missionListGet: function (id) {
       familyMission({ familyId: id }).then(res => {
-        // console.log('事件列表')
-        // console.log(res)
+        console.log('案件在这里')
+        console.log(res)
         this.datas = res.data.data
+        this.missionPage.total = res.data.pageSize
+        this.missionPage.pageSize = 5
+      })
+    },
+    changeChoose: function (e) {
+      familyMission({
+        familyId: this.source.id,
+        state: e.target.value
+      }).then(res => {
+        this.datas = []
+        this.datas = res.data.data
+        this.missionPage.total = res.data.pageSize
+        this.missionPage.pageSize = 5
       })
     }
-
   }
 }
 </script>

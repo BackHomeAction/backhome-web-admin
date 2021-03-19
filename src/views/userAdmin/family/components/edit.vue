@@ -9,16 +9,12 @@
           <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
         </a-col>
         <a-col :md="12" :xl="14">
-          <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" >
+          <a-form-model :model="form[0]" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" >
             <a-form-model-item label="姓名" required prop="name">
               <a-input v-model="form.name" placeholder="请输入" />
             </a-form-model-item>
             <a-form-model-item label="昵称" required prop="name">
               <a-input v-model="form.nickName" placeholder="请输入" />
-            </a-form-model-item>
-            <a-form-model-item label="身份证号" required prop="idcard">
-              <!--              是否保留-->
-              <a-input v-model="form.idcard" placeholder="请输入" />
             </a-form-model-item>
             <a-form-model-item label="手机号" prop="phone">
               <a-input v-model="form.phone" placeholder="请输入" />
@@ -50,7 +46,7 @@
               <a-button type="primary" @click="onSubmit" :loading="submitLoad">
                 保存
               </a-button>
-              <a-button type="danger" @click="deleted" ghost style="margin-left: 10px;" >
+              <a-button type="danger" @click="visibles = true" ghost style="margin-left: 10px;" >
                 删除
               </a-button>
             </a-form-model-item>
@@ -59,19 +55,24 @@
       </a-row>
     </a-card>
     <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
+    <a-modal :visible="visibles" title="删除提醒" @ok="deleteFam" @cancel="visibles = false">
+      <p>您确定要删除ID为{{ '' + form.nickName+ '' }}的家属么?</p>
+    </a-modal>
   </div>
 
 </template>
 
 <script>
 import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
-import { familyDataChange, familyChangeAvarat } from '@/api/familyData'
+import { familyDataChange, familyChangeAvarat, familyDelete } from '@/api/familyData'
+
 export default {
   mounted () {
     this.dataList()
   },
   data () {
     return {
+      visibles: false,
       regionProxy: [],
       submitLoad: false,
       isChangingAvatar: false,
@@ -93,7 +94,6 @@ export default {
     PageGoBackTop, RegionSelector, ImageCropper
   },
   methods: {
-
     async handleAvataruploaded (url) {
       this.isChangingAvatar = true
       try {
@@ -123,7 +123,10 @@ export default {
         this.form.district = this.regionProxy[1]
         this.form.city = this.regionProxy[2]
         var family = this.form
-        familyDataChange({ family }).then(res => {
+        familyDataChange({
+          ...family,
+          id: this.form.id
+        }).then(res => {
           console.log(res)
           if (res.status === 200) {
             this.$notification.success({
@@ -150,8 +153,26 @@ export default {
         this.regionProxy = []
       }
     },
-    deleted: function () {
-    //   未写删除用户的数据接口
+    deleteFam: function () {
+      this.visibles = true
+      familyDelete({
+        familyId: this.form.id
+      }).then(res => {
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '已成功删除'
+          })
+          this.visibles = false
+          this.$emit('onGoBack')
+        } else {
+          this.$notification.error({
+            message: '错误',
+            description: '删除失败，请联系管理员'
+          })
+          this.visibles = false
+        }
+      })
     }
   },
   name: 'Edit'

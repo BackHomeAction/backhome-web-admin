@@ -2,7 +2,7 @@
   <div>
     <div>missionList!</div>
     <a-card :bordered="false">
-       <a-page-header>{{ id }}</a-page-header>
+      <a-page-header>{{ id }}</a-page-header>
     </a-card>
   </div>
 </template>
