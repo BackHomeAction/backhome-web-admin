@@ -5,13 +5,45 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="用户ID">
-                <a-input @change="changeData" v-model="search.id" placeholder="请输入"/>
+              <a-form-item label="用户 ID">
+                <a-input v-model="search.id" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-button type="primary" @click="searchFamily()">查询</a-button>
-              <a-button @click="getAll" style="margin-left:5%">重置</a-button>
+              <a-form-item label="姓名">
+                <a-input v-model="search.name" placeholder="请输入" />
+              </a-form-item>
+            </a-col>
+            <template v-if="advanced">
+              <a-col :md="8" :sm="24">
+                <a-form-item label="状态">
+                  <a-select v-model="search.state" placeholder="请选择" default-value="0">
+                    <a-select-option value="0">待注册</a-select-option>
+                    <a-select-option value="1">正常</a-select-option>
+                    <a-select-option value="2">已停用</a-select-option>
+                  </a-select>
+                </a-form-item>
+              </a-col>
+              <a-col :md="8" :sm="24">
+                <a-form-item label="手机号">
+                  <a-input v-model="search.phone" placeholder="请输入"/>
+                </a-form-item>
+              </a-col>
+              <a-col :md="16" :sm="24">
+                <a-form-item label="地区">
+                  <region-selector v-model="search.region" />
+                </a-form-item>
+              </a-col>
+            </template>
+            <a-col :md="!advanced && 8 || 24" :sm="24">
+              <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
+                <a-button type="primary" @click="searchFamily">查询</a-button>
+                <a-button style="margin-left: 8px" @click="getAll">重置</a-button>
+                <a @click="toggleAdvanced" style="margin-left: 8px">
+                  {{ advanced ? '收起' : '展开' }}
+                  <a-icon :type="advanced ? 'up' : 'down'"/>
+                </a>
+              </span>
             </a-col>
           </a-row>
         </a-form>
@@ -51,15 +83,15 @@
 
 <script>
 import { RegionSelector } from '@/components'
-import { adminByid, adminList } from '@/api/admin'
+import { adminList } from '@/api/admin'
 // import { mapState } from 'vuex'
 export default {
   mounted () {
     this.all = this.dataGetFun()
-    this.$store.state.roleId = this.$store.state.user.info.roleId
+    this.$store.state.data.roleId = this.$store.state.user.info.roleId
   },
   components: {
-    RegionSelector, adminByid, adminList
+    RegionSelector, adminList
   },
   name: 'Search',
   data () {
@@ -113,9 +145,7 @@ export default {
         }
       ],
       datas: [],
-      search: {
-        id: ''
-      },
+      search: {},
       all: [],
       advanced: false,
       showOrigin: false
@@ -126,44 +156,41 @@ export default {
       adminList().then(res => {
         this.datas = []
         this.loadingPage = true
-        console.log(res.data.data)
-        console.log(res.data.data.length)
-        this.$store.state.commanderList.List = res.data.data
-        this.datas = this.$store.state.commanderList.List
+        // console.log(res.data.data)
+        // console.log(res.data.data.length)
+        this.$store.state.data.commanderList.List = res.data.data
+        this.datas = this.$store.state.data.commanderList.List
         this.loadingPage = false
         this.WatchPage.total = res.data.data.length
         this.WatchPage.pageSize = 10
         return res.data.data
       })
     },
-    changeData: function () {
-      if (this.search.id === null || this.search.id === '') {
-        this.getAll()
-      }
-    },
     changeShow: function () {
       this.advanced = !this.advanced
     },
     searchFamily: function () {
-      if (!(this.search.id === null)) {
-        adminByid({
-          id: parseInt(this.search.id) }).then(res => {
+      if (this.search) {
+        var search = this.search
+        adminList({ ...search }).then(res => {
           this.datas = []
           this.datas[0] = res.data
           this.WatchPage.total = res.data.data.length
           this.WatchPage.pageSize = 10
         })
+      } else {
+        this.getAll()
       }
     },
     getAll: function () {
       this.dataGetFun()
     },
     editPage: function (data) {
-      this.$store.state.commander.editUser = data
+      this.$store.state.data.commander.editUser = data
       this.$emit('onEdit')
     },
     watchPage: function (data) {
-      this.$store.state.commander.watchUser = data
+      this.$store.state.data.commander.watchUser = data
       this.$emit('onWatch')
     },
     createPages: function () {
@@ -175,6 +202,9 @@ export default {
       } else {
         this.showOrigin = false
       }
+    },
+    toggleAdvanced () {
+      this.advanced = !this.advanced
     }
   }
 }

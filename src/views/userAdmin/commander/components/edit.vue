@@ -68,6 +68,9 @@
     <a-modal :visible="visibles" title="删除提醒" @ok="deleteAdmin" @cancel="cancel">
       <p>您确定要删除ID为{{ '' + form.id+ '' }}的指战员么?</p>
     </a-modal>
+    <a-modal :visible="changeVis" title="删除提醒" @ok="passwordNochange" @cancel="cancel">
+      <p>您没有输入新密码，是否保留原密码并继续?</p>
+    </a-modal>
     <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
 </template>
@@ -77,9 +80,9 @@ import { PageGoBackTop, RegionSelector, ImageCropper } from '@/components'
 import { adminUpdate, adminAvaratChange, adminDelete } from '@/api/admin'
 export default {
   mounted () {
-    this.form = this.$store.state.commander.editUser
+    this.form = this.$store.state.data.commander.editUser
     console.log(this.form)
-    if ((this.$store.state.roleId === 4) && (this.form.roleId === 3)) {
+    if ((this.$store.state.data.roleId === 4) && (this.form.roleId === 3)) {
       this.showModal()
     }
     this.originSelect(this.form.roleId)
@@ -88,6 +91,7 @@ export default {
   data () {
     return {
       visible: false,
+      changeVis: false,
       visibles: false,
       showOrigin: false,
       showAvatarUploader: false,
@@ -146,6 +150,7 @@ export default {
     },
     cancel: function () {
       this.visibles = false
+      this.changeVis = false
     },
     onSubmit: function () {
       this.form.province = this.regionPoxy[0]
@@ -189,7 +194,31 @@ export default {
       })
     },
     modals: function () {
-      this.visibles = true
+      if ((this.form.userName !== '' || this.form.userName !== null) && (this.form.name !== '' || this.form.name !== null)) {
+        if (this.form.roleId === 5) {
+          if (this.regionPoxy) {
+            this.visibles = true
+          } else {
+            this.$notification.error({
+              message: '地区选择有误',
+              description: '区域指战员必须选择指站区域!'
+            })
+          }
+        } else {
+          if (this.form.password === '' || this.form.password === null) {
+            this.changeVis = true
+          }
+        }
+      } else {
+        this.$notification.error({
+          message: '信息不全',
+          description: '请您补全必填项项目!'
+        })
+      }
+    },
+    passwordNochange: function () {
+      this.form.password = this.$store.state.data.commander.editUser.password
+      this.changeVis = true
     }
   },
   name: 'Edit'

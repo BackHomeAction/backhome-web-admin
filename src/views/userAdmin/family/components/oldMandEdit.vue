@@ -107,7 +107,7 @@ export default {
     })
   },
   mounted () {
-    this.oldMan = this.$store.state.oldManData.oldmanEdit
+    this.oldMan = this.$store.state.data.oldManData.oldmanEdit
     console.log(this.oldMan.offerPlace.length)
     console.log("前面")
     this.dataList()

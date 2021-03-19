@@ -40,7 +40,7 @@
       <a-row :gutter="32" style="display: flex;justify-content: center;align-items: center">
         <a-col type="flex" justify="center">
           <a-button type="primary" @click="submit()" style="margin-right: 160px;">提交</a-button>
-          <a-button type="danger" @click="deletes" >重置</a-button>
+          <a-button type="danger" @click="deletes" >重填</a-button>
         </a-col>
       </a-row>
     </a-card>
@@ -81,8 +81,8 @@ export default {
   methods: {
     originSelect: function (value) {
       console.log(value)
-      console.log(this.$store.state.roleId)
-      if ((this.$store.state.roleId === 4) && value === '3') {
+      console.log(this.$store.state.data.roleId)
+      if ((this.$store.state.data.roleId === 4) && value === '3') {
         this.$message.info('您的权限不够')
         this.create.identify = null
       }

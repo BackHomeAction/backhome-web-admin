@@ -16,10 +16,10 @@
             <a-form-model-item label="昵称" required prop="name">
               <a-input v-model="form.nickName" placeholder="请输入" />
             </a-form-model-item>
-            <a-form-model-item label="手机号" prop="phone">
+            <a-form-model-item label="手机号" prop="phone" required >
               <a-input v-model="form.phone" placeholder="请输入" />
             </a-form-model-item>
-            <a-form-model-item label="地区" prop="region">
+            <a-form-model-item label="地区" prop="region" required>
               <region-selector v-model="regionProxy" />
             </a-form-model-item>
             <a-form-model-item label="性别" prop="sex">
@@ -46,7 +46,7 @@
               <a-button type="primary" @click="onSubmit" :loading="submitLoad">
                 保存
               </a-button>
-              <a-button type="danger" @click="visibles = true" ghost style="margin-left: 10px;" >
+              <a-button type="danger" @click="modals" ghost style="margin-left: 10px;" >
                 删除
               </a-button>
             </a-form-model-item>
@@ -144,7 +144,7 @@ export default {
       }
     },
     dataList: function () {
-      this.form = this.$store.state.familyData.editUser
+      this.form = this.$store.state.data.familyData.editUser
       console.log(this.form)
       this.regionProxy[0] = this.form.province
       this.regionProxy[1] = this.form.district
@@ -173,6 +173,16 @@ export default {
           this.visibles = false
         }
       })
+    },
+    modals: function () {
+      if ((this.form[0].userName !== '' || this.form[0].userName !== null) && (this.form[0].name !== '' || this.form[0].name !== null) && (this.regionProxy !== '' || this.regionProxy !== null) && (this.form[0].phone !== '' || this.form[0].phone !== null)) {
+        this.visibles = true
+      } else {
+        this.$notification.error({
+          message: '信息不全',
+          description: '请您补全必填项项目!'
+        })
+      }
     }
   },
   name: 'Edit'

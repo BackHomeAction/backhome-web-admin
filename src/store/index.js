@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 
 import app from './modules/app'
 import user from './modules/user'
+import data from '@/store/modules/data'
 
 // default router permission control
 import permission from './modules/permission'
@@ -18,28 +19,10 @@ export default new Vuex.Store({
     namespace: true,
     app,
     user,
-    permission
+    permission,
+    data
   },
   state: {
-    roleId: 0,
-    oldManData: {
-      oldmanWatch: [],
-      oldmanEdit: []
-    },
-    familyData: {
-      editUser: [],
-      watchUser: []
-    },
-    commander: {
-      editUser: [],
-      watchUser: []
-    },
-    familyList: [],
-    commanderList: [],
-    mission: {
-      missionWatchList: [],
-      missionList: []
-    }
   },
   mutations: {
   },
