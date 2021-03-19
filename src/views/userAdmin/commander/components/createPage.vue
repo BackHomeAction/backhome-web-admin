@@ -40,7 +40,7 @@
       <a-row :gutter="32" style="display: flex;justify-content: center;align-items: center">
         <a-col type="flex" justify="center">
           <a-button type="primary" @click="submit()" style="margin-right: 160px;">提交</a-button>
-          <a-button type="danger" @click="deletes" >删除</a-button>
+          <a-button type="danger" @click="deletes" >重置</a-button>
         </a-col>
       </a-row>
     </a-card>

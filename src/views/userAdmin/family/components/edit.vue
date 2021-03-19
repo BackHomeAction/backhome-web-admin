@@ -56,7 +56,7 @@
     </a-card>
     <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
     <a-modal :visible="visibles" title="删除提醒" @ok="deleteFam" @cancel="visibles = false">
-      <p>您确定要删除ID为{{ '' + form.nickName+ '' }}的家属么?</p>
+      <p>您确定要删除姓名为{{ '' + ' ' +form.name+ ' ' +'' }}的家属么?</p>
     </a-modal>
   </div>
 

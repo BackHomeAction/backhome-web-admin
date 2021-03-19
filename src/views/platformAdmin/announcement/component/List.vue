@@ -1,11 +1,10 @@
 <template>
-  <div>
-    com
-  </div>
+$END$
 </template>
 
 <script>
 export default {
+name: "List"
 }
 </script>
 

@@ -26,7 +26,7 @@
             <a-form-model-item label="地区" v-if="showOrigin">
               <region-selector v-model="regionPoxy" />
             </a-form-model-item>
-            <a-form-model-item label="新密码" required>
+            <a-form-model-item label="新密码">
               <a-input v-model="form.password" plceholder="请输入"></a-input>
             </a-form-model-item>
             <a-form-model-item label="性别">
