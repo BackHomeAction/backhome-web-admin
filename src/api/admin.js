@@ -59,11 +59,11 @@ export function adminList (params) {
     params
   })
 }
-export function adminUser (param) {
+export function adminUser (params) {
   return request({
     url: adminAPI.adminUser,
     method: 'get',
-    param
+    params
   })
 }
 export function adminCreate (data) {

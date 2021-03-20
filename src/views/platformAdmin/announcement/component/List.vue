@@ -5,13 +5,16 @@
         <a-row :gutter="48" >
           <a-form layout="inline">
             <a-col :md="8" :sm="24">
-              <a-form-item label="用户 ID">
+              <a-form-item label="标题">
                 <a-input v-model="search.id" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
-              <a-form-item label="姓名">
-                <a-input v-model="search.obj" placeholder="请输入" />
+              <a-form-item label="发布对象">
+                <a-select v-model="search.obj" placeholder="请选择" >
+                  <a-select-option :value="1">家属</a-select-option>
+                  <a-select-option :value="2">志愿者</a-select-option>
+                </a-select>
               </a-form-item>
             </a-col>
             <a-col style="display: flex;align-items: center">
@@ -22,7 +25,7 @@
         </a-row>
         <a-row :gutter="48" style="margin-top: 1%">
           <a-col :md="8" :sm="24">
-            <a-button type="primary">新建</a-button>
+            <a-button type="primary" @click="getCreate">新建</a-button>
           </a-col>
         </a-row>
         <a-row :gutter="48" style="margin-top: 30px;">
