@@ -1,66 +1,69 @@
 <template>
   <div>
-    <a-card :bordered="false">
-      <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
-      <a-row :gutter="32" type="flex" justify="center">
-        <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
-          <a-avatar :url="form.avatarUrl" :size="120" icon="user" />
-          <br>
-          <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
-        </a-col>
-        <a-col :md="12" :xl="14">
-          <a-form-model :model="form[0]" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
-            <a-form-model-item label="账号" required >
-              <a-input v-model="form.userName" placeholder="请输入(登录账号)" />
-            </a-form-model-item>
-            <a-form-model-item label="姓名" required >
-              <a-input v-model="form.name" placeholder="请输入" />
-            </a-form-model-item>
-            <a-form-model-item label="身份" required>
-              <a-select v-model="form.roleId" placeholder="请选择" @change="originSelect">
-                <a-select-option :value="3">总指战员</a-select-option>
-                <a-select-option :value="4">系统指战员</a-select-option>
-                <a-select-option :value="5">区域指战员</a-select-option>
-              </a-select>
-            </a-form-model-item>
-            <a-form-model-item label="地区" v-if="showOrigin">
-              <region-selector v-model="regionPoxy" />
-            </a-form-model-item>
-            <a-form-model-item label="新密码">
-              <a-input v-model="form.password" plceholder="请输入"></a-input>
-            </a-form-model-item>
-            <a-form-model-item label="性别">
-              <a-radio-group v-model="form.sex">
-                <a-radio :value="1">
-                  男
-                </a-radio>
-                <a-radio :value="2">
-                  女
-                </a-radio>
-              </a-radio-group>
-            </a-form-model-item>
-            <a-form-model-item label="状态" >
-              <a-radio-group v-model="form.state">
-                <a-radio :value="1">
-                  启用
-                </a-radio>
-                <a-radio :value="2">
-                  停用
-                </a-radio>
-              </a-radio-group>
-            </a-form-model-item>
-            <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
-              <a-button type="primary" @click="onSubmit" :loading="submitLoad">
-                保存
-              </a-button>
-              <a-button type="danger" ghost style="margin-left: 10px;" @click="modals">
-                删除
-              </a-button>
-            </a-form-model-item>
-          </a-form-model>
-        </a-col>
-      </a-row>
 
+    <a-card :bordered="false">
+      <a-spin :spinning="loadingPage">
+        <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
+        <a-row :gutter="32" type="flex" justify="center">
+
+          <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
+            <a-avatar :url="form.avatarUrl" :size="120" icon="user" />
+            <br>
+            <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
+          </a-col>
+          <a-col :md="12" :xl="14">
+            <a-form-model :model="form[0]" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
+              <a-form-model-item label="账号" required >
+                <a-input v-model="form.userName" placeholder="请输入(登录账号)" />
+              </a-form-model-item>
+              <a-form-model-item label="姓名" required >
+                <a-input v-model="form.name" placeholder="请输入" />
+              </a-form-model-item>
+              <a-form-model-item label="身份" required>
+                <a-select v-model="form.roleId" placeholder="请选择" @change="originSelect">
+                  <a-select-option :value="3">总指战员</a-select-option>
+                  <a-select-option :value="4">系统指战员</a-select-option>
+                  <a-select-option :value="5">区域指战员</a-select-option>
+                </a-select>
+              </a-form-model-item>
+              <a-form-model-item label="地区" v-if="showOrigin">
+                <region-selector v-model="regionPoxy" />
+              </a-form-model-item>
+              <a-form-model-item label="新密码">
+                <a-input v-model="form.password" plceholder="请输入"></a-input>
+              </a-form-model-item>
+              <a-form-model-item label="性别">
+                <a-radio-group v-model="form.sex">
+                  <a-radio :value="1">
+                    男
+                  </a-radio>
+                  <a-radio :value="2">
+                    女
+                  </a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+              <a-form-model-item label="状态" >
+                <a-radio-group v-model="form.state">
+                  <a-radio :value="1">
+                    启用
+                  </a-radio>
+                  <a-radio :value="2">
+                    停用
+                  </a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+              <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+                <a-button type="primary" @click="onSubmit" :loading="submitLoad">
+                  保存
+                </a-button>
+                <a-button type="danger" ghost style="margin-left: 10px;" @click="modals">
+                  删除
+                </a-button>
+              </a-form-model-item>
+            </a-form-model>
+          </a-col>
+        </a-row>
+      </a-spin>
     </a-card>
     <a-modal v-model="visible" title="权限警告" @ok="handleOk">
       <p>系统管理员不得更改超级管理员信息!!!</p>
@@ -69,7 +72,7 @@
       <p>您确定要删除ID为{{ '' + form.id+ '' }}的指战员么?</p>
     </a-modal>
     <a-modal :visible="changeVis" title="删除提醒" @ok="passwordNochange" @cancel="cancel">
-      <p>您没有输入新密码，是否保留原密码并继续?</p>
+      <p>您没有输入新密码，是否继续?</p>
     </a-modal>
     <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
@@ -92,6 +95,7 @@ export default {
     return {
       visible: false,
       changeVis: false,
+      loadingPage: false,
       visibles: false,
       showOrigin: false,
       showAvatarUploader: false,
@@ -127,6 +131,7 @@ export default {
         this.form.avatarUrl = url
         console.log(url)
         console.log('我的URL')
+        this.loadingPage = true
         console.log(this.form.avatarUrl)
         this.$notification.success({
           message: '成功',
@@ -136,6 +141,7 @@ export default {
         console.log(e)
       }
       this.isChangingAvatar = false
+      this.loadingPage = false
     },
     handleOk: function () {
       this.visible = false
@@ -153,24 +159,71 @@ export default {
       this.changeVis = false
     },
     onSubmit: function () {
-      this.form.province = this.regionPoxy[0]
-      this.form.district = this.regionPoxy[1]
-      this.form.city = this.regionPoxy[2]
-      this.form.id = parseInt(this.form.id)
-      this.adminBean = this.form
-      var adminBean = this.adminBean
-      adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
-        console.log(res)
-      })
+      if (this.form.userName !== '' && this.form.name !== '') {
+        if (this.form.roleId === 5) {
+          if (this.regionPoxy[0] !== null) {
+            if (!this.form.password) {
+              console.log(2)
+              this.changeVis = true
+            } else {
+              this.loadingPage = true
+              this.form.province = this.regionPoxy[0]
+              this.form.district = this.regionPoxy[1]
+              this.form.city = this.regionPoxy[2]
+              this.form.id = parseInt(this.form.id)
+              this.adminBean = this.form
+              var adminBean = this.adminBean
+              adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
+                console.log(res)
+                if (res.status === 200) {
+                  this.$notification.success({
+                    message: '成功',
+                    description: '保存成功!'
+                  })
+                }
+              })
+              this.loadingPage = false
+            }
+          } else {
+            this.$notification.error({
+              message: '地区选择有误',
+              description: '区域指战员必须选择指站区域!'
+            })
+          }
+        } else {
+          if (!this.form.password) {
+            console.log(1)
+            this.changeVis = true
+          } else {
+            this.loadingPage = true
+            this.form.province = this.regionPoxy[0]
+            this.form.district = this.regionPoxy[1]
+            this.form.city = this.regionPoxy[2]
+            this.form.id = parseInt(this.form.id)
+            this.adminBean = this.form
+            const adminBean = this.adminBean
+            adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
+              console.log(res)
+              if (res.status === 200) {
+                this.$notification.success({
+                  message: '成功',
+                  description: '保存成功!'
+                })
+              }
+            })
+            this.loadingPage = false
+          }
+        }
+      } else {
+        this.$notification.error({
+          message: '信息不全',
+          description: '请您补全必填项项目!'
+        })
+      }
     },
     originSelect: function (value) {
       // console.log(value)
-      if (value === 5) {
-        this.showOrigin = true
-      } else {
-        this.showOrigin = false
-        // console.log(this.showOrigin)
-      }
+      this.showOrigin = value === 5
     },
     regionPoxyUse: function (provin, city, district) {
       this.regionPoxy = [provin, city, district]
@@ -192,33 +245,31 @@ export default {
           })
         }
       })
+      this.loadingPage = true
     },
     modals: function () {
-      if ((this.form.userName !== '' || this.form.userName !== null) && (this.form.name !== '' || this.form.name !== null)) {
-        if (this.form.roleId === 5) {
-          if (this.regionPoxy) {
-            this.visibles = true
-          } else {
-            this.$notification.error({
-              message: '地区选择有误',
-              description: '区域指战员必须选择指站区域!'
-            })
-          }
-        } else {
-          if (this.form.password === '' || this.form.password === null) {
-            this.changeVis = true
-          }
-        }
-      } else {
-        this.$notification.error({
-          message: '信息不全',
-          description: '请您补全必填项项目!'
-        })
-      }
+      this.visibles = true
     },
     passwordNochange: function () {
       this.form.password = this.$store.state.data.commander.editUser.password
-      this.changeVis = true
+      this.changeVis = false
+      this.loadingPage = true
+      this.form.province = this.regionPoxy[0]
+      this.form.district = this.regionPoxy[1]
+      this.form.city = this.regionPoxy[2]
+      this.form.id = parseInt(this.form.id)
+      this.adminBean = this.form
+      var adminBean = this.adminBean
+      adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '保存成功!'
+          })
+        }
+      })
+      this.loadingPage = false
     }
   },
   name: 'Edit'

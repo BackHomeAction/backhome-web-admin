@@ -32,7 +32,7 @@
         </a-col>
       </a-row>
     </a-card>
-    <a-spin :spinning="oldManloading">
+    <a-spin :spinning="orLoading">
       <a-card :bordered="false" style="margin-top: 30px">
         <a-page-header title="老人信息"></a-page-header>
         <a-table :pagination="oldPage" rowKey="id" size="default" :columns="oldMancol" :data-source="oldData" >
@@ -40,8 +40,6 @@
           <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
         </a-table>
       </a-card>
-    </a-spin>
-    <a-spin :spinning="orLoading">
       <a-card :bordered="false" style="margin-top: 24px;">
         <a-row :gutter="48" style="display: flex;align-items: center">
           <a-col :span="16">
@@ -95,6 +93,7 @@ export default {
     // console.log(this.source)
     this.oldManGet(this.source.id)
     this.missionListGet(this.source.id)
+    this.orLoading = false
   },
   filters: {
     registerTimeFromNowFilter (val) {
@@ -210,6 +209,9 @@ export default {
       })
     },
     changeChoose: function (e) {
+      if (e.target.value === 0) {
+        this.missionListGet(this.source.id)
+      }
       familyMission({
         familyId: this.source.id,
         state: e.target.value

@@ -8,89 +8,91 @@
       </div>
     </div>
     <a-card :bordered="false">
-      <a-row :gutter="32" type="flex" align-item="center">
-        <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px" ><a-icon type="left" /><span>返回</span></a></page-go-back-top>
-      </a-row>
-      <a-form-model layout="inline" :label-col="{ span : 0 }" :wrapper-col="{ span : 0 }" >
-        <a-row :gutter="32" type="flex" justufy="space-between" >
-          <a-col >
-            <a-form-model-item>
-              <a>
-                <a-avatar v-if="oldMan.identificationPhoto" :size="150" shape="square" :src="oldMan.identificationPhoto" @click="showPhoto(2)"></a-avatar>
-                <a-avatar v-if="!(oldMan.identificationPhoto)" :size="150" shape="square" @click="showPhoto(2)"><a-icon type="plus" />上传证件照</a-avatar>
-              </a>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="5" >
-            <a-form-model-item label="姓名:" style="margin-top: 15px">
-              <a-input v-model="oldMan.name" :placeholder="inLineText"></a-input>
-            </a-form-model-item>
+      <a-spin :spinning="loadings">
+        <a-row :gutter="32" type="flex" align-item="center">
+          <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px" ><a-icon type="left" /><span>返回</span></a></page-go-back-top>
+        </a-row>
+        <a-form-model layout="inline" :label-col="{ span : 0 }" :wrapper-col="{ span : 0 }" >
+          <a-row :gutter="32" type="flex" justufy="space-between" >
+            <a-col >
+              <a-form-model-item>
+                <a>
+                  <a-avatar v-if="oldMan.identificationPhoto" :size="150" shape="square" :src="oldMan.identificationPhoto" @click="showPhoto(2)"></a-avatar>
+                  <a-avatar v-if="!(oldMan.identificationPhoto)" :size="150" shape="square" @click="showPhoto(2)"><a-icon type="plus" />上传证件照</a-avatar>
+                </a>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="5" >
+              <a-form-model-item label="姓名:" style="margin-top: 15px">
+                <a-input v-model="oldMan.name" :placeholder="inLineText"></a-input>
+              </a-form-model-item>
 
-            <a-form-model-item label="手机号:" style="margin-top: 15px">
-              <a-input v-model="oldMan.phone" :placeholder="inLineText"></a-input>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="5" >
-            <a-form-model-item label="身份证号:" style="margin-top: 15px">
-              <a-input v-model="oldMan.idcard" :placeholder="inLineText"></a-input>
-            </a-form-model-item>
+              <a-form-model-item label="手机号:" style="margin-top: 15px">
+                <a-input v-model="oldMan.phone" :placeholder="inLineText"></a-input>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="5" >
+              <a-form-model-item label="身份证号:" style="margin-top: 15px">
+                <a-input v-model="oldMan.idcard" :placeholder="inLineText"></a-input>
+              </a-form-model-item>
 
-            <a-form-model-item label="性别:" style="margin-top: 15px">
-              <a-radio-group v-model="oldMan.sex" :default-value="1" >
-                <a-radio :value="0">
-                  男
-                </a-radio>
-                <a-radio :value="1">
-                  女
-                </a-radio>
-              </a-radio-group>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="5" >
-            <a-form-model-item label="出生日期:" style="margin-top: 15px">
-              <a-input v-model="oldMan.birthDate" :placeholder="inLineText"></a-input>
-            </a-form-model-item>
-            <a-form-model-item label="地区:" style="margin-top: 15px">
-              <region-selector v-model="region" ></region-selector>
-            </a-form-model-item>
-          </a-col>
-          <a-col :span="5" >
-            <a-form-model-item label="家庭住址:" style="margin-top: 15px">
-              <a-input v-model="oldMan.address" :placeholder="inLineText" ></a-input>
-            </a-form-model-item>
-          </a-col>
+              <a-form-model-item label="性别:" style="margin-top: 15px">
+                <a-radio-group v-model="oldMan.sex" :default-value="1" >
+                  <a-radio :value="0">
+                    男
+                  </a-radio>
+                  <a-radio :value="1">
+                    女
+                  </a-radio>
+                </a-radio-group>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="5" >
+              <a-form-model-item label="出生日期:" style="margin-top: 15px">
+                <a-input v-model="oldMan.birthDate" :placeholder="inLineText"></a-input>
+              </a-form-model-item>
+              <a-form-model-item label="地区:" style="margin-top: 15px">
+                <region-selector v-model="region" ></region-selector>
+              </a-form-model-item>
+            </a-col>
+            <a-col :span="5" >
+              <a-form-model-item label="家庭住址:" style="margin-top: 15px">
+                <a-input v-model="oldMan.address" :placeholder="inLineText" ></a-input>
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+          <a-row :gutter="32" type="flex" style="margin-top: 15px">
+            <a-col :span="24" >
+              <a-avatar
+                v-for="(item,id) in lifePhoto"
+                :src="item"
+                :key="id"
+                style="margin-right: 20px"
+                :size="150"
+                shape="square" ></a-avatar>
+              <a-button type="dashed" @click="showPhoto(1)" :loading="isChangingAvatar" ><a-icon type="plus" />添加生活照</a-button>
+            </a-col>
+          </a-row>
+          <a-row style="margin-top: 30px" >
+            <a-table :pagination="oldPage" :columns="colmuns" :data-source="datas">
+              <div slot="action" slot-scope="text">
+                <a @click="deleteWhere(text)">删除</a>
+              </div>
+            </a-table>
+          </a-row>
+        </a-form-model>
+        <a-row :gutter="32" >
+          <a-button type="dashed" block style="margin-top: 5px" @click="showMap">
+            <a-icon type="plus" />新增常去地点
+          </a-button>
         </a-row>
-        <a-row :gutter="32" type="flex" style="margin-top: 15px">
-          <a-col :span="24" >
-            <a-avatar
-              v-for="(item,id) in lifePhoto"
-              :src="item"
-              :key="id"
-              style="margin-right: 20px"
-              :size="150"
-              shape="square" ></a-avatar>
-            <a-button type="dashed" @click="showPhoto(1)" :loading="isChangingAvatar" ><a-icon type="plus" />添加生活照</a-button>
-          </a-col>
+        <a-row :gutter="32" type="flex" justify="center" style="display: flex;align-items: center;margin-top: 15px" >
+          <div>
+            <a-button type="primary" style="margin-right: 35px;margin-top: 30px" @click="makeSureData" >保存</a-button>
+            <a-button style="margin-left: 35px;margin-top: 30px;" @click="defaultss">重置</a-button>
+          </div>
         </a-row>
-        <a-row style="margin-top: 30px" >
-          <a-table :pagination="oldPage" :columns="colmuns" :data-source="datas">
-            <div slot="action" slot-scope="text">
-              <a @click="deleteWhere(text)">删除</a>
-            </div>
-          </a-table>
-        </a-row>
-      </a-form-model>
-      <a-row :gutter="32" >
-        <a-button type="dashed" block style="margin-top: 5px" @click="showMap">
-          <a-icon type="plus" />新增常去地点
-        </a-button>
-      </a-row>
-      <a-row :gutter="32" type="flex" justify="center" style="display: flex;align-items: center;margin-top: 15px" >
-        <div>
-          <a-button type="primary" style="margin-right: 35px;margin-top: 30px" @click="getOldmanInf" >保存</a-button>
-          <a-button style="margin-left: 35px;margin-top: 30px;" @click="defaultss">Default</a-button>
-        </div>
-      </a-row>
+      </a-spin>
     </a-card>
     <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
   </div>
@@ -109,9 +111,8 @@ export default {
   },
   mounted () {
     this.oldMan = this.$store.state.data.oldManData.oldmanEdit
-    console.log(this.oldMan.offerPlace.length)
-    console.log("前面")
     this.dataList()
+    this.loadings = false
   },
   name: 'OldMandEdit',
   data () {
@@ -119,6 +120,7 @@ export default {
       id: null,
       iden : 0,
       oldPage: {},
+      loadings: true,
       showMapChoose: false,
       isChangingAvatar: false,
       showAvatarUploader: false,
@@ -170,6 +172,7 @@ export default {
       this.$emit('oldView')
     },
     dataList: function () {
+      this.loadings = true
       this.lifePhoto = JSON.parse(this.oldMan.lifePhoto)
       this.datas = JSON.parse(this.oldMan.offerPlace)
       this.region[0] = this.oldMan.province
@@ -178,6 +181,7 @@ export default {
       if (this.oldMan.province === []) {
         this.region = []
       }
+      this.loadings = false
     },
     showMap: function () {
       this.showMapChoose = !this.showMapChoose
@@ -206,7 +210,6 @@ export default {
       this.oldMan.lifePhoto = JSON.stringify(this.lifePhoto)
       this.oldMan.offerPlace = JSON.stringify(this.datas)
       var  oldMan = this.oldMan
-
       oldManinfChange({ ...oldMan  }).then(res => {
         console.log(res)
         if(res.status===200){
@@ -221,6 +224,7 @@ export default {
           })
         }
       })
+      this.loadings = false
     },
     addressEdit: function (e) {
       console.log(e.data)
@@ -233,6 +237,18 @@ export default {
       this.newAction = {}
       this.oldPage.pageSize = 5
       console.log(this.oldPage.pageSize)
+    },
+    makeSureData: function () {
+      this.loadings = true
+      if((this.oldMan.identificationPhoto !=='')&&(this.oldMan.name='')&&(this.oldMan.idcard!=='')&&(this.oldMan.address!=='')&&(this.region[0])&&(this.oldMan.birthDate!=='')&&(this.lifePhoto)){
+        this.getOldmanInf()
+      } else {
+        this.$notification.error({
+          message: "错误",
+          description: '请检查输入遗漏项'
+        })
+        this.loadings = false
+      }
     }
   }
 }

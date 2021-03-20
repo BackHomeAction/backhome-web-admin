@@ -56,13 +56,15 @@
           </a-col>
         </a-row>
         <a-row :bordered="false">
-          <a-table :pagination="WatchPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
-            <span slot="ids" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
-            <div slot="state" slot-scope="text">
-              <a-badge :status="(text !== 1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text !== 1)?(( text!==2 )?((text===3)?'已超时':'已取消'):'已完成'):'进行中'"> </a-badge>
-            </div>
-            <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
-          </a-table>
+          <a-spin :spinning="loadings">
+            <a-table :pagination="WatchPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
+              <span slot="ids" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
+              <div slot="state" slot-scope="text">
+                <a-badge :status="(text !== 1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text !== 1)?(( text!==2 )?((text===3)?'已超时':'已取消'):'已完成'):'进行中'"> </a-badge>
+              </div>
+              <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
+            </a-table>
+          </a-spin>
         </a-row>
       </a-card>
     </a-spin>
@@ -76,6 +78,7 @@
 import { PageGoBackTop } from '@/components'
 import dayjs from 'dayjs'
 import { adminCase } from '@/api/admin'
+
 export default {
   mounted () {
     this.source = this.$store.state.data.commander.watchUser
@@ -94,6 +97,7 @@ export default {
       chooseWatch: 0,
       orLoading: false,
       getInTime: null,
+      loadings: false,
       familyNum: {},
       datas: [],
       All: [],
@@ -136,17 +140,25 @@ export default {
   name: 'Watch',
   methods: {
     changeChoose: function (e) {
-      this.datas = []
-      adminCase({
-        id: this.source.id,
-        state: e.target.value
-      }).then(res => {
-        this.datas = res.data.data
-        if (res.data.totalCount) {
-          this.WatchPage.total = res.data.totalCount
-          this.WatchPage.pageSize = 10
-        }
-      })
+      this.orLoading = true
+      if (e.target.value === 0) {
+        this.orLoading = true
+        this.datas = []
+        this.missionGet(this.source.id)
+        this.orLoading = false
+      } else {
+        adminCase({
+          id: this.source.id,
+          state: e.target.value
+        }).then(res => {
+          this.datas = res.data.data
+          if (res.data.totalCount) {
+            this.WatchPage.total = res.data.totalCount
+            this.WatchPage.pageSize = 10
+          }
+          this.orLoading = false
+        })
+      }
     },
     handleToEdit: function () {
       if ((this.$store.state.data.roleId === 4) && (this.source.roleId === 3)) {
@@ -183,8 +195,7 @@ export default {
       })
     },
     missionTo: function (text) {
-      var id = text
-      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: id } })
+      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: text } })
     },
     handleOk: function () {
       this.visible = false

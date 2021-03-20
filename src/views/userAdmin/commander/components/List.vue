@@ -168,6 +168,7 @@ export default {
       this.advanced = !this.advanced
     },
     searchFamily: function () {
+      this.loadingPage = true
       if (this.search) {
         const search = this.search
         if (this.search.region) {
@@ -187,8 +188,10 @@ export default {
             }
           })
         }
+        this.loadingPage = false
       } else {
         this.getAll()
+        this.loadingPage = false
       }
     },
     getAll: function () {

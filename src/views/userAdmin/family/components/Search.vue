@@ -137,6 +137,7 @@ export default {
       this.advanced = !this.advanced
     },
     searchFamily: function () {
+      this.loadingPage = true
       if (this.search) {
         const search = this.search
         if (this.search.region) {
@@ -144,6 +145,7 @@ export default {
           this.search.district = this.search.region[1]
           this.search.city = this.search.region[2]
           delete search.region
+          this.loadingPage = false
         } else {
           delete search.region
           getFamilyData({ ...search }).then(res => {
@@ -153,6 +155,7 @@ export default {
             this.WatchPages.total = res.data.totalCount
             this.WatchPages.pageSize = 10
           })
+          this.loadingPage = false
         }
       } else {
         this.getAll()
