@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-card :bordered="false">
-      <<div class="table-page-search-wrapper">
+      <div class="table-page-search-wrapper">
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
@@ -18,7 +18,6 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="状态">
                   <a-select v-model="search.state" placeholder="请选择" default-value="0">
-                    <a-select-option value="0">待注册</a-select-option>
                     <a-select-option value="1">正常</a-select-option>
                     <a-select-option value="2">已停用</a-select-option>
                   </a-select>
@@ -50,7 +49,7 @@
       </div>
       <div>
         <a-spin :spinning="loadingPage">
-          <a-table :pagination="WatchPage" :columns="columns" :data-source="datas" rowKey="id">
+          <a-table :pagination="WatchPages" :columns="columns" :data-source="datas" rowKey="id">
             <span slot="sex" slot-scope="text"> {{ text ? (text === 1 ? '男' : '女') : '' }}</span>
             <span slot="state" slot-scope="text">
               <a-badge :status="text?'success':'default'" :text="text?'正常':'已停用'"></a-badge>
@@ -82,8 +81,8 @@ export default {
       console.log(res)
       this.$store.state.data.familyList = res.data.data
       this.datas = this.$store.state.data.familyList
-      this.WatchPage.total = res.data.totalCount
-      this.WatchPage.pageSize = 10
+      this.WatchPages.total = res.data.totalCount
+      this.WatchPages.pageSize = 10
       this.loadingPage = false
     })
   },
@@ -94,7 +93,7 @@ export default {
   data: function () {
     return {
       loadingPage: true,
-      WatchPage: {},
+      WatchPages: {},
       columns: [
         {
           title: '用户 ID',
@@ -148,10 +147,11 @@ export default {
         } else {
           delete search.region
           getFamilyData({ ...search }).then(res => {
+            console.log(res)
             this.datas = []
-            this.datas = this.$store.state.data.familyList
-            this.WatchPage.total = res.data.totalCount
-            this.WatchPage.pageSize = 10
+            this.datas = res.data.data
+            this.WatchPages.total = res.data.totalCount
+            this.WatchPages.pageSize = 10
           })
         }
       } else {
@@ -161,13 +161,16 @@ export default {
     getAll: function () {
       this.datas = []
       this.datas = this.$store.state.data.familyList
+      this.search = {}
     },
-    editPage: function (edit) {
-      this.$store.state.data.familyData.editUser = edit
+    editPage: function (data) {
+      this.$store.state.data.familyData.editUser = data
+      this.$store.state.data.familyData.watchUser = data
       this.$emit('onEdit')
     },
-    watchPage: function (watch) {
-      this.$store.state.data.familyData.watchUser = watch
+    watchPage: function (data) {
+      this.$store.state.data.familyData.watchUser = data
+      this.$store.state.data.familyData.editUser = data
       this.$emit('onWatch')
     },
     changeData: function () {

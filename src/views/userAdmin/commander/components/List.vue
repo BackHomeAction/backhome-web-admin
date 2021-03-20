@@ -18,7 +18,6 @@
               <a-col :md="8" :sm="24">
                 <a-form-item label="状态">
                   <a-select v-model="search.state" placeholder="请选择" default-value="0">
-                    <a-select-option value="0">待注册</a-select-option>
                     <a-select-option value="1">正常</a-select-option>
                     <a-select-option value="2">已停用</a-select-option>
                   </a-select>
@@ -84,7 +83,6 @@
 <script>
 import { RegionSelector } from '@/components'
 import { adminList } from '@/api/admin'
-// import { mapState } from 'vuex'
 export default {
   mounted () {
     this.all = this.dataGetFun()
@@ -171,13 +169,24 @@ export default {
     },
     searchFamily: function () {
       if (this.search) {
-        var search = this.search
-        adminList({ ...search }).then(res => {
-          this.datas = []
-          this.datas[0] = res.data
-          this.WatchPage.total = res.data.data.length
-          this.WatchPage.pageSize = 10
-        })
+        const search = this.search
+        if (this.search.region) {
+          this.search.province = this.search.region[0]
+          this.search.district = this.search.region[1]
+          this.search.city = this.search.region[2]
+          delete search.region
+        } else {
+          delete search.region
+          console.log(search)
+          adminList({ ...search }).then(res => {
+            console.log(res)
+            this.datas = []
+            this.datas = res.data.data
+            if (!res.data.data) {
+              this.datas = []
+            }
+          })
+        }
       } else {
         this.getAll()
       }

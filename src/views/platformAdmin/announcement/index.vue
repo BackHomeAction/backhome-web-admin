@@ -16,7 +16,7 @@ export default {
   },
   data () {
     return {
-      page: 'newCreate'
+      page: 'List'
     }
   },
   methods: {

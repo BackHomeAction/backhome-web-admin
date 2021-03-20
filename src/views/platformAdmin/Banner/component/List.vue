@@ -9,11 +9,6 @@
                 <a-input v-model="search.id" placeholder="请输入"/>
               </a-form-item>
             </a-col>
-            <a-col :md="8" :sm="24">
-              <a-form-item label="姓名">
-                <a-input v-model="search.obj" placeholder="请输入" />
-              </a-form-item>
-            </a-col>
             <a-col style="display: flex;align-items: center">
               <a-button type="primary" @click="searchs">查询</a-button>
               <a-button type="default" style="margin-left: 30px" @click="deleteAll">重置</a-button>
@@ -56,15 +51,15 @@ export default {
       placeIn: '请输入',
       columns: [
         {
-          title: '公告ID',
+          title: 'BannerID',
           dataIndex: 'id'
         },
         {
-          title: '标题',
+          title: 'Banner图片',
           dataIndex: 'image'
         },
         {
-          title: '发布对象',
+          title: '对应公告',
           dataIndex: 'startObj'
         },
         {
@@ -77,7 +72,6 @@ export default {
         },
         {
           title: '操作',
-          dataIndex: 'action',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -105,7 +99,7 @@ export default {
   methods: {
     getCreate: function () {
       console.log('准备跳转')
-      this.$emit('create')
+      this.$emit('toEdit')
     },
     searchs: function () {
       console.log(this.search)

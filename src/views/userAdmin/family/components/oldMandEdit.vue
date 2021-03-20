@@ -105,6 +105,7 @@ export default {
     window.addEventListener('message',(events) => {
       this.addressEdit(events)
     })
+   this.oldPage.pageSize = 5
   },
   mounted () {
     this.oldMan = this.$store.state.data.oldManData.oldmanEdit
@@ -187,7 +188,6 @@ export default {
            this.datas.splice(i=i,1)
           i= -2
         }
-        // this.oldPage.total = this.datas.length
         this.oldPage.pageSize = 5
       }
     },
@@ -223,6 +223,7 @@ export default {
       })
     },
     addressEdit: function (e) {
+      console.log(e.data)
       this.newAction.name=e.data.poiname
       this.newAction.address=e.data.poiaddress
       this.newAction.city=e.data.cityname
@@ -230,11 +231,8 @@ export default {
       this.newAction.longitude=e.data.latlng.lng
       this.datas.push(this.newAction)
       this.newAction = {}
-      if(this.oldPage.total) {
-        this.oldPage.total = this.data.length
-      }
-      this.oldPage.total ++
       this.oldPage.pageSize = 5
+      console.log(this.oldPage.pageSize)
     }
   }
 }

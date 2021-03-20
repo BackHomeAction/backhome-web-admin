@@ -52,11 +52,11 @@ export function adminAvaratChange (data) {
   })
 }
 
-export function adminList (param) {
+export function adminList (params) {
   return request({
     url: adminAPI.adminList,
     method: 'get',
-    param
+    params
   })
 }
 export function adminUser (param) {
