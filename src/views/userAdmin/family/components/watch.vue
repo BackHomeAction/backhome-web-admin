@@ -1,7 +1,6 @@
 <template>
   <div>
     <a-card :bordered="false">
-
       <a-row :gutter="48" type="flex" justify="center">
         <a-col :span="22">
           <a-page-header style="margin-left: -22px" :title="this.source.name" @back="$emit('onGoBack')" />
@@ -91,7 +90,7 @@ import { familyMission, oldManinf } from '@/api/familyData'
 import dayjs from '@/utils/dayjs'
 export default {
   mounted () {
-    this.source = this.$store.state.familyData.watchUser
+    this.source = this.$store.state.data.familyData.watchUser
     // console.log('家属信息')
     // console.log(this.source)
     this.oldManGet(this.source.id)
@@ -189,7 +188,7 @@ export default {
       this.$emit('onEdit')
     },
     oldManinf: function (text) {
-      this.$store.state.oldManData.oldmanWatch = text
+      this.$store.state.data.oldManData.oldmanWatch = text
       // console.log(text)
       // console.log('传递之前')
       this.$emit('oldView')

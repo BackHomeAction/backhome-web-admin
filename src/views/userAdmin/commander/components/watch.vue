@@ -1,7 +1,6 @@
 <template>
   <div>
     <a-card :bordered="false">
-
       <a-row :gutter="48" type="flex" justify="center">
         <a-col :span="22">
           <a-page-header style="margin-left: -22px" :title="source.name" @back="$emit('onGoBack')" />
@@ -79,7 +78,7 @@ import dayjs from 'dayjs'
 import { adminCase } from '@/api/admin'
 export default {
   mounted () {
-    this.source = this.$store.state.commander.watchUser
+    this.source = this.$store.state.data.commander.watchUser
     this.missionGet(this.source.id)
   },
   filters: {
@@ -150,10 +149,10 @@ export default {
       })
     },
     handleToEdit: function () {
-      if ((this.$store.state.roleId === 4) && (this.source.roleId === 3)) {
+      if ((this.$store.state.data.roleId === 4) && (this.source.roleId === 3)) {
         this.showModal()
       }
-      this.$store.state.commander.editUser = this.source
+      this.$store.state.data.commander.editUser = this.source
       this.$emit('onEdit')
     },
     getTime: function () {

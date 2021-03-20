@@ -87,7 +87,7 @@ import { adminCase } from '@/api/admin'
 import { OldManCase } from '@/api/familyData'
 export default {
   mounted () {
-    this.source = this.$store.state.oldManData.oldmanWatch
+    this.source = this.$store.state.data.oldManData.oldmanWatch
     this.caseOfold()
     this.lifephotos = JSON.parse(this.source.lifePhoto)
     this.offerPlace = JSON.parse(this.source.offerPlace)
@@ -149,7 +149,7 @@ export default {
       })
     },
     oldManEdit: function () {
-      this.$store.state.oldManData.oldmanEdit = this.source
+      this.$store.state.data.oldManData.oldmanEdit = this.source
       this.$emit('oldEdit')
     },
     photoBefore: function () {

@@ -26,7 +26,6 @@ export default {
   },
   methods: {
     handleView (record) {
-      this.record = record || ''
       this.currentComponet = 'Info'
       console.log(record)
     },
