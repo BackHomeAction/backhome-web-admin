@@ -145,7 +145,6 @@ export default {
           this.search.district = this.search.region[1]
           this.search.city = this.search.region[2]
           delete search.region
-          this.loadingPage = false
         } else {
           delete search.region
           getFamilyData({ ...search }).then(res => {
@@ -154,8 +153,9 @@ export default {
             this.datas = res.data.data
             this.WatchPages.total = res.data.totalCount
             this.WatchPages.pageSize = 10
+            this.loadingPage = false
           })
-          this.loadingPage = false
+          this.stoprow()
         }
       } else {
         this.getAll()
@@ -165,6 +165,7 @@ export default {
       this.datas = []
       this.datas = this.$store.state.data.familyList
       this.search = {}
+      this.loadingPage = false
     },
     editPage: function (data) {
       this.$store.state.data.familyData.editUser = data

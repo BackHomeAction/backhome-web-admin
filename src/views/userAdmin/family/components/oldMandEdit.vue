@@ -172,7 +172,6 @@ export default {
       this.$emit('oldView')
     },
     dataList: function () {
-      this.loadings = true
       this.lifePhoto = JSON.parse(this.oldMan.lifePhoto)
       this.datas = JSON.parse(this.oldMan.offerPlace)
       this.region[0] = this.oldMan.province
@@ -181,7 +180,6 @@ export default {
       if (this.oldMan.province === []) {
         this.region = []
       }
-      this.loadings = false
     },
     showMap: function () {
       this.showMapChoose = !this.showMapChoose
@@ -203,6 +201,7 @@ export default {
       this.showAvatarUploader = true
     },
     getOldmanInf: function () {
+      this.loadings = true
         this.oldMan.offerPlace = []
         this.oldMan.province = this.region[0]
         this.oldMan.district = this.region[1]
@@ -223,8 +222,8 @@ export default {
             description: '错误，请联系管理员'
           })
         }
+        this.loadings = false
       })
-      this.loadings = false
     },
     addressEdit: function (e) {
       console.log(e.data)
@@ -240,7 +239,7 @@ export default {
     },
     makeSureData: function () {
       this.loadings = true
-      if((this.oldMan.identificationPhoto !=='')&&(this.oldMan.name='')&&(this.oldMan.idcard!=='')&&(this.oldMan.address!=='')&&(this.region[0])&&(this.oldMan.birthDate!=='')&&(this.lifePhoto)){
+      if((this.oldMan.identificationPhoto !=='')&&(this.oldMan.name!=='')&&(this.oldMan.idcard!=='')&&(this.oldMan.address!=='')&&(this.region[0])&&(this.oldMan.birthDate!=='')&&(this.lifePhoto)){
         this.getOldmanInf()
       } else {
         this.$notification.error({

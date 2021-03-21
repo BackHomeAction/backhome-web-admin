@@ -12,7 +12,7 @@
               <a-input type="password" :placeholder="placeholder" v-model="create.password"></a-input>
             </a-form-item>
             <a-form-item label="身份" required prop="identify">
-              <a-select v-model="create.identify" placeholder="请选择" @change="originSelect">
+              <a-select v-model="create.roleId" placeholder="请选择" @change="originSelect">
                 <a-select-option value="3" >总指战员</a-select-option>
                 <a-select-option value="4" >系统管理员</a-select-option>
                 <a-select-option value="5" >区域指战员</a-select-option>
@@ -90,35 +90,39 @@ export default {
         this.showOrigin = true
       } else {
         this.showOrigin = false
-        // console.log(this.showOrigin)
       }
     },
     submit: function () {
       this.dataEdit()
       console.log('admin数值')
       console.log(this.adminsBean)
-      var adminData = this.adminsBean
-      if (((this.create.name) && (this.create.identify) && (this.create.phone) && (this.create.password))) {
-        if (this.create.identify === 5) {
+      // this.create.roleId = 3
+      const adminData = this.adminsBean
+      if (((this.create.name) && (this.create.roleId) && (this.create.phone) && (this.create.password))) {
+        if (this.create.roleId === 5) {
           if (!(this.create.region)) {
+            console.log(adminData)
             adminCreate({ ...adminData }).then(res => {
               if (res.status === 200) {
                 this.$notification.success({
                   message: '成功',
                   description: '创建成功!!!'
                 })
+                this.goBack()
               }
             })
           } else {
             this.$message.info('请将信息填写完整')
           }
         } else {
+          console.log(this.create.roleId)
           adminCreate({ ...adminData }).then(res => {
             if (res.status === 200) {
               this.$notification.success({
                 message: '成功',
                 description: '创建成功!!!'
               })
+              this.goBack()
             }
           })
         }
@@ -135,7 +139,7 @@ export default {
     },
     dataEdit: function () {
       this.adminsBean.userName = this.create.name
-      this.adminsBean.roleId = this.create.identify
+      this.adminsBean.roleId = parseInt(this.create.roleId)
       this.adminsBean.sex = this.create.sex
       this.adminsBean.state = 1
       this.adminsBean.password = this.create.password

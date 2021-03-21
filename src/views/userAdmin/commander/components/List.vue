@@ -62,7 +62,7 @@
               <span>{{ text.province ? (text.province+ ' ' +text.city+ ' ' +text.district) : ' ' }}</span>
             </div>
             <div slot-scope="text" slot="identity">
-              <span>{{ (text=== 3) ? '区域指战员' : ((text=== 5)?'总指战员':'系统指战员') }}</span>
+              <span>{{ (text === 3) ? '总指战员' : ((text=== 5)?'区域指战员':'系统指战员') }}</span>
             </div>
             <span slot="sex" slot-scope="sex">{{ (sex=== 1 )?'男':'女' }}</span>
             <span slot="action" slot-scope="list">
@@ -73,7 +73,7 @@
               </template>
             </span>
           </a-table>
-        </a-spin>
+          </a-spin>
       </div>
     </a-card>
 
@@ -161,6 +161,7 @@ export default {
         this.loadingPage = false
         this.WatchPage.total = res.data.data.length
         this.WatchPage.pageSize = 10
+        console.log(res.data.data)
         return res.data.data
       })
     },
@@ -186,9 +187,9 @@ export default {
             if (!res.data.data) {
               this.datas = []
             }
+            this.loadingPage = false
           })
         }
-        this.loadingPage = false
       } else {
         this.getAll()
         this.loadingPage = false

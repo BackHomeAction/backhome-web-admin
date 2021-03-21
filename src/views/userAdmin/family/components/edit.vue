@@ -10,7 +10,7 @@
             <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
           </a-col>
           <a-col :md="12" :xl="14">
-            <a-form-model :model="form[0]" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" >
+            <a-form-model :model="form[0]" :label-col="labelCol" :wrapper-col="wrapperCol" >
               <a-form-model-item label="姓名" required prop="name">
                 <a-input v-model="form.name" placeholder="请输入" />
               </a-form-model-item>
@@ -82,14 +82,6 @@ export default {
       showAvatarUploader: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      rules: {
-        name: [
-          { required: true, trigger: 'blur' }
-        ],
-        idcard: [
-          { required: true, trigger: 'blur' }
-        ]
-      },
       form: []
     }
   },

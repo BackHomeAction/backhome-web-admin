@@ -180,6 +180,7 @@ export default {
                     message: '成功',
                     description: '保存成功!'
                   })
+                  this.goBack()
                 }
               })
               this.loadingPage = false
@@ -210,8 +211,8 @@ export default {
                   description: '保存成功!'
                 })
               }
+              this.goBack()
             })
-            this.loadingPage = false
           }
         }
       } else {

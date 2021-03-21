@@ -19,7 +19,8 @@ const data = {
     mission: {
       missionWatchList: [],
       missionList: []
-    }
+    },
+    oldManCase: []
   },
 
   mutations: {

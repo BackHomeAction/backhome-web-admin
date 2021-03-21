@@ -141,17 +141,20 @@ export default {
     changeChoose: function () {
       this.orLoading = true
       if (this.chooseWatch === 0) {
-        this.caseOfold()
-      }
-      adminCase({
-        oldManId: this.source.id,
-        state: this.chooseWatch
-      }).then(res => {
-        this.datas = res.data.data
-        console.log(res)
-        this.WatchPage.pageSize = 10
+        // this.datas = []
+        this.datas = this.$store.state.data.oldManCase
         this.orLoading = false
-      })
+      } else {
+        adminCase({
+          oldManId: this.source.id,
+          state: this.chooseWatch
+        }).then(res => {
+          this.datas = res.data.data
+          console.log(res)
+          this.WatchPage.pageSize = 10
+          this.orLoading = false
+        })
+      }
     },
     oldManEdit: function () {
       this.$store.state.data.oldManData.oldmanEdit = this.source
@@ -173,9 +176,10 @@ export default {
     },
     caseOfold: function () {
       this.orLoading = true
-      var id = this.source.id
+      const id = this.source.id
       OldManCase({ oldManId: id }).then(res => {
         this.datas = res.data.data
+        this.$store.state.data.oldManCase = res.data.data
         this.WatchPage.total = res.data.totalCount
         this.WatchPage.pageSize = 10
         this.orLoading = false
