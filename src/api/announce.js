@@ -11,7 +11,14 @@ const announceApi = {
 }
 export function announSearch (params) {
   return request({
-    url: announceApi.AnnounceSearch,
+    url: announceApi.AnnounceSearchAdmin,
+    method: 'get',
+    params
+  })
+}
+export function bannerSearch (params) {
+  return request({
+    url: announceApi.BannerAdmin,
     method: 'get',
     params
   })

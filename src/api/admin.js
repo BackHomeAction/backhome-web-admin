@@ -3,7 +3,7 @@ import request from '@/utils/request'
 const adminAPI = {
   adminList: '/admin/all',
   adminUser: '/admin',
-  adminCreate: '/admin/admin/add',
+  adminCreate: '/admin/add',
   adminUpdate: '/admin/update',
   adminDelete: '/admin/del',
   adminByid: '/admin/id',

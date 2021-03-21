@@ -20,7 +20,19 @@ const data = {
       missionWatchList: [],
       missionList: []
     },
-    oldManCase: []
+    oldManCase: [],
+    announce: {
+      announceAll: [],
+      announceEdit: []
+    },
+    banner: {
+      bannerAll: [],
+      bannerEdit: []
+    },
+    openOut: {
+      openAll: [],
+      openEdit: []
+    }
   },
 
   mutations: {

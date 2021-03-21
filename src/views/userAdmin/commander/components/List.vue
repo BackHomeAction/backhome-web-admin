@@ -73,7 +73,7 @@
               </template>
             </span>
           </a-table>
-          </a-spin>
+        </a-spin>
       </div>
     </a-card>
 

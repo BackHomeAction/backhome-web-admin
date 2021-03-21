@@ -29,15 +29,20 @@
           </a-col>
         </a-row>
         <a-row :gutter="48" style="margin-top: 30px;">
-          <a-table :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
-            <div slot="action">
-              <span>
-                <a>查看</a>
-                <a-divider type="vertical" />
-                <a>编辑</a>
-              </span>
-            </div>
-          </a-table>
+          <a-spin :spinning="loading">
+            <a-table :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
+              <div slot-scope="text" slot="roleId">
+                {{ (text === 1)?'志愿者':'老人' }}
+              </div>
+              <div slot="action">
+                <span>
+                  <a>查看</a>
+                  <a-divider type="vertical" />
+                  <a>编辑</a>
+                </span>
+              </div>
+            </a-table>
+          </a-spin>
         </a-row>
       </div>
     </a-card>
@@ -45,10 +50,15 @@
 </template>
 
 <script>
+import { announSearch } from '@/api/announce'
 export default {
   mounted () {
     this.pagination.pageSize = 10
     this.pagination.total = 80
+    announSearch().then(res => {
+      this.dataOflist = res.data.data
+      this.$store.state.data.announce.announceAll = res.data.data
+    })
   },
   name: 'List',
   placeIn: '请输入',
@@ -56,6 +66,7 @@ export default {
     return {
       pagination: {},
       search: {},
+      loading: false,
       placeIn: '请输入',
       columns: [
         {
@@ -64,19 +75,20 @@ export default {
         },
         {
           title: '标题',
-          dataIndex: 'image'
+          dataIndex: 'title'
         },
         {
           title: '发布对象',
-          dataIndex: 'startObj'
+          dataIndex: 'roleId',
+          scopedSlots: { customRender: 'roleId' }
         },
         {
           title: '发布人',
-          dataIndex: 'startPelop'
+          dataIndex: 'publisher'
         },
         {
           title: '发布时间',
-          dataIndex: 'startTime'
+          dataIndex: 'time'
         },
         {
           title: '操作',
@@ -84,15 +96,7 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      dataOflist: [
-        {
-          id: '2',
-          image: 'sadads',
-          startTime: '2021-3-9',
-          startPelop: '赵肖云',
-          startObj: '老人'
-        }
-      ],
+      dataOflist: [],
       column: [
         {
           title: '公告ID',
