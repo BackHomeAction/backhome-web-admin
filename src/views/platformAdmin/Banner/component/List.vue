@@ -6,7 +6,7 @@
           <a-form layout="inline">
             <a-col :md="8" :sm="24">
               <a-form-item label="对应公告标题">
-                <a-input v-model="search.id" placeholder="请输入"/>
+                <a-input v-model="search.title" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col style="display: flex;align-items: center">
@@ -17,7 +17,7 @@
         </a-row>
         <a-row :gutter="48" style="margin-top: 1%">
           <a-col :md="8" :sm="24">
-            <a-button type="primary">新建</a-button>
+            <a-button type="primary" @click="getEditOrNew" >新建</a-button>
           </a-col>
         </a-row>
         <a-row :gutter="48" style="margin-top: 30px;">
@@ -26,11 +26,11 @@
               <div slot-scope="url" slot="urls">
                 <a-avatar shape="square" :size="120" :src="url" />
               </div>
-              <div slot="action">
+              <div slot="action" slot-scope="text" >
                 <span>
-                  <a>查看</a>
+                  <a @click="editBanner(text)">编辑</a>
                   <a-divider type="vertical" />
-                  <a>编辑</a>
+                  <a @click="showModal(text.id)">删除</a>
                 </span>
               </div>
             </a-table>
@@ -38,21 +38,18 @@
         </a-row>
       </div>
     </a-card>
+    <a-modal :visible="shows" title="删除提醒" @ok="deleteBanner" @cancel="stopShow">
+      <p>您确定要删除ID为{{ '' + ' ' + chooseId + ' ' +'' }}的BannerID么?</p>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import { bannerSearch } from '@/api/announce'
+import { bannerSearch, bannerDelete, bannerUserSearch } from '@/api/announce'
 export default {
   mounted () {
-    this.pagination.pageSize = 10
-    this.pagination.total = 80
-    bannerSearch().then(res => {
-      console.log(res)
-      this.dataOflist = res.data.data
-      this.$store.state.data.banner.bannerAll = res.data.data
-      this.dataList()
-    })
+    this.loading = true
+    this.getdata()
   },
   name: 'List',
   placeIn: '请输入',
@@ -61,11 +58,14 @@ export default {
       pagination: {},
       loading: false,
       search: {},
+      shows: false,
       placeIn: '请输入',
+      chooseId: null,
       columns: [
         {
           title: 'BannerID',
-          dataIndex: 'noticeId'
+          dataIndex: 'id',
+          width: '120px'
         },
         {
           title: 'Banner图片',
@@ -103,18 +103,71 @@ export default {
     }
   },
   methods: {
-    getCreate: function () {
-      console.log('准备跳转')
+    getEditOrNew: function () {
+      this.$store.state.data.banner.bannerEdit = []
+      this.$store.state.data.banner.state = 1
       this.$emit('toEdit')
     },
     searchs: function () {
-      console.log(this.search)
+      this.loading = true
+      const search = this.search
+      console.log('准备查询')
+      bannerUserSearch({ ...search }).then(res => {
+        this.dataOflist = []
+        this.dataOflist = res.data.data
+        this.loading = false
+      })
     },
     deleteAll: function () {
       this.search = {}
+      this.dataOflist = []
+      this.dataOflist = this.$store.state.data.banner.bannerAll
     },
-    dataList: function () {
-      // this.dataOflist.url = JSON.parse(this.dataOflist.url)
+    dataList: function () {},
+    editBanner: function (text) {
+      console.log('111123213')
+      console.log(text)
+      this.$store.state.data.banner.bannerEdit = text
+      this.$store.state.data.banner.state = 2
+      this.$emit('toEdit')
+    },
+    deleteBanner: function () {
+      console.log(this.chooseId)
+      bannerDelete({
+        id: this.chooseId
+      }).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '删除成功'
+          })
+        } else {
+          this.$notification.error({
+            message: '失败',
+            description: '删除失败，请联系管理员'
+          })
+        }
+        this.loading = false
+      })
+    },
+    showModal: function (id) {
+      this.chooseId = id
+      this.loading = true
+      this.shows = true
+    },
+    getdata: function () {
+      bannerSearch().then(res => {
+        console.log(res)
+        this.dataOflist = res.data.data
+        this.$store.state.data.banner.bannerAll = res.data.data
+        this.pagination.pageSize = 10
+        this.loading = false
+      })
+    },
+    stopShow: function () {
+      this.shows = false
+      this.loading = false
     }
   }
 

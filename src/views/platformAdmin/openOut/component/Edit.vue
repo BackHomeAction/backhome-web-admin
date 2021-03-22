@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <a-card :bordered="false">
       <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
       <div class="table-page-search-wrapper">
@@ -21,16 +20,15 @@
               </a-form-item>
             </a-col>
           </a-row>
-          <a-row :gutter="48">
+          <a-row :gutter="48" style='display: flex;justify-content: center;align-items: center'>
             <a-col :md="8" :sm="24">
-              <a-button>确定</a-button>
+              <a-button type="primary" >确定</a-button>
               <a-button style="margin-left: 3%">取消</a-button>
             </a-col>
           </a-row>
         </a-form>
       </div>
     </a-card>
-
   </div>
 </template>
 
@@ -46,6 +44,11 @@ export default {
   },
   components: {
     PageGoBackTop
+  },
+  methods: {
+    goBack: function () {
+      this.$emit('onGoBack')
+    }
   }
 }
 </script>

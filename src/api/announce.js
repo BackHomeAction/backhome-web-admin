@@ -9,6 +9,13 @@ const announceApi = {
   BannerSearchByid: '/notice/banner/id',
   AnnounceSearchByid: '/notice/id'
 }
+export function announceSearchGet (params) {
+  return request({
+    url: announceApi.AnnounceSearch,
+    method: 'get',
+    params
+  })
+}
 export function announSearch (params) {
   return request({
     url: announceApi.AnnounceSearchAdmin,
@@ -21,5 +28,33 @@ export function bannerSearch (params) {
     url: announceApi.BannerAdmin,
     method: 'get',
     params
+  })
+}
+export function bannerUserSearch (params) {
+  return request({
+    url: announceApi.BannerAdmin,
+    method: 'get',
+    params
+  })
+}
+export function bannerCreate (data) {
+  return request({
+    url: announceApi.BannerAdmin,
+    method: 'post',
+    data
+  })
+}
+export function bannerDelete (data) {
+  return request({
+    url: announceApi.BannerAdmin,
+    method: 'delete',
+    data
+  })
+}
+export function bannerChange (data) {
+  return request({
+    url: announceApi.BannerAdmin,
+    method: 'put',
+    data
   })
 }

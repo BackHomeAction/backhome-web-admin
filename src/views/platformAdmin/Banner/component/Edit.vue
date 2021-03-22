@@ -1,66 +1,149 @@
 <template>
   <div>
-    <a-card :bordered="false" >
-      <div class="table-page-search-wrapper">
-        <page-go-back-top @back="goBack" ><a><a-icon type="left" />返回</a></page-go-back-top>
-        <a-form layout="inline">
-          <a-row :gutter="48">
-            <a-col :span="24">
-              <a-form-item label="标题:">
-                <a-input v-model="announce.title" :placeholder="placeholder"></a-input>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="48">
-            <a-col :span="6" >
-              <a-form-item label="发布对象" >
-                <a-select v-model="announce.obj" placeholder="请选择" >
-                  <a-select-option :value="1">家属</a-select-option>
-                  <a-select-option :value="2">志愿者</a-select-option>
-                </a-select>
-              </a-form-item>
-            </a-col>
-          </a-row>
-          <a-row :gutter="48" >
-            <a-col :md="8" :sm="24">
-              <p>假装这个是一个富文本编辑器</p>
-            </a-col>
-          </a-row>
-          <a-row>
-            <a-col>
-              <a-button @click="takeOut">
-                发布
+    <a-card :bordered="false">
+      <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
+      <a-form-model layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" :model="datas[0]" >
+        <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
+          <a-col :span="12" >
+            <a-form-model-item label="对应公告" >
+              <a-input v-model="datas.title" :placeholder="placeholder"></a-input>
+            </a-form-model-item>
+            <a-form-model-item label="公告详情" v-if="state===1">
+              <a-input v-model="datas.description" :placeholder="placeholder"></a-input>
+            </a-form-model-item>
+            <a-form-model-item label="Banner 图片" >
+              <a-button @click="showPhoto" :loading="photoLoad"><a-icon type="arrow-up" />上传图片</a-button>
+              <br>
+              <div style="margin-top:15px">
+                <a-avatar v-if="!(datas.url)" @click="showPhoto" shape="square" :size="260" :src="datas.url" ><a-icon type="plus"/>点击上传</a-avatar>
+                <a-avatar v-if="datas.url" shape="square" :size="260" :src="datas.url" />
+              </div>
+            </a-form-model-item>
+            <a-form-model-item label=" ">
+              <a-button type="primary" @click="editSure" :loading="loadings" style="margin-right: 20px">
+                保存
               </a-button>
-            </a-col>
-          </a-row>
-        </a-form>
-      </div>
+              <a-button type="danger" ghost style="margin-left: 20px;" @click="deleteAll">
+                删除
+              </a-button>
+            </a-form-model-item>
+          </a-col>
+        </a-row>
+      </a-form-model>
     </a-card>
+    <image-cropper v-model="getPhoto" @success="handleAvataruploaded"></image-cropper>
   </div>
 </template>
 
 <script>
-import { PageGoBackTop } from '@/components'
+import { PageGoBackTop, ImageCropper } from '@/components'
+import { bannerChange, announceSearchGet, bannerCreate } from '@/api/announce'
+
 export default {
+  mounted () {
+    this.getData()
+  },
   data () {
     return {
       name: '返回',
       announce: {},
-      labelCol: { span: 10 },
+      loadings: false,
+      state: 1,
+      labelCol: { span: 5 },
       wrapperCol: { span: 14 },
-      placeholder: '请输入'
+      placeholder: '请输入',
+      getPhoto: false,
+      datas: [],
+      photoLoad: false
     }
   },
   components: {
-    PageGoBackTop
+    PageGoBackTop, ImageCropper
   },
   methods: {
     goBack: function () {
-      console.log('111')
       this.$emit('onGoBack')
     },
     takeOut: function () {
       console.log(this.announce)
+    },
+    showPhoto: function () {
+      this.getPhoto = true
+    },
+    editSure: function () {
+      if ((this.datas.title !== '' || this.datas.title !== null) && (this.datas.url !== '' || this.datas.url !== null) && this.state === 2) {
+        const banner = this.datas
+        bannerChange({ ...banner }).then(res => {
+          console.log(res.status)
+          if (res.status === 200) {
+            this.$notification.success({
+              message: '成功',
+              description: '更改成功'
+            })
+          }
+        })
+      } else {
+        this.$notification.error({
+          message: '失败',
+          description: '更改失败，请联系管理员'
+        })
+      }
+      if (this.state === 1) {
+        if ((this.datas.title !== '' || this.datas.title !== null) && (this.datas.url !== '' || this.datas.url !== null) && (this.datas.description !== '' || this.datas.description !== null)) {
+          this.noticeIdSearch(this.datas.title)
+          this.datas.publisher = this.$store.state.user.name
+          const banner = this.datas
+          bannerCreate({ ...banner }).then(res => {
+            if (res.status === 200) {
+              this.$notification.success({
+                message: '成功',
+                description: '新增成功'
+              })
+            } else {
+              this.$notification.error({
+                message: '失败',
+                description: '新增失败，请联系管理员'
+              })
+            }
+          })
+        }
+      }
+    },
+    deleteAll: function () {
+      if (this.state === 1) {
+        this.datas = []
+      }
+      if (this.state === 2) {
+        this.datas = []
+        this.datas = this.$store.state.data.banner.bannerEdit
+      }
+    },
+    getData: function () {
+      this.datas = this.$store.state.data.banner.bannerEdit
+      this.state = this.$store.state.data.banner.state
+    },
+    async handleAvataruploaded (url) {
+      this.photoLoad = true
+      if (url) {
+        this.datas.url = url
+        console.log('这个URL就是' + url)
+        this.$notification.success({
+          message: '成功',
+          description: '上传成功'
+        })
+      }
+      this.photoLoad = false
+    },
+    noticeIdSearch: function (titles) {
+      if (this.state === 1 && this.datas.title) {
+        announceSearchGet({
+          title: titles
+        }).then(res => {
+          console.log('查询公告成功')
+          console.log(res)
+          // this.datas.roleId = res.data
+        })
+      }
     }
   },
   name: 'NewCreate'

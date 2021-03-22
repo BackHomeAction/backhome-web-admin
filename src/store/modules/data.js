@@ -27,7 +27,8 @@ const data = {
     },
     banner: {
       bannerAll: [],
-      bannerEdit: []
+      bannerEdit: [],
+      state: null
     },
     openOut: {
       openAll: [],

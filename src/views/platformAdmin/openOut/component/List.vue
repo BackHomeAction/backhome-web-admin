@@ -6,7 +6,7 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="应用名称:" >
-                <a-input v-model="search.name"></a-input>
+                <a-input v-model="search.name" :placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col>
@@ -16,7 +16,7 @@
           </a-row>
           <a-row :gutter="48">
             <a-col :span="6">
-              <a-button type="primary"><a-icon type="plus" />新建</a-button>
+              <a-button type="primary" @click="goEdit"><a-icon type="plus" />新建</a-button>
             </a-col>
           </a-row>
           <a-row :gutter="48" style="margin-top: 15px">
@@ -63,14 +63,12 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      datas: [
-        {
-          num: '2',
-          name: '阿里云支持',
-          id: '15',
-          startTime: '2021-03-09'
-        }
-      ]
+      datas: []
+    }
+  },
+  methods: {
+    goEdit: function () {
+      this.$emit('onCreate')
     }
   }
 }
