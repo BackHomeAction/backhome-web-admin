@@ -6,12 +6,12 @@
           <a-form layout="inline">
             <a-col :md="8" :sm="24">
               <a-form-item label="标题">
-                <a-input v-model="search.id" placeholder="请输入"/>
+                <a-input v-model="search.title" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
               <a-form-item label="发布对象">
-                <a-select v-model="search.obj" placeholder="请选择" >
+                <a-select v-model="search.roleId" placeholder="请选择" >
                   <a-select-option :value="1">家属</a-select-option>
                   <a-select-option :value="2">志愿者</a-select-option>
                 </a-select>
@@ -32,13 +32,13 @@
           <a-spin :spinning="loading">
             <a-table :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
               <div slot-scope="text" slot="roleId">
-                {{ (text === 1)?'志愿者':'老人' }}
+                {{ (text === 1)?'家属':'志愿者' }}
               </div>
-              <div slot="action">
+              <div slot="action" slot-scope="text">
                 <span>
-                  <a>查看</a>
-                  <a-divider type="vertical" />
                   <a>编辑</a>
+                  <a-divider type="vertical" />
+                  <a @click="chooseAnnouceId(text.id)">删除</a>
                 </span>
               </div>
             </a-table>
@@ -46,11 +46,14 @@
         </a-row>
       </div>
     </a-card>
+    <a-modal :visible="shows" title="删除提醒" @ok="deleteAnnounce" @cancel="shows = false;loading = false">
+      <p>您确定要删除ID为{{ '' + ' ' + chooseId + ' ' +'' }}的公告么?</p>
+    </a-modal>
   </div>
 </template>
 
 <script>
-import { announSearch } from '@/api/announce'
+import { announSearch, listSearch, announDelete } from '@/api/announce'
 export default {
   mounted () {
     this.pagination.pageSize = 10
@@ -65,6 +68,8 @@ export default {
   data () {
     return {
       pagination: {},
+      shows: false,
+      chooseId: '',
       search: {},
       loading: false,
       placeIn: '请输入',
@@ -92,7 +97,6 @@ export default {
         },
         {
           title: '操作',
-          dataIndex: 'action',
           scopedSlots: { customRender: 'action' }
         }
       ],
@@ -115,13 +119,49 @@ export default {
       this.$emit('create')
     },
     searchs: function () {
-      console.log(this.search)
+      if (this.search) {
+        this.loading = true
+        const search = this.search
+        console.log(search)
+        listSearch({ ...search }).then(res => {
+          console.log(res)
+          this.dataOflist = []
+          this.dataOflist = res.data.data
+          this.loading = false
+        })
+      }
     },
     deleteAll: function () {
       this.search = {}
+      this.dataOflist = this.$store.state.data.announce.announceAll
+    },
+    deleteAnnounce: function () {
+      announDelete({
+        id: this.chooseId
+      }).then(res => {
+        console.log(res)
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '删除成功'
+          })
+          this.shows = false
+          this.loading = false
+        } else {
+          this.$notification.error({
+            message: '失败',
+            description: '删除失败，请联系管理员'
+          })
+        }
+      })
+    },
+    chooseAnnouceId: function (num) {
+      console.log(num)
+      this.chooseId = num
+      this.loading = true
+      this.shows = true
     }
   }
-
 }
 </script>
 

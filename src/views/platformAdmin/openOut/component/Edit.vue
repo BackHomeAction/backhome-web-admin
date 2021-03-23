@@ -2,44 +2,61 @@
   <div>
     <a-card :bordered="false">
       <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
-      <div class="table-page-search-wrapper">
-        <a-form>
-          <a-row :gutter="18" style="display: flex;justify-content: center;align-items: center">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="应用名称" required>
-                <a-input v-model="app.name" :placeholder="placeholder"></a-input>
-              </a-form-item>
-              <a-form-item label="APP-ID" >
-                <a-input v-model="app.id" :placeholder="placeholder"></a-input>
-              </a-form-item>
-              <a-form-item label="Access Key">
-                <span><a-input v-model="app.key" :placeholder="placeholder"/><a-button>生成</a-button></span>
-              </a-form-item>
-              <a-form-item label="备注">
-                <a-input v-model="app.more" :placeholder="placeholder"></a-input>
-              </a-form-item>
+      <a-spin :spinning="pageLoading">
+        <a-form-model layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" :model="datas[0]">
+          <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
+            <a-col :span="19" >
+              <a-form-model-item label="应用名称" required>
+                <a-input v-model="datas.name" @change="getKeyHead" :placeholder="placeholder" ></a-input>
+              </a-form-model-item>
+              <a-form-model-item label="APP ID" required>
+                <a-input v-model="datas.id" :placeholder="placeholder"></a-input>
+              </a-form-model-item>
+              <a-form-model-item label="Access Key" required>
+                <a-input v-model="datas.accessKey" disabled :placeholder="placeholder"></a-input>
+              </a-form-model-item>
+              <a-form-model-item label="备注" >
+                <a-input v-model="datas.comment" :placeholder="placeholder"></a-input>
+              </a-form-model-item>
+              <a-form-model-item label=" ">
+                <a-button v-if="state === 2" @click="saveThree" type="primary" style="margin-right: 20px">
+                  保存
+                </a-button>
+                <a-button v-if="state === 1" @click="createThree" type="primary" style="margin-right: 20px">
+                  新建
+                </a-button>
+                <a-button type="danger" @click="deleteAll" ghost style="margin-left: 20px;" >
+                  重置
+                </a-button>
+              </a-form-model-item>
             </a-col>
           </a-row>
-          <a-row :gutter="48" style='display: flex;justify-content: center;align-items: center'>
-            <a-col :md="8" :sm="24">
-              <a-button type="primary" >确定</a-button>
-              <a-button style="margin-left: 3%">取消</a-button>
-            </a-col>
-          </a-row>
-        </a-form>
-      </div>
+        </a-form-model>
+      </a-spin>
     </a-card>
   </div>
 </template>
 
 <script>
 import { PageGoBackTop } from '@/components'
+import { threeChange, threeNew } from '@/api/announce'
 export default {
+  mounted () {
+    this.state = this.$store.state.data.openOut.state
+    if (this.state === 2) {
+      this.datas = this.$store.state.data.openOut.openEdit
+    }
+  },
   name: 'Edit',
   data () {
     return {
       app: {},
-      placeholder: '请输入'
+      pageLoading: false,
+      datas: [],
+      state: '',
+      placeholder: '请输入',
+      labelCol: { span: 5 },
+      wrapperCol: { span: 14 }
     }
   },
   components: {
@@ -48,6 +65,78 @@ export default {
   methods: {
     goBack: function () {
       this.$emit('onGoBack')
+    },
+    deleteAll: function () {
+      if (this.state === 1) {
+        this.datas = []
+      }
+      if (this.state === 2) {
+        this.datas = []
+        this.datas = this.$store.state.data.openOut.openEdit
+      }
+    },
+    getKey: function (e) {
+      e = e || 32
+      var t = 'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'
+      var a = t.length
+      var n = ''
+      for (var i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a))
+      console.log(n)
+      this.datas.accessKey = n
+    },
+    saveThree: function () {
+      if (this.state === 2 && this.datas.name !== '' && this.datas.appId !== '' && this.datas.accessKey !== '') {
+        this.pageLoading = true
+        const client = this.datas
+        threeChange({
+          ...client
+        }).then(res => {
+          console.log(res)
+          if (res.status === 200) {
+            this.$notification.success({
+              message: '成功',
+              description: '修改成功'
+            })
+            this.goBack()
+          } else {
+            this.$notification.error({
+              message: '失败',
+              description: '修改失败，请联系管理员'
+            })
+          }
+          this.pageLoading = false
+        })
+      } else {
+        this.$message.info('请检查输入项正确性')
+      }
+    },
+    createThree: function () {
+      if (this.state === 1 && this.datas.name !== '' && this.datas.appId !== '' && this.datas.accessKey !== '') {
+        const client = this.datas
+        threeNew({
+          ...client
+        }).then(res => {
+          console.log(res)
+          if (res.status === 200) {
+            this.$notification.success({
+              message: '成功',
+              description: '创建成功'
+            })
+            this.goBack()
+          } else {
+            this.$notification.error({
+              message: '失败',
+              description: '创建失败，请联系管理员'
+            })
+          }
+          this.pageLoading = false
+        })
+      }
+    },
+    getKeyHead: function () {
+      if (this.state === 1) {
+        this.getKey(48)
+      }
     }
   }
 }

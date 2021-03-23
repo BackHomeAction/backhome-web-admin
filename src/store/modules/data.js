@@ -32,7 +32,8 @@ const data = {
     },
     openOut: {
       openAll: [],
-      openEdit: []
+      openEdit: [],
+      state: null
     }
   },
 

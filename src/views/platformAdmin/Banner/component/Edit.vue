@@ -2,34 +2,39 @@
   <div>
     <a-card :bordered="false">
       <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
-      <a-form-model layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" :model="datas[0]" >
-        <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
-          <a-col :span="12" >
-            <a-form-model-item label="对应公告" >
-              <a-input v-model="datas.title" :placeholder="placeholder"></a-input>
-            </a-form-model-item>
-            <a-form-model-item label="公告详情" v-if="state===1">
-              <a-input v-model="datas.description" :placeholder="placeholder"></a-input>
-            </a-form-model-item>
-            <a-form-model-item label="Banner 图片" >
-              <a-button @click="showPhoto" :loading="photoLoad"><a-icon type="arrow-up" />上传图片</a-button>
-              <br>
-              <div style="margin-top:15px">
-                <a-avatar v-if="!(datas.url)" @click="showPhoto" shape="square" :size="260" :src="datas.url" ><a-icon type="plus"/>点击上传</a-avatar>
-                <a-avatar v-if="datas.url" shape="square" :size="260" :src="datas.url" />
-              </div>
-            </a-form-model-item>
-            <a-form-model-item label=" ">
-              <a-button type="primary" @click="editSure" :loading="loadings" style="margin-right: 20px">
-                保存
-              </a-button>
-              <a-button type="danger" ghost style="margin-left: 20px;" @click="deleteAll">
-                删除
-              </a-button>
-            </a-form-model-item>
-          </a-col>
-        </a-row>
-      </a-form-model>
+      <a-spin :spinning="pageLoading">
+        <a-form-model layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" :model="datas[0]" >
+          <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
+            <a-col :span="12" >
+              <a-form-model-item v-if="state === 1" label="对应公告" has-feedback :validate-status="getInputShow" help="匹配到多个公告或公告不存在">
+                <a-input v-model="datas.title" :placeholder="placeholder" @change="noticeIdSearch"></a-input>
+              </a-form-model-item>
+              <a-form-model-item v-if="state === 2" label="对应公告" >
+                <a-input v-model="datas.title" :placeholder="placeholder" @change="noticeIdSearch"></a-input>
+              </a-form-model-item>
+              <a-form-model-item label="Banner 图片" >
+                <a-button @click="showPhoto" :loading="photoLoad"><a-icon type="arrow-up" />上传图片</a-button>
+                <br>
+                <div style="margin-top:15px">
+                  <a-avatar v-if="!(datas.url)" @click="showPhoto" shape="square" :size="260" :src="datas.url" ><a-icon type="plus"/>点击上传</a-avatar>
+                  <a-avatar v-if="datas.url" shape="square" :size="260" :src="datas.url" />
+                </div>
+              </a-form-model-item>
+              <a-form-model-item label=" ">
+                <a-button v-if="state === 2" type="primary" @click="editSure" :loading="loadings" style="margin-right: 20px">
+                  保存
+                </a-button>
+                <a-button v-if="state === 1" type="primary" @click="newCreates" :loading="loadings" style="margin-right: 20px">
+                  新建
+                </a-button>
+                <a-button type="danger" ghost style="margin-left: 20px;" @click="deleteAll">
+                  重置
+                </a-button>
+              </a-form-model-item>
+            </a-col>
+          </a-row>
+        </a-form-model>
+      </a-spin>
     </a-card>
     <image-cropper v-model="getPhoto" @success="handleAvataruploaded"></image-cropper>
   </div>
@@ -37,7 +42,7 @@
 
 <script>
 import { PageGoBackTop, ImageCropper } from '@/components'
-import { bannerChange, announceSearchGet, bannerCreate } from '@/api/announce'
+import { bannerChange, bannerCreate, bannerUserSearch } from '@/api/announce'
 
 export default {
   mounted () {
@@ -49,6 +54,8 @@ export default {
       announce: {},
       loadings: false,
       state: 1,
+      getInputShow: 'error',
+      pageLoading: false,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
       placeholder: '请输入',
@@ -68,45 +75,47 @@ export default {
       console.log(this.announce)
     },
     showPhoto: function () {
-      this.getPhoto = true
+      if (this.noticeIds && this.state === 1) {
+        this.getPhoto = true
+      } else {
+        this.$message.info('未查询到相应公告，请检查您的公告标题')
+      }
+      if (this.state === 2) {
+        this.getPhoto = true
+      }
+    },
+    newCreates: function () {
+      this.datas.publisher = this.$store.state.user.name
+      const banner = this.datas
+      this.pageLoading = true
+      bannerCreate({ ...banner, noticeId: this.noticeIds }).then(res => {
+        if (res.status === 200) {
+          this.$notification.success({
+            message: '成功',
+            description: '新建成功'
+          })
+        }
+        this.pageLoading = false
+      })
     },
     editSure: function () {
-      if ((this.datas.title !== '' || this.datas.title !== null) && (this.datas.url !== '' || this.datas.url !== null) && this.state === 2) {
+      if (this.datas.title !== '' && this.datas.url !== '' && this.state === 2) {
+        this.pageLoading = true
         const banner = this.datas
         bannerChange({ ...banner }).then(res => {
-          console.log(res.status)
           if (res.status === 200) {
-            this.$notification.success({
-              message: '成功',
-              description: '更改成功'
-            })
+            console.log(res)
+            this.$emit('onGoBack')
+          } else {
+            console.log('错误！')
           }
+          this.pageLoading = false
         })
       } else {
         this.$notification.error({
           message: '失败',
-          description: '更改失败，请联系管理员'
+          description: '信息不全'
         })
-      }
-      if (this.state === 1) {
-        if ((this.datas.title !== '' || this.datas.title !== null) && (this.datas.url !== '' || this.datas.url !== null) && (this.datas.description !== '' || this.datas.description !== null)) {
-          this.noticeIdSearch(this.datas.title)
-          this.datas.publisher = this.$store.state.user.name
-          const banner = this.datas
-          bannerCreate({ ...banner }).then(res => {
-            if (res.status === 200) {
-              this.$notification.success({
-                message: '成功',
-                description: '新增成功'
-              })
-            } else {
-              this.$notification.error({
-                message: '失败',
-                description: '新增失败，请联系管理员'
-              })
-            }
-          })
-        }
       }
     },
     deleteAll: function () {
@@ -126,7 +135,7 @@ export default {
       this.photoLoad = true
       if (url) {
         this.datas.url = url
-        console.log('这个URL就是' + url)
+        console.log('URL:' + url)
         this.$notification.success({
           message: '成功',
           description: '上传成功'
@@ -136,12 +145,18 @@ export default {
     },
     noticeIdSearch: function (titles) {
       if (this.state === 1 && this.datas.title) {
-        announceSearchGet({
-          title: titles
+        const search = this.datas
+        bannerUserSearch({
+          ...search
         }).then(res => {
-          console.log('查询公告成功')
           console.log(res)
-          // this.datas.roleId = res.data
+          if (res.data.data[0] && !(res.data.data[1])) {
+            this.noticeIds = res.data.data[0].noticeId
+            this.getInputShow = 'success'
+          } else {
+            this.getInputShow = 'error'
+            this.noticeIds = ''
+          }
         })
       }
     }

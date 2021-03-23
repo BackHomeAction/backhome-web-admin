@@ -7,11 +7,33 @@ const announceApi = {
   BannerSearch: '/notice/banner',
   BannerAdmin: '/notice/banner/admin',
   BannerSearchByid: '/notice/banner/id',
-  AnnounceSearchByid: '/notice/id'
+  AnnounceSearchByid: '/notice/id',
+  ThreeAdmin: '/thirdParty'
 }
-export function announceSearchGet (params) {
+export function threeDelete (data) {
   return request({
-    url: announceApi.AnnounceSearch,
+    url: announceApi.ThreeAdmin,
+    method: 'delete',
+    data
+  })
+}
+export function threeChange (data) {
+  return request({
+    url: announceApi.ThreeAdmin,
+    method: 'put',
+    data
+  })
+}
+export function threeNew (data) {
+  return request({
+    url: announceApi.ThreeAdmin,
+    method: 'post',
+    data
+  })
+}
+export function threeSearch (params) {
+  return request({
+    url: announceApi.ThreeAdmin,
     method: 'get',
     params
   })
@@ -44,11 +66,11 @@ export function bannerCreate (data) {
     data
   })
 }
-export function bannerDelete (data) {
+export function bannerDelete (params) {
   return request({
     url: announceApi.BannerAdmin,
     method: 'delete',
-    data
+    params
   })
 }
 export function bannerChange (data) {
@@ -56,5 +78,26 @@ export function bannerChange (data) {
     url: announceApi.BannerAdmin,
     method: 'put',
     data
+  })
+}
+export function searchBannerUser (params) {
+  return request({
+    url: announceApi.BannerSearch,
+    method: 'get',
+    params
+  })
+}
+export function listSearch (params) {
+  return request({
+    url: announceApi.AnnounceSearchAdmin,
+    method: 'get',
+    params
+  })
+}
+export function announDelete (params) {
+  return request({
+    url: announceApi.Announce,
+    method: 'delete',
+    params
   })
 }

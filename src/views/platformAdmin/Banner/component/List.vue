@@ -142,6 +142,8 @@ export default {
             message: '成功',
             description: '删除成功'
           })
+          this.dataOflist = []
+          this.getdata()
         } else {
           this.$notification.error({
             message: '失败',

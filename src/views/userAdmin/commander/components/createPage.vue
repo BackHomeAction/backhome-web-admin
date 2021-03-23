@@ -5,7 +5,7 @@
       <a-row :gutter="32" type="flex" justify="center" style="margin-top: 10px">
         <a-col :md="12" :xl="14">
           <a-form :label-col="labelCol" :wrapper-col="wrapperCol" >
-            <a-form-item label="姓名" required prop="name">
+            <a-form-item label="账号" required prop="name">
               <a-input :placeholder="placeholder" v-model="create.name"></a-input>
             </a-form-item>
             <a-form-item label="密码" required prop="password">
@@ -96,7 +96,6 @@ export default {
       this.dataEdit()
       console.log('admin数值')
       console.log(this.adminsBean)
-      // this.create.roleId = 3
       const adminData = this.adminsBean
       if (((this.create.name) && (this.create.roleId) && (this.create.phone) && (this.create.password))) {
         if (this.create.roleId === 5) {
@@ -139,6 +138,7 @@ export default {
     },
     dataEdit: function () {
       this.adminsBean.userName = this.create.name
+      this.adminsBean.name = this.create.name
       this.adminsBean.roleId = parseInt(this.create.roleId)
       this.adminsBean.sex = this.create.sex
       this.adminsBean.state = 1
