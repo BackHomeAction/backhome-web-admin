@@ -60,7 +60,7 @@
       </a-spin>
     </a-card>
     <a-modal :visible="visibles" title="删除提醒" @ok="deleteVolen">
-      <p>您确定要删除ID为{{ '' + form.id+ '' }}的志愿者么?</p>
+      <p>您确定要删除ID为{{ '' + record.id+ '' }}的志愿者么?</p>
     </a-modal>
   </div>
 </template>
@@ -109,8 +109,9 @@ export default {
     deleteVolen: function () {
       this.visibles = true
       volDelete({
-        volunteerId: this.form.id
+        volunteerId: this.record.id
       }).then(res => {
+        console.log(res)
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',
@@ -118,13 +119,9 @@ export default {
           })
           this.visibles = false
           this.$emit('onGoBack')
-        } else {
-          this.$notification.error({
-            message: '错误',
-            description: '删除失败，请联系管理员'
-          })
-          this.visibles = false
         }
+      }).catch(res => {
+        this.visibles = false
       })
     },
     async onSubmit () {

@@ -62,7 +62,7 @@
               <span>{{ text.province ? (text.province+ ' ' +text.city+ ' ' +text.district) : ' ' }}</span>
             </div>
             <div slot-scope="text" slot="identity">
-              <span>{{ (text=== 3) ? '区域指战员' : ((text=== 5)?'总指战员':'系统指战员') }}</span>
+              <span>{{ (text === 3) ? '总指战员' : ((text=== 5)?'区域指战员':'系统指战员') }}</span>
             </div>
             <span slot="sex" slot-scope="sex">{{ (sex=== 1 )?'男':'女' }}</span>
             <span slot="action" slot-scope="list">
@@ -151,23 +151,25 @@ export default {
   },
   methods: {
     dataGetFun: function () {
+      this.loadingPage = true
       adminList().then(res => {
         this.datas = []
-        this.loadingPage = true
-        // console.log(res.data.data)
-        // console.log(res.data.data.length)
         this.$store.state.data.commanderList.List = res.data.data
         this.datas = this.$store.state.data.commanderList.List
         this.loadingPage = false
         this.WatchPage.total = res.data.data.length
         this.WatchPage.pageSize = 10
+        console.log(res.data.data)
         return res.data.data
+      }).catch(res => {
+        this.loadingPage = false
       })
     },
     changeShow: function () {
       this.advanced = !this.advanced
     },
     searchFamily: function () {
+      this.loadingPage = true
       if (this.search) {
         const search = this.search
         if (this.search.region) {
@@ -185,10 +187,14 @@ export default {
             if (!res.data.data) {
               this.datas = []
             }
+            this.loadingPage = false
+          }).catch(res => {
+            this.loadingPage = false
           })
         }
       } else {
         this.getAll()
+        this.loadingPage = false
       }
     },
     getAll: function () {

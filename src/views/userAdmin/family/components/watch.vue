@@ -32,42 +32,40 @@
         </a-col>
       </a-row>
     </a-card>
-    <a-spin :spinning="oldManloading">
-      <a-card :bordered="false" style="margin-top: 30px">
-        <a-page-header title="老人信息"></a-page-header>
-        <a-table :pagination="oldPage" rowKey="id" size="default" :columns="oldMancol" :data-source="oldData" >
-          <span slot="sex" slot-scope="text">{{ (text===1)?'男':'女' }}</span>
-          <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
-        </a-table>
-      </a-card>
-    </a-spin>
-    <a-spin :spinning="orLoading">
-      <a-card :bordered="false" style="margin-top: 24px;">
-        <a-row :gutter="48" style="display: flex;align-items: center">
-          <a-col :span="16">
-            <a-page-header title="关联任务"></a-page-header>
-          </a-col>
-          <a-col :span="18" style="display: flex;align-items: center">
-            <a-radio-group v-model="chooseWatch" @change="changeChoose">
-              <a-radio-button :value="0">
-                全部
-              </a-radio-button>
-              <a-radio-button :value="1">
-                进行中
-              </a-radio-button>
-              <a-radio-button :value="2">
-                已完成
-              </a-radio-button>
-              <a-radio-button :value="3">
-                已归档
-              </a-radio-button>
-              <a-radio-button :value="4">
-                已取消
-              </a-radio-button>
-            </a-radio-group>
-          </a-col>
-        </a-row>
-        <a-row :bordered="false">
+    <a-card :bordered="false" style="margin-top: 30px">
+      <a-page-header title="老人信息"></a-page-header>
+      <a-table :pagination="oldPage" rowKey="id" size="default" :columns="oldMancol" :data-source="oldData" >
+        <span slot="sex" slot-scope="text">{{ (text===1)?'男':'女' }}</span>
+        <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
+      </a-table>
+    </a-card>
+    <a-card :bordered="false" style="margin-top: 24px;">
+      <a-row :gutter="48" style="display: flex;align-items: center">
+        <a-col :span="16">
+          <a-page-header title="关联任务"></a-page-header>
+        </a-col>
+        <a-col :span="18" style="display: flex;align-items: center">
+          <a-radio-group v-model="chooseWatch" @change="changeChoose">
+            <a-radio-button :value="0">
+              全部
+            </a-radio-button>
+            <a-radio-button :value="1">
+              进行中
+            </a-radio-button>
+            <a-radio-button :value="2">
+              已完成
+            </a-radio-button>
+            <a-radio-button :value="3">
+              已归档
+            </a-radio-button>
+            <a-radio-button :value="4">
+              已取消
+            </a-radio-button>
+          </a-radio-group>
+        </a-col>
+      </a-row>
+      <a-row :bordered="false">
+        <a-spin :spinning="orLoading">
           <a-table :pagination="missionPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
             <span slot="id" slot-scope="text"><a @click="missionTo(text)" >{{ '#'+ text }}</a></span>
             <div slot="state" slot-scope="text">
@@ -78,9 +76,9 @@
             </div>
             <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
           </a-table>
-        </a-row>
-      </a-card>
-    </a-spin>
+        </a-spin>
+      </a-row>
+    </a-card>
   </div>
 </template>
 
@@ -95,6 +93,7 @@ export default {
     // console.log(this.source)
     this.oldManGet(this.source.id)
     this.missionListGet(this.source.id)
+    this.orLoading = false
   },
   filters: {
     registerTimeFromNowFilter (val) {
@@ -194,10 +193,13 @@ export default {
       this.$emit('oldView')
     },
     oldManGet: function (id) {
+      this.orLoading = true
       oldManinf({ familyId: id }).then(res => {
         this.oldData = res.data
         this.oldPage.total = res.data.length
         this.oldPage.pageSize = 5
+      }).catch(res => {
+        this.orLoading = false
       })
     },
     missionListGet: function (id) {
@@ -207,9 +209,15 @@ export default {
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize
         this.missionPage.pageSize = 5
+      }).catch(res => {
+        this.orLoading = false
       })
     },
     changeChoose: function (e) {
+      this.orLoading = true
+      if (e.target.value === 0) {
+        this.missionListGet(this.source.id)
+      }
       familyMission({
         familyId: this.source.id,
         state: e.target.value
@@ -218,6 +226,9 @@ export default {
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize
         this.missionPage.pageSize = 5
+        this.orLoading = false
+      }).catch(res => {
+        this.orLoading = false
       })
     }
   }

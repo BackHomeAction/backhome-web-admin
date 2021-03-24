@@ -3,7 +3,7 @@ import request from '@/utils/request'
 const adminAPI = {
   adminList: '/admin/all',
   adminUser: '/admin',
-  adminCreate: '/admin/admin/add',
+  adminCreate: '/admin/add',
   adminUpdate: '/admin/update',
   adminDelete: '/admin/del',
   adminByid: '/admin/id',
@@ -59,11 +59,11 @@ export function adminList (params) {
     params
   })
 }
-export function adminUser (param) {
+export function adminUser (params) {
   return request({
     url: adminAPI.adminUser,
     method: 'get',
-    param
+    params
   })
 }
 export function adminCreate (data) {

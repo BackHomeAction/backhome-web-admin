@@ -12,7 +12,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="姓名">
                 <a-input v-model="search.name" placeholder="请输入" />
-              </a-form-item>
+              </a-form-item>F
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">
@@ -137,6 +137,7 @@ export default {
       this.advanced = !this.advanced
     },
     searchFamily: function () {
+      this.loadingPage = true
       if (this.search) {
         const search = this.search
         if (this.search.region) {
@@ -152,6 +153,9 @@ export default {
             this.datas = res.data.data
             this.WatchPages.total = res.data.totalCount
             this.WatchPages.pageSize = 10
+            this.loadingPage = false
+          }).catch(res => {
+            this.loadingPage = false
           })
         }
       } else {
@@ -162,6 +166,7 @@ export default {
       this.datas = []
       this.datas = this.$store.state.data.familyList
       this.search = {}
+      this.loadingPage = false
     },
     editPage: function (data) {
       this.$store.state.data.familyData.editUser = data

@@ -1,7 +1,6 @@
 <template>
   <div>
     <a-card :bordered="false">
-
       <a-row :gutter="48" type="flex" justify="center">
         <a-col :span="22">
           <!--    <page-go-back-top @click="$emit('onGoBack')" ><a><a-icon type="left" /></a>&nbsp;&nbsp;</page-go-back-top> <a-page-header :title="name"></a-page-header>-->
@@ -53,10 +52,10 @@
                 全部
               </a-radio-button>
               <a-radio-button :value="1">
-                进行中
+                已完成
               </a-radio-button>
               <a-radio-button :value="2">
-                已完成
+                进行中
               </a-radio-button>
               <a-radio-button :value="3">
                 已归档
@@ -91,12 +90,13 @@ export default {
     this.caseOfold()
     this.lifephotos = JSON.parse(this.source.lifePhoto)
     this.offerPlace = JSON.parse(this.source.offerPlace)
+    this.orLoading = false
   },
   data () {
     return {
       source: [],
       chooseWatch: 0,
-      orLoading: false,
+      orLoading: true,
       lifephotos: [],
       WatchPage: {},
       offerPlace: null,
@@ -139,14 +139,24 @@ export default {
   name: 'Watch',
   methods: {
     changeChoose: function () {
-      adminCase({
-        oldManId: this.source.id,
-        state: this.chooseWatch
-      }).then(res => {
-        this.datas = res.data.data
-        console.log(res)
-        this.WatchPage.pageSize = 10
-      })
+      this.orLoading = true
+      if (this.chooseWatch === 0) {
+        // this.datas = []
+        this.datas = this.$store.state.data.oldManCase
+        this.orLoading = false
+      } else {
+        adminCase({
+          oldManId: this.source.id,
+          state: this.chooseWatch
+        }).then(res => {
+          this.datas = res.data.data
+          console.log(res)
+          this.WatchPage.pageSize = 10
+          this.orLoading = false
+        }).catch(res => {
+          this.orLoading = false
+        })
+      }
     },
     oldManEdit: function () {
       this.$store.state.data.oldManData.oldmanEdit = this.source
@@ -167,12 +177,16 @@ export default {
       }
     },
     caseOfold: function () {
-      console.log(123)
-      var id = this.source.id
+      this.orLoading = true
+      const id = this.source.id
       OldManCase({ oldManId: id }).then(res => {
         this.datas = res.data.data
+        this.$store.state.data.oldManCase = res.data.data
         this.WatchPage.total = res.data.totalCount
         this.WatchPage.pageSize = 10
+        this.orLoading = false
+      }).catch(res => {
+        this.orLoading = false
       })
     },
     missionTo: function (id) {
