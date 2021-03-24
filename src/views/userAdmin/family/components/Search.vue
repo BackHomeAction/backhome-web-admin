@@ -12,7 +12,7 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="姓名">
                 <a-input v-model="search.name" placeholder="请输入" />
-              </a-form-item>F
+              </a-form-item>
             </a-col>
             <template v-if="advanced">
               <a-col :md="8" :sm="24">

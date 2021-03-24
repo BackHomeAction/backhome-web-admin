@@ -1,13 +1,13 @@
 import request from '@/utils/request'
 
 const missionList = {
-  OldmanDataChange: '/admin/family/oldMan'
+  caseALL: '/case'
 
 }
 
-export function getFamilyData (params) {
+export function getMission (params) {
   return request({
-    url: '',
+    url: missionList.caseALL,
     method: 'get',
     params
   })
