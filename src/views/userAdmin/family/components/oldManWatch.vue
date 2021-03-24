@@ -153,6 +153,8 @@ export default {
           console.log(res)
           this.WatchPage.pageSize = 10
           this.orLoading = false
+        }).catch(res => {
+          this.orLoading = false
         })
       }
     },
@@ -182,6 +184,8 @@ export default {
         this.$store.state.data.oldManCase = res.data.data
         this.WatchPage.total = res.data.totalCount
         this.WatchPage.pageSize = 10
+        this.orLoading = false
+      }).catch(res => {
         this.orLoading = false
       })
     },

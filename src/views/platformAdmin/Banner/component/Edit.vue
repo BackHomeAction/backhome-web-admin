@@ -94,6 +94,7 @@ export default {
             message: '成功',
             description: '新建成功'
           })
+          this.goBack()
         }
         this.pageLoading = false
       })
@@ -102,12 +103,11 @@ export default {
       if (this.datas.title !== '' && this.datas.url !== '' && this.state === 2) {
         this.pageLoading = true
         const banner = this.datas
+        console.log(banner)
         bannerChange({ ...banner }).then(res => {
           if (res.status === 200) {
             console.log(res)
             this.$emit('onGoBack')
-          } else {
-            console.log('错误！')
           }
           this.pageLoading = false
         })

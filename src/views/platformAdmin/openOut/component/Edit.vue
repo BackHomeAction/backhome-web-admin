@@ -5,14 +5,19 @@
       <a-spin :spinning="pageLoading">
         <a-form-model layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" :model="datas[0]">
           <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
-            <a-col :span="19" >
+            <a-col :span="15" >
               <a-form-model-item label="应用名称" required>
                 <a-input v-model="datas.name" @change="getKeyHead" :placeholder="placeholder" ></a-input>
               </a-form-model-item>
               <a-form-model-item label="APP ID" required>
-                <a-input v-model="datas.id" :placeholder="placeholder"></a-input>
+                <a-input v-model="datas.appId" :placeholder="placeholder"></a-input>
               </a-form-model-item>
-              <a-form-model-item label="Access Key" required>
+              <a-popconfirm title="是否重新赋值?" placement="bottom" @confirm="keyHeadUse" v-if="state === 2">
+                <a-form-model-item label="Access Key" required>
+                  <a-input v-model="datas.accessKey" disabled :placeholder="placeholder"></a-input>
+                </a-form-model-item>
+              </a-popconfirm>
+              <a-form-model-item label="Access Key" required v-if="state === 1">
                 <a-input v-model="datas.accessKey" disabled :placeholder="placeholder"></a-input>
               </a-form-model-item>
               <a-form-model-item label="备注" >
@@ -53,6 +58,7 @@ export default {
       app: {},
       pageLoading: false,
       datas: [],
+      editKey: false,
       state: '',
       placeholder: '请输入',
       labelCol: { span: 5 },
@@ -83,6 +89,7 @@ export default {
       for (var i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a))
       console.log(n)
       this.datas.accessKey = n
+      this.editKey = false
     },
     saveThree: function () {
       if (this.state === 2 && this.datas.name !== '' && this.datas.appId !== '' && this.datas.accessKey !== '') {
@@ -98,12 +105,9 @@ export default {
               description: '修改成功'
             })
             this.goBack()
-          } else {
-            this.$notification.error({
-              message: '失败',
-              description: '修改失败，请联系管理员'
-            })
           }
+          this.pageLoading = false
+        }).catch(res => {
           this.pageLoading = false
         })
       } else {
@@ -123,12 +127,9 @@ export default {
               description: '创建成功'
             })
             this.goBack()
-          } else {
-            this.$notification.error({
-              message: '失败',
-              description: '创建失败，请联系管理员'
-            })
           }
+          this.pageLoading = false
+        }).catch(res => {
           this.pageLoading = false
         })
       }
@@ -136,7 +137,18 @@ export default {
     getKeyHead: function () {
       if (this.state === 1) {
         this.getKey(48)
+        this.deleteAll()
       }
+    },
+    editKeyHeader: function () {
+      this.editKey = true
+      if (this.state === 2 && this.editKey === true) {
+        this.getKey(48)
+      }
+    },
+    keyHeadUse: function () {
+      this.getKey(48)
+      this.deleteAll()
     }
   }
 }

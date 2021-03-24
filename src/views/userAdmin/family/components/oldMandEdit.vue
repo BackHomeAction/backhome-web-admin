@@ -160,8 +160,6 @@ export default {
       this.isChangingAvatar = true
       if(this.iden==1){
         this.lifePhoto.push(url)
-        // console.log(this.oldMan.lifePhoto)
-        // console.log(this.lifePhoto)
       }
       if(this.iden==2){
         this.oldMan.identificationPhoto = url
@@ -216,12 +214,9 @@ export default {
             message: '成功',
             description: '修改成功'
           })
-        } else {
-          this.$notification.error({
-            message: '错误',
-            description: '错误，请联系管理员'
-          })
         }
+        this.loadings = false
+      }).catch(res => {
         this.loadings = false
       })
     },

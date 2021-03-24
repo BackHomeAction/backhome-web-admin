@@ -8,13 +8,13 @@ const announceApi = {
   BannerAdmin: '/notice/banner/admin',
   BannerSearchByid: '/notice/banner/id',
   AnnounceSearchByid: '/notice/id',
-  ThreeAdmin: '/thirdParty'
+  ThreeAdmin: '/admin/thirdParty'
 }
-export function threeDelete (data) {
+export function threeDelete (params) {
   return request({
     url: announceApi.ThreeAdmin,
     method: 'delete',
-    data
+    params
   })
 }
 export function threeChange (data) {

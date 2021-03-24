@@ -157,6 +157,8 @@ export default {
             this.WatchPage.pageSize = 10
           }
           this.orLoading = false
+        }).catch(res => {
+          this.orLoading = false
         })
       }
     },
@@ -183,6 +185,7 @@ export default {
       console.log(this.getInTime)
     },
     missionGet: function (e) {
+      this.orLoading = true
       adminCase({
         id: this.source.id
       }).then(res => {
@@ -192,6 +195,9 @@ export default {
           this.WatchPage.total = res.data.totalCount
           this.WatchPage.pageSize = 10
         }
+        this.orLoading = false
+      }).catch(res => {
+        this.orLoading = false
       })
     },
     missionTo: function (text) {

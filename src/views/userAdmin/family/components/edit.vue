@@ -132,13 +132,9 @@ export default {
             })
             this.$emit('onView')
             this.loadings = false
-          } else {
-            this.$notification.error({
-              message: '错误',
-              description: '请检查服务器或联系管理员'
-            })
-            this.loadings = false
           }
+        }).catch(res => {
+          this.loadings = false
         })
       }
     },
@@ -166,13 +162,10 @@ export default {
           })
           this.visibles = false
           this.$emit('onGoBack')
-        } else {
-          this.$notification.error({
-            message: '错误',
-            description: '删除失败，请联系管理员'
-          })
-          this.visibles = false
         }
+        this.loadings = false
+      }).catch(res => {
+        this.loadings = false
       })
     },
     modals: function () {

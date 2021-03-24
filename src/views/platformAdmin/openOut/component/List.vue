@@ -2,41 +2,39 @@
   <div>
     <a-card :bordered="false">
       <div class="table-page-search-wrapper">
-        <a-form layout="inline">
-          <a-row :gutter="48">
-            <a-col :md="8" :sm="24">
-              <a-form-item label="应用名称:" >
-                <a-input v-model="search.name" placeholder="请输入"/>
+        <a-row :gutter="48">
+          <a-form layout="inline">
+            <a-col :md="8" :sm="24" >
+              <a-form-item label="应用名称" >
+                <a-input v-model="search.name" placeholder="请输入" />
               </a-form-item>
             </a-col>
-            <a-col>
+            <a-col style="display: flex;align-items: center">
               <a-button type="primary" @click="openSearch">查询</a-button>
               <a-button type="default" @click="deleteSearch" style="margin-left:1%">重置</a-button>
             </a-col>
-          </a-row>
-          <a-row :gutter="48">
-            <a-col :span="6">
-              <a-button type="primary" @click="goEdit"><a-icon type="plus" />新建</a-button>
-            </a-col>
-          </a-row>
-          <a-row :gutter="48" style="margin-top: 15px">
-            <a-col>
-              <a-spin :spinning="pageLoading">
-                <a-table :columns="columns">
-                  <div slot="action" slot-scope="text">
-                    <a @click="editThree(text)">编辑</a>
-                    <a-divider type="vertical" />
-                    <a @click="showModal(text.id)">删除</a>
-                  </div>
-                </a-table>
-              </a-spin>
-            </a-col>
-          </a-row>
-        </a-form>
+          </a-form>
+        </a-row>
+        <a-row :gutter="48">
+          <a-col :span="6">
+            <a-button type="primary" @click="createThree"><a-icon type="plus" />新建</a-button>
+          </a-col>
+        </a-row>
+        <a-row :gutter="48" style="margin-top: 15px">
+          <a-spin :spinning="pageLoading">
+            <a-table :columns="columns" :data-source="datas">
+              <div slot="action" slot-scope="text">
+                <a @click="editThree(text)">编辑</a>
+                <a-divider type="vertical" />
+                <a @click="showModal(text.id)">删除</a>
+              </div>
+            </a-table>
+          </a-spin>
+        </a-row>
       </div>
     </a-card>
     <a-modal :visible="shows" title="删除提醒" @ok="deleteThree" @cancel="shows = false;pageLoading = false">
-      <p>您确定要删除ID为{{ '' + ' ' + chooseId + ' ' +'' }}的BannerID么?</p>
+      <p>您确定要删除ID为{{ '' + ' ' + chooseId + ' ' +'' }}的开放平台应用么?</p>
     </a-modal>
   </div>
 </template>
@@ -86,6 +84,8 @@ export default {
     },
     createThree: function () {
       this.$store.state.data.openOut.state = 1
+      this.$store.state.data.openOut.openEdit = []
+      console.log(this.$store.state.data.openOut.openEdit)
       this.goEdit()
     },
     deleteSearch: function () {
@@ -94,14 +94,16 @@ export default {
       this.datas = this.$store.state.data.openOut.openAll
     },
     openSearch: function () {
+      this.pageLoading = true
       if (this.search) {
-        this.pageLoading = true
         threeSearch({
           name: this.search.name
         }).then(res => {
-          console. log(res)
+          console.log(res)
           this.datas = []
           this.datas = res.data.data
+          this.pageLoading = false
+        }).catch(res => {
           this.pageLoading = false
         })
       } else {
@@ -124,28 +126,32 @@ export default {
               message: '成功',
               description: '删除成功'
             })
+            this.shows = false
+            this.pageLoading = false
             this.datas = []
             this.getData()
-          } else {
-            this.$notification.error({
-              message: '失败',
-              description: '删除失败，请联系管理员'
-            })
           }
+          this.pageLoading = false
+        }).catch(res => {
           this.pageLoading = false
         })
       }
     },
     getData: function () {
+      this.pageLoading = true
       threeSearch().then(res => {
-        console.log(res)
         this.datas = res.data.data
+        console.log(this.datas)
         this.$store.state.data.openOut.openAll = res.data.data
+        this.pageLoading = false
+      }).catch(res => {
+        this.pageLoading = false
       })
     },
     editThree: function (text) {
       this.$store.state.data.openOut.openEdit = text
       this.$store.state.data.openOut.state = 2
+      console.log(this.$store.state.data.openOut.state)
       this.goEdit()
     }
   }

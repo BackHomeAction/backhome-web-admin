@@ -34,7 +34,8 @@ const data = {
       openAll: [],
       openEdit: [],
       state: null
-    }
+    },
+    searchId: ''
   },
 
   mutations: {

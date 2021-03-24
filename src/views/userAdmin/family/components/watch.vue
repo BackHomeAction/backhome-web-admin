@@ -193,10 +193,13 @@ export default {
       this.$emit('oldView')
     },
     oldManGet: function (id) {
+      this.orLoading = true
       oldManinf({ familyId: id }).then(res => {
         this.oldData = res.data
         this.oldPage.total = res.data.length
         this.oldPage.pageSize = 5
+      }).catch(res => {
+        this.orLoading = false
       })
     },
     missionListGet: function (id) {
@@ -206,8 +209,9 @@ export default {
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize
         this.missionPage.pageSize = 5
+      }).catch(res => {
+        this.orLoading = false
       })
-      this.orLoading = false
     },
     changeChoose: function (e) {
       this.orLoading = true
@@ -222,6 +226,8 @@ export default {
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize
         this.missionPage.pageSize = 5
+        this.orLoading = false
+      }).catch(res => {
         this.orLoading = false
       })
     }

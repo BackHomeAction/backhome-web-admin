@@ -151,11 +151,9 @@ export default {
   },
   methods: {
     dataGetFun: function () {
+      this.loadingPage = true
       adminList().then(res => {
         this.datas = []
-        this.loadingPage = true
-        // console.log(res.data.data)
-        // console.log(res.data.data.length)
         this.$store.state.data.commanderList.List = res.data.data
         this.datas = this.$store.state.data.commanderList.List
         this.loadingPage = false
@@ -163,6 +161,8 @@ export default {
         this.WatchPage.pageSize = 10
         console.log(res.data.data)
         return res.data.data
+      }).catch(res => {
+        this.loadingPage = false
       })
     },
     changeShow: function () {
@@ -187,6 +187,8 @@ export default {
             if (!res.data.data) {
               this.datas = []
             }
+            this.loadingPage = false
+          }).catch(res => {
             this.loadingPage = false
           })
         }

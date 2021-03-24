@@ -154,8 +154,9 @@ export default {
             this.WatchPages.total = res.data.totalCount
             this.WatchPages.pageSize = 10
             this.loadingPage = false
+          }).catch(res => {
+            this.loadingPage = false
           })
-          this.stoprow()
         }
       } else {
         this.getAll()

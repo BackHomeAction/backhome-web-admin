@@ -181,8 +181,10 @@ export default {
                   })
                   this.goBack()
                 }
+                this.loadingPage = false
+              }).catch(res => {
+                this.loadingPage = false
               })
-              this.loadingPage = false
             }
           } else {
             this.$notification.error({
@@ -230,6 +232,7 @@ export default {
     },
     deleteAdmin: function () {
       this.visibles = true
+      this.loadingPage = true
       adminDelete({ id: this.form.id }).then(res => {
         if (res.status === 200) {
           this.$notification.success({
@@ -244,8 +247,10 @@ export default {
             description: '删除失败，请联系管理员'
           })
         }
+        this.loadingPage = false
+      }).catch(res => {
+        this.loadingPage = false
       })
-      this.loadingPage = true
     },
     modals: function () {
       this.visibles = true
@@ -268,8 +273,10 @@ export default {
             description: '保存成功!'
           })
         }
+        this.loadingPage = false
+      }).catch(res => {
+        this.pageLoading = false
       })
-      this.loadingPage = false
     }
   },
   name: 'Edit'

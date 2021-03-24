@@ -128,6 +128,8 @@ export default {
           this.dataOflist = []
           this.dataOflist = res.data.data
           this.loading = false
+        }).catch(res => {
+          this.loading = false
         })
       }
     },
@@ -147,12 +149,9 @@ export default {
           })
           this.shows = false
           this.loading = false
-        } else {
-          this.$notification.error({
-            message: '失败',
-            description: '删除失败，请联系管理员'
-          })
         }
+      }).catch(res => {
+        this.pageLoading = false
       })
     },
     chooseAnnouceId: function (num) {

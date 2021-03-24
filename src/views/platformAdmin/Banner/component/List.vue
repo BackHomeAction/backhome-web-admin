@@ -109,14 +109,21 @@ export default {
       this.$emit('toEdit')
     },
     searchs: function () {
-      this.loading = true
-      const search = this.search
-      console.log('准备查询')
-      bannerUserSearch({ ...search }).then(res => {
-        this.dataOflist = []
-        this.dataOflist = res.data.data
-        this.loading = false
-      })
+      if (this.search) {
+        this.loading = true
+        const search = this.search
+        console.log('准备查询')
+        bannerUserSearch({ ...search }).then(res => {
+          this.dataOflist = []
+          this.dataOflist = res.data.data
+          this.loading = false
+        }).catch(res => {
+          this.loading = false
+        })
+      } else {
+        this.$message.info('请检查搜索输入项')
+      }
+      // this.loading = false
     },
     deleteAll: function () {
       this.search = {}
@@ -144,12 +151,9 @@ export default {
           })
           this.dataOflist = []
           this.getdata()
-        } else {
-          this.$notification.error({
-            message: '失败',
-            description: '删除失败，请联系管理员'
-          })
         }
+        this.loading = false
+      }).catch(res => {
         this.loading = false
       })
     },
@@ -164,6 +168,8 @@ export default {
         this.dataOflist = res.data.data
         this.$store.state.data.banner.bannerAll = res.data.data
         this.pagination.pageSize = 10
+        this.loading = false
+      }).catch(res => {
         this.loading = false
       })
     },
