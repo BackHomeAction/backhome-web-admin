@@ -42,7 +42,7 @@
 
 <script>
 import { PageGoBackTop, ImageCropper } from '@/components'
-import { bannerChange, bannerCreate, bannerUserSearch } from '@/api/announce'
+import { bannerChange, bannerCreate, listSearch } from '@/api/announce'
 
 export default {
   mounted () {
@@ -85,7 +85,6 @@ export default {
       }
     },
     newCreates: function () {
-      this.datas.publisher = this.$store.state.user.name
       const banner = this.datas
       this.pageLoading = true
       bannerCreate({ ...banner, noticeId: this.noticeIds }).then(res => {
@@ -145,13 +144,12 @@ export default {
     },
     noticeIdSearch: function (titles) {
       if (this.state === 1 && this.datas.title) {
-        const search = this.datas
-        bannerUserSearch({
-          ...search
+        // const search = this.datas
+        listSearch({
+          title: this.datas.title
         }).then(res => {
-          console.log(res)
-          if (res.data.data[0] && !(res.data.data[1])) {
-            this.noticeIds = res.data.data[0].noticeId
+          if (res.data.data[0] && !(res.data.data[1]) && (this.datas.title === res.data.data[0].title)) {
+            this.noticeIds = res.data.data[0].id
             this.getInputShow = 'success'
           } else {
             this.getInputShow = 'error'

@@ -3,26 +3,24 @@
     <template v-slot:content>
       <div class="page-header-content">
         <div class="avatar">
-          <a-avatar size="large" :src="currentUser.avatar"/>
+          <a-avatar size="large" :src="users.avatarUrl"/>
         </div>
         <div class="content">
           <div class="content-title">
             {{ timeFix }}，{{ name }}！
           </div>
-          <div>前端工程师 | 蚂蚁金服 - 某某某事业群 - VUE平台</div>
+          <div>{{ (users.roleId === 3) ? '总指战员' : ((users.roleId=== 5)?'区域指战员':'系统指战员')+'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) }}</div>
         </div>
       </div>
     </template>
     <template v-slot:extraContent>
       <div class="extra-content">
         <div class="stat-item">
-          <a-statistic title="项目数" :value="56" />
+          <a-statistic title="区域内开启案件" :value="823" suffix="/ 4856" />
+          <!--          数据未插入-->
         </div>
         <div class="stat-item">
-          <a-statistic title="团队内排名" :value="8" suffix="/ 24" />
-        </div>
-        <div class="stat-item">
-          <a-statistic title="项目访问" :value="2223" />
+          <a-statistic title="区域内志愿者" :value="138" suffix="/ 1625" />
         </div>
       </div>
     </template>
@@ -32,43 +30,80 @@
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card
             class="project-list"
-            :loading="loading"
-            style="margin-bottom: 24px;"
+            style="margin-bottom: 24px;justify-content: space-between"
             :bordered="false"
-            title="进行中的项目"
+            title="进行中的任务"
             :body-style="{ padding: 0 }">
             <a slot="extra">全部项目</a>
-            <div>
-              <a-card-grid class="project-card-grid" :key="i" v-for="(item, i) in projects">
-                <a-card :bordered="false" :body-style="{ padding: 0 }">
-                  <a-card-meta>
-                    <div slot="title" class="card-title">
-                      <a-avatar size="small" :src="item.cover"/>
-                      <a>{{ item.title }}</a>
-                    </div>
-                    <div slot="description" class="card-description">
-                      {{ item.description }}
-                    </div>
-                  </a-card-meta>
-                  <div class="project-item">
-                    <a href="/#/">科学搬砖组</a>
-                    <span class="datetime">9小时前</span>
+            <a-card-grid style="width:33.3%;" :key="index+1" v-for="(item,index) in warningList">
+              <div>
+                <div style="width: 100%;">
+                  <a-avatar
+                    src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/bcb349c7-8508-4c86-9e59-9dd212ca01c8.png"
+                    :size="30"
+                    style="margin-right: 3%"></a-avatar>
+                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  <div style="margin-top: 5%">
+                    {{ '于' +item.startTime }}
                   </div>
-                </a-card>
-              </a-card-grid>
-            </div>
-          </a-card>
+                  <div style="margin-top: 5%">
+                    {{ '走失于' + item.place }}
+                  </div>
+                  <div class="project-item">
+                    <a href="/#/"><span style="color: red">紧急</span></a>
+                    <span class="datetime" style="color:red" >{{ timewatch(item.lostTime) }}</span>
+                  </div>
+                </div>
+              </div>
+            </a-card-grid>
 
-          <a-card :loading="loading" title="动态" :bordered="false">
+            <a-card-grid style="width:33.3%;" :key="(index+1)*(-1)" v-for="(item,index) in redList">
+              <div>
+                <div style="width: 100%;">
+                  <a-avatar
+                    src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/e3dd47eb-2b0e-4c9f-979b-e775aa4678fa.png"
+                    :size="30"
+                    style="margin-right: 3%"></a-avatar>
+                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  <div style="margin-top: 5%">
+                    {{ '于' +item.startTime }}
+                  </div>
+                  <div style="margin-top: 5%">
+                    {{ '走失于' + item.place }}
+                  </div>
+                  <div class="project-item">
+                    <a href="/#/"><span style="color: #1AFA29">优先</span></a>
+                    <span class="datetime" style="color: #1AFA29" >{{ timewatch(item.lostTime) }}</span>
+                  </div>
+                </div>
+              </div>
+            </a-card-grid>
+            <a-card-grid style="width:33.3%;" :key="(index+1)*(10)" v-for="(item,index) in commonList">
+              <div>
+                <div style="width: 100%;">
+                  <a-avatar src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/5fa5d77f-d8ae-434f-9f82-c2f5ade35141.png" :size="30" style="margin-right: 3%"></a-avatar>
+                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  <div style="margin-top: 5%">
+                    {{ '于' +item.startTime }}
+                  </div>
+                  <div style="margin-top: 5%">
+                    {{ '走失于' + item.place }}
+                  </div>
+                  <div class="project-item">
+                    <a href="/#/">一般</a>
+                    <span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span>
+                  </div>
+                </div>
+              </div>
+            </a-card-grid>
+          </a-card>
+          <a-card title="动态" :bordered="false">
             <a-list>
-              <a-list-item :key="index" v-for="(item, index) in activities">
-                <a-list-item-meta>
-                  <a-avatar slot="avatar" :src="item.user.avatar"/>
-                  <div slot="title">
-                    <span>{{ item.user.nickname }}</span>&nbsp;
-                    在&nbsp;<a href="#">{{ item.project.name }}</a>&nbsp;
-                    <span>{{ item.project.action }}</span>&nbsp;
-                    <a href="#">{{ item.project.event }}</a>
+              <a-list-item :key="index" v-for="(item, index) in missionLists">
+                <a-list-item-meta :description="timewatch(item.startTime)">
+                  <a-avatar slot="avatar" :src="item.family.avatarUrl"/>
+                  <div slot="title" style="font-size: 12px" >
+                    <span style="font-weight: bold"> {{ item.family.name + '  ' }}</span><span>{{ '完成了任务'+ ' ' + ' ' }}</span><span><a @click="toMission(item.id)">{{ '#' + item.id }}</a></span>
                   </div>
                   <div slot="description">{{ item.time }}</div>
                 </a-list-item-meta>
@@ -83,35 +118,18 @@
           :md="24"
           :sm="24"
           :xs="24">
-          <a-card title="快速开始 / 便捷导航" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
+          <a-card title="团队指数" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
             <div class="item-group">
-              <a>操作一</a>
-              <a>操作二</a>
-              <a>操作三</a>
-              <a>操作四</a>
-              <a>操作五</a>
-              <a>操作六</a>
-              <a-button size="small" type="primary" ghost icon="plus">添加</a-button>
+              暂时空
             </div>
           </a-card>
-          <a-card
-            title="XX 指数"
-            style="margin-bottom: 24px"
-            :loading="radarLoading"
-            :bordered="false"
-            :body-style="{ padding: 0 }">
-            <div style="min-height: 400px;">
-              <!-- :scale="scale" :axis1Opts="axis1Opts" :axis2Opts="axis2Opts"  -->
-              <radar :data="radarData"/>
-            </div>
-          </a-card>
-          <a-card :loading="loading" title="团队" :bordered="false">
+          <a-card title="今日活跃志愿者" :bordered="false">
             <div class="members">
               <a-row>
-                <a-col :span="12" v-for="(item, index) in teams" :key="index">
+                <a-col :span="12" v-for="(item, index) in volnteerFire" :key="index">
                   <a>
-                    <a-avatar size="small" :src="item.avatar"/>
-                    <span class="member">{{ item.name }}</span>
+                    <a-avatar size="small" :src="item.avatarUrl"/>
+                    <span class="member">{{ item.nickName }}</span>
                   </a>
                 </a-col>
               </a-row>
@@ -127,67 +145,31 @@
 import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { Radar } from '@/components'
-
-import { getRoleList, getServiceList } from '@/api/manage'
-
-const DataSet = require('@antv/data-set')
-
+import { adminUser } from '@/api/admin'
+import { getMission } from '@/api/missionList'
+import { VolunteerFire } from '@/api/volunteerAdmin'
+import dayjs from '@/utils/dayjs'
 export default {
   name: 'Workplace',
   components: {
-    PageHeaderWrapper,
-    Radar
+    PageHeaderWrapper, dayjs
+  },
+  filters: {
+    timeget: function (val) {
+      return dayjs(val).fromNow(true)
+    }
   },
   data () {
     return {
       timeFix: timeFix(),
-      avatar: '',
-      user: {},
-
-      projects: [],
+      datas: [],
       loading: true,
-      radarLoading: true,
-      activities: [],
-      teams: [],
-
-      // data
-      axis1Opts: {
-        dataKey: 'item',
-        line: null,
-        tickLine: null,
-        grid: {
-          lineStyle: {
-            lineDash: null
-          },
-          hideFirstLine: false
-        }
-      },
-      axis2Opts: {
-        dataKey: 'score',
-        line: null,
-        tickLine: null,
-        grid: {
-          type: 'polygon',
-          lineStyle: {
-            lineDash: null
-          }
-        }
-      },
-      scale: [{
-        dataKey: 'score',
-        min: 0,
-        max: 80
-      }],
-      axisData: [
-        { item: '引用', a: 70, b: 30, c: 40 },
-        { item: '口碑', a: 60, b: 70, c: 40 },
-        { item: '产量', a: 50, b: 60, c: 40 },
-        { item: '贡献', a: 40, b: 50, c: 40 },
-        { item: '热度', a: 60, b: 70, c: 40 },
-        { item: '引用', a: 70, b: 50, c: 40 }
-      ],
-      radarData: []
+      users: [{}],
+      missionLists: [],
+      volnteerFire: [],
+      warningList: [],
+      commonList: [],
+      redList: []
     }
   },
   computed: {
@@ -209,57 +191,51 @@ export default {
   created () {
     this.user = this.userInfo
     this.avatar = this.userInfo.avatar
-
-    getRoleList().then(res => {
-      // console.log('workplace -> call getRoleList()', res)
-    })
-
-    getServiceList().then(res => {
-      // console.log('workplace -> call getServiceList()', res)
-    })
   },
   mounted () {
-    this.getProjects()
-    this.getActivity()
-    this.getTeams()
-    this.initRadar()
+    this.getAllData()
   },
   methods: {
-    getProjects () {
-      this.$http.get('/list/search/projects')
-        .then(res => {
-          this.projects = res.result && res.result.data
-          this.loading = false
-        })
+    getHour: function (time) {
+      return dayjs().diff(time, 'hour')
     },
-    getActivity () {
-      this.$http.get('/workplace/activity')
-        .then(res => {
-          this.activities = res.result
-        })
+    getAllData: function () {
+      adminUser().then(res => {
+        this.users = res.data
+      })
+      getMission({ id: this.users.id }).then(res => {
+        this.missionLists = res.data
+        var a = 0
+        var b = 0
+        var c = 0
+        for (var i = 0; i < res.data.length; i++) {
+          var lostTime = dayjs().diff(res.data[i].lostTime, 'hour')
+          if (lostTime < 24) {
+            this.warningList[a] = res.data[i]
+            a++
+          }
+          if (lostTime >= 24 && lostTime < 48) {
+            this.redList[b] = res.data[i]
+            b++
+          }
+          if (lostTime >= 48) {
+            this.commonList[c] = res.data[i]
+            c++
+          }
+        }
+      })
+      VolunteerFire({}).then(res => {
+        this.volnteerFire = res.data
+      })
     },
-    getTeams () {
-      this.$http.get('/workplace/teams')
-        .then(res => {
-          this.teams = res.result
-        })
+    timewatch: function (val) {
+      return dayjs(val).fromNow(true)
     },
-    initRadar () {
-      this.radarLoading = true
-
-      this.$http.get('/workplace/radar')
-        .then(res => {
-          const dv = new DataSet.View().source(res.result)
-          dv.transform({
-            type: 'fold',
-            fields: ['个人', '团队', '部门'],
-            key: 'user',
-            value: 'score'
-          })
-
-          this.radarData = dv.rows
-          this.radarLoading = false
-        })
+    toMission: function (text) {
+      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: text } })
+    },
+    getHoursFromTime: function (time) {
+      return dayjs().diff(time, 'hour')
     }
   }
 }

@@ -908,10 +908,18 @@
     "@babel/types" "^7.4.4"
     "esutils" "^2.0.2"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
-  "integrity" "sha1-qRAutcre3z8x0IqezylK94J+op8="
-  "resolved" "https://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.9.6.tgz?cache=0&sync_timestamp=1588185905751&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.9.6.tgz"
-  "version" "7.9.6"
+"@babel/runtime-corejs3@^7.11.2":
+  "integrity" "sha1-FMP0yF3iK6iOjoZoXRPohhqC/oY="
+  "resolved" "https://registry.npm.taobao.org/@babel/runtime-corejs3/download/@babel/runtime-corejs3-7.13.10.tgz"
+  "version" "7.13.10"
+  dependencies:
+    "core-js-pure" "^3.0.0"
+    "regenerator-runtime" "^0.13.4"
+
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.11.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2":
+  "integrity" "sha1-R9QqV7YJX0Ro2kQDiP262L6/DX0="
+  "resolved" "https://registry.npm.taobao.org/@babel/runtime/download/@babel/runtime-7.13.10.tgz?cache=0&sync_timestamp=1615243551514&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2F%40babel%2Fruntime%2Fdownload%2F%40babel%2Fruntime-7.13.10.tgz"
+  "version" "7.13.10"
   dependencies:
     "regenerator-runtime" "^0.13.4"
 
@@ -3483,6 +3491,11 @@
   dependencies:
     "browserslist" "^4.8.5"
     "semver" "7.0.0"
+
+"core-js-pure@^3.0.0":
+  "integrity" "sha1-Z3syImcXK9SQ5EZGlveQy8NVvsU="
+  "resolved" "https://registry.npm.taobao.org/core-js-pure/download/core-js-pure-3.9.1.tgz?cache=0&sync_timestamp=1614537261976&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fcore-js-pure%2Fdownload%2Fcore-js-pure-3.9.1.tgz"
+  "version" "3.9.1"
 
 "core-js@^2.4.0":
   "integrity" "sha1-OIMUafmSK97Y7iHJ3EaYXgOZMIw="
@@ -11610,10 +11623,13 @@
   dependencies:
     "makeerror" "1.0.x"
 
-"wangeditor@^3.1.1":
-  "integrity" "sha1-+9PB1JdpI8nt67hbKdMLNVEq0Dk="
-  "resolved" "https://registry.npm.taobao.org/wangeditor/download/wangeditor-3.1.1.tgz"
-  "version" "3.1.1"
+"wangeditor@^4.6.10":
+  "integrity" "sha1-xc183JfD2fOP5GZyNCd0pUjGQbA="
+  "resolved" "https://registry.npm.taobao.org/wangeditor/download/wangeditor-4.6.10.tgz"
+  "version" "4.6.10"
+  dependencies:
+    "@babel/runtime" "^7.11.2"
+    "@babel/runtime-corejs3" "^7.11.2"
 
 "warning@^4.0.0":
   "integrity" "sha1-Fungd+uKhtavfWSqHgX9hbRnjKM="

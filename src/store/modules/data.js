@@ -23,7 +23,8 @@ const data = {
     oldManCase: [],
     announce: {
       announceAll: [],
-      announceEdit: []
+      announceEdit: [],
+      state: null
     },
     banner: {
       bannerAll: [],

@@ -9,20 +9,20 @@
                 <a-input v-model="search.title" placeholder="请输入"/>
               </a-form-item>
             </a-col>
-            <a-col style="display: flex;align-items: center">
-              <a-button type="primary" @click="searchs">查询</a-button>
-              <a-button type="default" style="margin-left: 30px" @click="deleteAll">重置</a-button>
-            </a-col>
+            <a-button type="primary" @click="searchs">查询</a-button>
+            <a-button type="default" @click="deleteAll" style="margin-left: 8px" >重置</a-button>
           </a-form>
         </a-row>
-        <a-row :gutter="48" style="margin-top: 1%">
+        <a-row :gutter="48" >
           <a-col :md="8" :sm="24">
-            <a-button type="primary" @click="getEditOrNew" >新建</a-button>
+            <div class="table-operator">
+              <a-button type="primary" @click="getEditOrNew" ><a-icon type="plus" />新建</a-button>
+            </div>
           </a-col>
         </a-row>
-        <a-row :gutter="48" style="margin-top: 30px;">
+        <a-row :gutter="48">
           <a-spin :spinning="loading">
-            <a-table :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
+            <a-table style="padding: 1%;padding-top: 0px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
               <div slot-scope="url" slot="urls">
                 <a-avatar shape="square" :size="120" :src="url" />
               </div>
@@ -48,6 +48,7 @@
 import { bannerSearch, bannerDelete, bannerUserSearch } from '@/api/announce'
 export default {
   mounted () {
+    this.pagination.pageSize = 10
     this.loading = true
     this.getdata()
   },

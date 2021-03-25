@@ -12,31 +12,31 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="发布对象">
                 <a-select v-model="search.roleId" placeholder="请选择" >
-                  <a-select-option :value="1">家属</a-select-option>
                   <a-select-option :value="2">志愿者</a-select-option>
+                  <a-select-option :value="1">家属</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
-            <a-col style="display: flex;align-items: center">
-              <a-button type="primary" @click="searchs">查询</a-button>
-              <a-button type="default" style="margin-left: 30px" @click="deleteAll">重置</a-button>
-            </a-col>
+            <a-button type="primary" @click="searchs">查询</a-button>
+            <a-button type="default" @click="deleteAll" style="margin-left: 8px" >重置</a-button>
           </a-form>
         </a-row>
-        <a-row :gutter="48" style="margin-top: 1%">
+        <a-row :gutter="48" >
           <a-col :md="8" :sm="24">
-            <a-button type="primary" @click="getCreate">新建</a-button>
+            <div class="table-operator">
+              <a-button type="primary" @click="getNewShow"><a-icon type="plus" />新建</a-button>
+            </div>
           </a-col>
         </a-row>
-        <a-row :gutter="48" style="margin-top: 30px;">
+        <a-row :gutter="48">
           <a-spin :spinning="loading">
-            <a-table :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
+            <a-table style="padding: 1%;padding-top: 0px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
               <div slot-scope="text" slot="roleId">
-                {{ (text === 1)?'家属':'志愿者' }}
+                {{ (text === 2)?'志愿者':'家属' }}
               </div>
               <div slot="action" slot-scope="text">
                 <span>
-                  <a>编辑</a>
+                  <a @click="getEdits(text)" >编辑</a>
                   <a-divider type="vertical" />
                   <a @click="chooseAnnouceId(text.id)">删除</a>
                 </span>
@@ -115,7 +115,16 @@ export default {
   },
   methods: {
     getCreate: function () {
-      console.log('准备跳转')
+      this.$emit('create')
+    },
+    getEdits: function (text) {
+      this.$store.state.data.announce.announceEdit = text
+      this.$store.state.data.announce.state = 2
+      this.$emit('create')
+    },
+    getNewShow: function () {
+      this.$store.state.data.announce.announceEdit = []
+      this.$store.state.data.announce.state = 1
       this.$emit('create')
     },
     searchs: function () {
