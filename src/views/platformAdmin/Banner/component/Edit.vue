@@ -85,7 +85,6 @@ export default {
       }
     },
     newCreates: function () {
-      this.datas.publisher = this.$store.state.user.name
       const banner = this.datas
       this.pageLoading = true
       bannerCreate({ ...banner, noticeId: this.noticeIds }).then(res => {
