@@ -59,11 +59,11 @@
 import { PageGoBackTop, ImageCropper } from '@/components'
 import { announceCreate, announceEdit } from '@/api/announce'
 import WangEditor from 'wangeditor'
+import { axios } from '@/utils/request'
 export default {
   mounted () {
     this.getDatas()
     const editor = new WangEditor('#demo')
-    editor.create()
     editor.config.onchange = (newHtml) => {
       this.announce.content = newHtml
       console.log(this.announce.content)
@@ -73,9 +73,20 @@ export default {
       editor.txt.html(this.announce.content)
     }
     editor.config.customUploadImg = function (resultFiles, insertImgFn) {
-      const url = this.imageUrl
-      insertImgFn(url)
+      const file = resultFiles
+      const param = new FormData() // 创建form对象
+      param.name = file.name// 通过append向form对象添加数据
+      // param.append('chunk','0');//添加form表单中其他数据
+      // console.log(param.get('tweetPic')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
+      const config = {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      } // 添加请求头
+      axios.post('https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo', param, config)
+        .then(response => {
+          console.log(response)
+        })
     }
+    editor.create()
   },
   data () {
     return {
@@ -101,6 +112,9 @@ export default {
     PageGoBackTop, ImageCropper
   },
   methods: {
+    getPhoto: function () {
+      console.log(1)
+    },
     editOut: function () {
       this.loadings = true
       const notice = this.announce
@@ -150,7 +164,6 @@ export default {
     },
     handleAvataruploaded (url) {
       this.imageUrl = url
-      console.lof(this.imageUrl)
     },
     getDatas: function () {
       this.announce = this.$store.state.data.announce.announceEdit

@@ -189,7 +189,7 @@ export default {
       adminCase({
         id: this.source.id
       }).then(res => {
-        console.log('案件')
+        console.log(res)
         this.datas = res.data.data
         if (res.data.data.length) {
           this.WatchPage.total = res.data.totalCount

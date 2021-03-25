@@ -1,7 +1,10 @@
 
 const data = {
   state: {
+    ids: '',
+    citys: '',
     roleId: 0,
+    allVolss: '',
     oldManData: {
       oldmanWatch: [],
       oldmanEdit: []

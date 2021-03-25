@@ -159,7 +159,6 @@ export default {
         this.loadingPage = false
         this.WatchPage.total = res.data.data.length
         this.WatchPage.pageSize = 10
-        console.log(res.data.data)
         return res.data.data
       }).catch(res => {
         this.loadingPage = false

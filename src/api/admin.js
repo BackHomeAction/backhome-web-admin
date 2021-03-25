@@ -7,7 +7,8 @@ const adminAPI = {
   adminUpdate: '/admin/update',
   adminDelete: '/admin/del',
   adminByid: '/admin/id',
-  adminCase: '/admin/case'
+  adminCase: '/admin/case',
+  adminPhoto: '/admin/photo'
 }
 // export function Case (params) {
 //   return request({
@@ -16,6 +17,13 @@ const adminAPI = {
 //     params
 //   })
 // }
+export function adminPhoto (data) {
+  return request({
+    url: adminAPI.adminPhoto,
+    method: 'post',
+    data
+  })
+}
 export function adminCase (params) {
   return request({
     url: adminAPI.adminCase,

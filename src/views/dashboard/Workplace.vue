@@ -20,7 +20,7 @@
           <!--          数据未插入-->
         </div>
         <div class="stat-item">
-          <a-statistic title="区域内志愿者" :value="138" suffix="/ 1625" />
+          <a-statistic title="区域内志愿者" :value="inAirVol" :suffix="'/'+allVols" />
         </div>
       </div>
     </template>
@@ -29,12 +29,13 @@
       <a-row :gutter="24">
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card
+            :loading="loading1"
             class="project-list"
             style="margin-bottom: 24px;justify-content: space-between"
             :bordered="false"
             title="进行中的任务"
             :body-style="{ padding: 0 }">
-            <a slot="extra">全部项目</a>
+            <a slot="extra" @click="toMission" >全部项目</a>
             <a-card-grid style="width:33.3%;" :key="index+1" v-for="(item,index) in warningList">
               <div>
                 <div style="width: 100%;">
@@ -42,16 +43,16 @@
                     src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/bcb349c7-8508-4c86-9e59-9dd212ca01c8.png"
                     :size="30"
                     style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  {{ '  ' + '  ' +item.district+ '走失老人' }}
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
                   <div style="margin-top: 5%">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item">
+                  <div class="project-item" @click="toMission(item.id)">
                     <a href="/#/"><span style="color: red">紧急</span></a>
-                    <span class="datetime" style="color:red" >{{ timewatch(item.lostTime) }}</span>
+                    <span class="datetime" style="color:#ff0000" >{{ timewatch(item.lostTime) }}</span>
                   </div>
                 </div>
               </div>
@@ -64,14 +65,14 @@
                     src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/e3dd47eb-2b0e-4c9f-979b-e775aa4678fa.png"
                     :size="30"
                     style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  {{ '  ' + '  ' +item.district+ '走失老人' }}
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
                   <div style="margin-top: 5%">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item">
+                  <div class="project-item" @click="toMission(item.id)">
                     <a href="/#/"><span style="color: #1AFA29">优先</span></a>
                     <span class="datetime" style="color: #1AFA29" >{{ timewatch(item.lostTime) }}</span>
                   </div>
@@ -82,14 +83,14 @@
               <div>
                 <div style="width: 100%;">
                   <a-avatar src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/5fa5d77f-d8ae-434f-9f82-c2f5ade35141.png" :size="30" style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  {{ '  ' + '  ' +item.district+ '走失老人' }}
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
                   <div style="margin-top: 5%">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item">
+                  <div class="project-item" @click="toMission(item.id)">
                     <a href="/#/">一般</a>
                     <span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span>
                   </div>
@@ -97,7 +98,7 @@
               </div>
             </a-card-grid>
           </a-card>
-          <a-card title="动态" :bordered="false">
+          <a-card :loading="loading2" title="动态" :bordered="false">
             <a-list>
               <a-list-item :key="index" v-for="(item, index) in missionLists">
                 <a-list-item-meta :description="timewatch(item.startTime)">
@@ -123,7 +124,7 @@
               暂时空
             </div>
           </a-card>
-          <a-card title="今日活跃志愿者" :bordered="false">
+          <a-card :loading="loading3" title="今日活跃志愿者" :bordered="false">
             <div class="members">
               <a-row>
                 <a-col :span="12" v-for="(item, index) in volnteerFire" :key="index">
@@ -147,9 +148,17 @@ import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { adminUser } from '@/api/admin'
 import { getMission } from '@/api/missionList'
-import { VolunteerFire } from '@/api/volunteerAdmin'
+import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 export default {
+  mounted () {
+    this.getAllData()
+    this.getUser()
+    // console.log(this.$store.state.data.citys)
+    VolunteerFire({ city: this.$store.state.data.citys }).then(res => {
+      this.inAirVol = res.data.length
+    })
+  },
   name: 'Workplace',
   components: {
     PageHeaderWrapper, dayjs
@@ -162,11 +171,16 @@ export default {
   data () {
     return {
       timeFix: timeFix(),
-      datas: [],
-      loading: true,
-      users: [{}],
+      loading1: true,
+      loading2: true,
+      loading3: true,
+      ids: '',
+      citys: '',
+      users: [],
+      allVols: '',
       missionLists: [],
       volnteerFire: [],
+      inAirVol: '',
       warningList: [],
       commonList: [],
       redList: []
@@ -177,34 +191,27 @@ export default {
       nickname: (state) => state.user.nickname,
       name: (state) => state.user.name,
       welcome: (state) => state.user.welcome
-    }),
-    currentUser () {
-      return {
-        name: 'Serati Ma',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
-      }
-    },
-    userInfo () {
-      return this.$store.getters.userInfo
-    }
-  },
-  created () {
-    this.user = this.userInfo
-    this.avatar = this.userInfo.avatar
-  },
-  mounted () {
-    this.getAllData()
+    })
   },
   methods: {
     getHour: function (time) {
       return dayjs().diff(time, 'hour')
     },
-    getAllData: function () {
+    getUser: function () {
       adminUser().then(res => {
         this.users = res.data
+        this.$store.state.data.ids = res.data.id
+        this.$store.state.data.citys = res.data.city
       })
-      getMission({ id: this.users.id }).then(res => {
+    },
+    getAllData: function () {
+      // console.log(this.$store.state.data.ids)
+      // 案件先不加id，等连上之后再说
+      getMission().then(res => {
         this.missionLists = res.data
+        if (res.data.length > 6) {
+          res.data = res.data.slice(0, 6)
+        }
         var a = 0
         var b = 0
         var c = 0
@@ -223,16 +230,28 @@ export default {
             c++
           }
         }
+        this.loading1 = false
+        this.loading2 = false
       })
       VolunteerFire({}).then(res => {
         this.volnteerFire = res.data
+        this.loading3 = false
+      })
+      getVolunteerList({ city: this.$store.state.data.citys }).then(res => {
+        console.log(res.data.totalCount)
+        this.$store.state.data.allVolss = res.data.totalCount
+        this.allVols = this.$store.state.data.allVolss
       })
     },
     timewatch: function (val) {
       return dayjs(val).fromNow(true)
     },
     toMission: function (text) {
-      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: text } })
+      if (text) {
+        this.$router.push({ path: '/missionAdmin/missionList/', query: { id: text } })
+      } else {
+        this.$router.push({ path: '/missionAdmin/missionList/' })
+      }
     },
     getHoursFromTime: function (time) {
       return dayjs().diff(time, 'hour')
