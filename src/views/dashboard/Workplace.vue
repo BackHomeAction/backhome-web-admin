@@ -17,6 +17,7 @@
       <div class="extra-content">
         <div class="stat-item">
           <a-statistic title="区域内开启案件" :value="823" suffix="/ 4856" />
+          <!--          数据未插入-->
         </div>
         <div class="stat-item">
           <a-statistic title="区域内志愿者" :value="138" suffix="/ 1625" />
@@ -34,10 +35,13 @@
             title="进行中的任务"
             :body-style="{ padding: 0 }">
             <a slot="extra">全部项目</a>
-            <a-card-grid style="width:33.3%;" :key="index" v-for="(item,index) in missionLists">
-              <div style="display: flex;">
-                <div style="width: 80%;">
-                  <a-avatar icon="user" style="margin-right: 3%"></a-avatar>
+            <a-card-grid style="width:33.3%;" :key="index+1" v-for="(item,index) in warningList">
+              <div>
+                <div style="width: 100%;">
+                  <a-avatar
+                    src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/bcb349c7-8508-4c86-9e59-9dd212ca01c8.png"
+                    :size="30"
+                    style="margin-right: 3%"></a-avatar>
                   {{ '  ' + '  ' +users.district+ '走失老人' }}
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
@@ -45,12 +49,50 @@
                   <div style="margin-top: 5%">
                     {{ '走失于' + item.place }}
                   </div>
-                  <br>
-                  <br>
-                  <div>一般</div>
+                  <div class="project-item">
+                    <a href="/#/"><span style="color: red">紧急</span></a>
+                    <span class="datetime" style="color:red" >{{ timewatch(item.lostTime) }}</span>
+                  </div>
                 </div>
-                <div style="width: 20%;margin-top: 50%">
-                  {{ timewatch(item.lostTime) }}
+              </div>
+            </a-card-grid>
+
+            <a-card-grid style="width:33.3%;" :key="(index+1)*(-1)" v-for="(item,index) in redList">
+              <div>
+                <div style="width: 100%;">
+                  <a-avatar
+                    src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/e3dd47eb-2b0e-4c9f-979b-e775aa4678fa.png"
+                    :size="30"
+                    style="margin-right: 3%"></a-avatar>
+                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  <div style="margin-top: 5%">
+                    {{ '于' +item.startTime }}
+                  </div>
+                  <div style="margin-top: 5%">
+                    {{ '走失于' + item.place }}
+                  </div>
+                  <div class="project-item">
+                    <a href="/#/"><span style="color: #1AFA29">优先</span></a>
+                    <span class="datetime" style="color: #1AFA29" >{{ timewatch(item.lostTime) }}</span>
+                  </div>
+                </div>
+              </div>
+            </a-card-grid>
+            <a-card-grid style="width:33.3%;" :key="(index+1)*(10)" v-for="(item,index) in commonList">
+              <div>
+                <div style="width: 100%;">
+                  <a-avatar src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/5fa5d77f-d8ae-434f-9f82-c2f5ade35141.png" :size="30" style="margin-right: 3%"></a-avatar>
+                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  <div style="margin-top: 5%">
+                    {{ '于' +item.startTime }}
+                  </div>
+                  <div style="margin-top: 5%">
+                    {{ '走失于' + item.place }}
+                  </div>
+                  <div class="project-item">
+                    <a href="/#/">一般</a>
+                    <span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span>
+                  </div>
                 </div>
               </div>
             </a-card-grid>
@@ -81,15 +123,16 @@
               暂时空
             </div>
           </a-card>
-          <a-card
-            title="今日活跃志愿者"
-            style="margin-bottom: 24px"
-            :bordered="false"
-            :body-style="{ padding: 0 }">
-            <div style="min-height: 400px;">
-              <div>
-                2312314124
-              </div>
+          <a-card title="今日活跃志愿者" :bordered="false">
+            <div class="members">
+              <a-row>
+                <a-col :span="12" v-for="(item, index) in volnteerFire" :key="index">
+                  <a>
+                    <a-avatar size="small" :src="item.avatarUrl"/>
+                    <span class="member">{{ item.nickName }}</span>
+                  </a>
+                </a-col>
+              </a-row>
             </div>
           </a-card>
         </a-col>
@@ -104,6 +147,7 @@ import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { adminUser } from '@/api/admin'
 import { getMission } from '@/api/missionList'
+import { VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 export default {
   name: 'Workplace',
@@ -118,16 +162,14 @@ export default {
   data () {
     return {
       timeFix: timeFix(),
-      datas: [
-        { title: '天玑哥哥捡钢筋' },
-        { title: '天玑哥哥捡钢筋' },
-        { title: '天玑哥哥捡钢筋' },
-        { title: '天玑哥哥捡钢筋' },
-        { title: '天玑哥哥捡钢筋' }
-      ],
+      datas: [],
       loading: true,
       users: [{}],
-      missionLists: []
+      missionLists: [],
+      volnteerFire: [],
+      warningList: [],
+      commonList: [],
+      redList: []
     }
   },
   computed: {
@@ -154,13 +196,36 @@ export default {
     this.getAllData()
   },
   methods: {
+    getHour: function (time) {
+      return dayjs().diff(time, 'hour')
+    },
     getAllData: function () {
       adminUser().then(res => {
         this.users = res.data
       })
       getMission({ id: this.users.id }).then(res => {
         this.missionLists = res.data
-        console.log(this.missionLists)
+        var a = 0
+        var b = 0
+        var c = 0
+        for (var i = 0; i < res.data.length; i++) {
+          var lostTime = dayjs().diff(res.data[i].lostTime, 'hour')
+          if (lostTime < 24) {
+            this.warningList[a] = res.data[i]
+            a++
+          }
+          if (lostTime >= 24 && lostTime < 48) {
+            this.redList[b] = res.data[i]
+            b++
+          }
+          if (lostTime >= 48) {
+            this.commonList[c] = res.data[i]
+            c++
+          }
+        }
+      })
+      VolunteerFire({}).then(res => {
+        this.volnteerFire = res.data
       })
     },
     timewatch: function (val) {

@@ -22,7 +22,7 @@
         </a-row>
         <a-row :gutter="48">
           <a-spin :spinning="loading">
-            <a-table :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
+            <a-table style="padding: 1%;padding-top: 0px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
               <div slot-scope="url" slot="urls">
                 <a-avatar shape="square" :size="120" :src="url" />
               </div>
@@ -48,6 +48,7 @@
 import { bannerSearch, bannerDelete, bannerUserSearch } from '@/api/announce'
 export default {
   mounted () {
+    this.pagination.pageSize = 10
     this.loading = true
     this.getdata()
   },

@@ -12,13 +12,11 @@
               <a-form-model-item label="APP ID" required>
                 <a-input v-model="datas.appId" :placeholder="placeholder"></a-input>
               </a-form-model-item>
-              <a-popconfirm title="是否重新赋值?" placement="bottom" @confirm="keyHeadUse" v-if="state === 2">
-                <a-form-model-item label="Access Key" required>
-                  <a-input v-model="datas.accessKey" disabled :placeholder="placeholder"></a-input>
-                </a-form-model-item>
-              </a-popconfirm>
+              <a-form-model-item label="Access Key" required v-if="state === 2">
+                <span>{{ datas.accessKey }} <div v-if="keyState === false">按下按钮来获取新的Key!</div> <a @click="copyFun(datas.accessKey)"><a-icon v-if="keyState" type="copy" /></a>{{ ' ' + ' ' }}<a-button @click="keyHeadUse">重生成</a-button></span>
+              </a-form-model-item>
               <a-form-model-item label="Access Key" required v-if="state === 1">
-                <a-input v-model="datas.accessKey" disabled :placeholder="placeholder"></a-input>
+                <span><div>{{ datas.accessKey }}</div>{{ ' ' + ' ' }}<a @click="copyFun(datas.accessKey)"><a-icon v-if="keyState" type="copy" /></a></span>
               </a-form-model-item>
               <a-form-model-item label="备注" >
                 <a-input v-model="datas.comment" :placeholder="placeholder"></a-input>
@@ -46,10 +44,18 @@
 import { PageGoBackTop } from '@/components'
 import { threeChange, threeNew } from '@/api/announce'
 export default {
+  beforeMount () {
+    this.getKey(48)
+  },
   mounted () {
     this.state = this.$store.state.data.openOut.state
     if (this.state === 2) {
       this.datas = this.$store.state.data.openOut.openEdit
+      this.keyState = false
+    }
+    if (this.datas === 1) {
+      this.keyState = true
+      this.getKeyHead()
     }
   },
   name: 'Edit',
@@ -59,7 +65,9 @@ export default {
       pageLoading: false,
       datas: [],
       editKey: false,
+      keyState: true,
       state: '',
+      keyPro: '',
       placeholder: '请输入',
       labelCol: { span: 5 },
       wrapperCol: { span: 14 }
@@ -87,9 +95,22 @@ export default {
       var a = t.length
       var n = ''
       for (var i = 0; i < e; i++) n += t.charAt(Math.floor(Math.random() * a))
-      console.log(n)
-      this.datas.accessKey = n
+      this.datas.accessKey = ''
+      this.keyPro = n
+      this.datas.accessKey = this.keyPro
       this.editKey = false
+    },
+    copyFun: function (text) {
+      var oInput = document.createElement('input')
+      oInput.value = text
+      document.body.appendChild(oInput)
+      oInput.select()
+      document.execCommand('Copy')
+      if (text) {
+        this.$message.info('复制成功')
+      } else {
+        this.$message.error('请先生成Key')
+      }
     },
     saveThree: function () {
       if (this.state === 2 && this.datas.name !== '' && this.datas.appId !== '' && this.datas.accessKey !== '') {
@@ -146,6 +167,7 @@ export default {
       }
     },
     keyHeadUse: function () {
+      this.keyState = true
       this.getKey(48)
       this.deleteAll()
     }

@@ -10,6 +10,20 @@ const announceApi = {
   AnnounceSearchByid: '/notice/id',
   ThreeAdmin: '/admin/thirdParty'
 }
+export function announceCreate (data) {
+  return request({
+    url: announceApi.Announce,
+    method: 'post',
+    data
+  })
+}
+export function announceEdit (data) {
+  return request({
+    url: announceApi.Announce,
+    method: 'put',
+    data
+  })
+}
 export function threeDelete (params) {
   return request({
     url: announceApi.ThreeAdmin,

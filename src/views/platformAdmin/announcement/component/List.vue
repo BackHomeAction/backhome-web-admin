@@ -12,8 +12,8 @@
             <a-col :md="8" :sm="24">
               <a-form-item label="发布对象">
                 <a-select v-model="search.roleId" placeholder="请选择" >
-                  <a-select-option :value="1">志愿者</a-select-option>
-                  <a-select-option :value="2">家属</a-select-option>
+                  <a-select-option :value="2">志愿者</a-select-option>
+                  <a-select-option :value="1">家属</a-select-option>
                 </a-select>
               </a-form-item>
             </a-col>
@@ -24,19 +24,19 @@
         <a-row :gutter="48" >
           <a-col :md="8" :sm="24">
             <div class="table-operator">
-              <a-button type="primary" @click="getCreate"><a-icon type="plus" />新建</a-button>
+              <a-button type="primary" @click="getNewShow"><a-icon type="plus" />新建</a-button>
             </div>
           </a-col>
         </a-row>
         <a-row :gutter="48">
           <a-spin :spinning="loading">
-            <a-table :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
+            <a-table style="padding: 1%;padding-top: 0px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
               <div slot-scope="text" slot="roleId">
-                {{ (text === 2)?'家属':'志愿者' }}
+                {{ (text === 2)?'志愿者':'家属' }}
               </div>
               <div slot="action" slot-scope="text">
                 <span>
-                  <a>编辑</a>
+                  <a @click="getEdits(text)" >编辑</a>
                   <a-divider type="vertical" />
                   <a @click="chooseAnnouceId(text.id)">删除</a>
                 </span>
@@ -115,7 +115,16 @@ export default {
   },
   methods: {
     getCreate: function () {
-      console.log('准备跳转')
+      this.$emit('create')
+    },
+    getEdits: function (text) {
+      this.$store.state.data.announce.announceEdit = text
+      this.$store.state.data.announce.state = 2
+      this.$emit('create')
+    },
+    getNewShow: function () {
+      this.$store.state.data.announce.announceEdit = []
+      this.$store.state.data.announce.state = 1
       this.$emit('create')
     },
     searchs: function () {

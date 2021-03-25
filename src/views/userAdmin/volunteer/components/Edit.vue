@@ -59,7 +59,7 @@
         <image-cropper v-model="showAvatarUploader" @success="handleAvataruploaded" />
       </a-spin>
     </a-card>
-    <a-modal :visible="visibles" title="删除提醒" @ok="deleteVolen">
+    <a-modal :visible="visibles" title="删除提醒" @ok="deleteVolen" @cancel="stopShow">
       <p>您确定要删除ID为{{ '' + record.id+ '' }}的志愿者么?</p>
     </a-modal>
   </div>
@@ -106,6 +106,9 @@ export default {
     }
   },
   methods: {
+    stopShow: function () {
+      this.visibles = false
+    },
     deleteVolen: function () {
       this.visibles = true
       volDelete({

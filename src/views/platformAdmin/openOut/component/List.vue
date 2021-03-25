@@ -5,21 +5,19 @@
         <a-form layout="inline">
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
-              <a-form-item label="对应应用名称">
+              <a-form-item label="应用名称">
                 <a-input v-model="search.name" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-button type="primary" @click="openSearch">查询</a-button>
             <a-button type="default" @click="deleteSearch" style="margin-left: 8px">重置</a-button>
           </a-row>
-
           <div class="table-operator">
             <a-button type="primary" @click="createThree"><a-icon type="plus" />新建</a-button>
           </div>
-
           <a-row :gutter="48" >
             <a-spin :spinning="pageLoading">
-              <a-table :columns="columns" :data-source="datas">
+              <a-table :pagination="pagination" style="padding: 1%;padding-top: 0px" :columns="columns" :data-source="datas">
                 <div slot="action" slot-scope="text">
                   <a @click="editThree(text)">编辑</a>
                   <a-divider type="vertical" />
@@ -42,6 +40,7 @@ import { threeDelete, threeSearch } from '@/api/announce'
 
 export default {
   mounted () {
+    this.pagination.pageSize = 10
     this.getData()
   },
   name: 'List',
@@ -49,6 +48,7 @@ export default {
     return {
       search: {},
       pageLoading: false,
+      pagination: {},
       chooseId: '',
       shows: false,
       columns: [
