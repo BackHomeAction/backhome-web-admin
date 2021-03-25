@@ -54,7 +54,7 @@ export function bannerSearch (params) {
 }
 export function bannerUserSearch (params) {
   return request({
-    url: announceApi.BannerAdmin,
+    url: announceApi.AnnounceSearch,
     method: 'get',
     params
   })

@@ -137,7 +137,6 @@ export default {
     getKeyHead: function () {
       if (this.state === 1) {
         this.getKey(48)
-        this.deleteAll()
       }
     },
     editKeyHeader: function () {
