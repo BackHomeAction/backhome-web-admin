@@ -47,7 +47,7 @@
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%">
+                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
                     {{ '走失于' + item.place }}
                   </div>
                   <div class="project-item" @click="toMission(item.id)">
@@ -69,7 +69,7 @@
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%">
+                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
                     {{ '走失于' + item.place }}
                   </div>
                   <div class="project-item" @click="toMission(item.id)">
@@ -87,7 +87,7 @@
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%">
+                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
                     {{ '走失于' + item.place }}
                   </div>
                   <div class="project-item" @click="toMission(item.id)">
@@ -100,13 +100,13 @@
           </a-card>
           <a-card :loading="loading2" title="动态" :bordered="false">
             <a-list>
-              <a-list-item :key="index" v-for="(item, index) in missionLists">
-                <a-list-item-meta :description="timewatch(item.startTime)">
-                  <a-avatar slot="avatar" :src="item.family.avatarUrl"/>
+              <a-list-item :key="index" v-for="(item, index) in dymicList">
+                <a-list-item-meta :description="timewatch(item.time)">
+                  <a-avatar slot="avatar" :src="item.avatarUrl"/>
                   <div slot="title" style="font-size: 12px" >
-                    <span style="font-weight: bold"> {{ item.family.name + '  ' }}</span><span>{{ '完成了任务'+ ' ' + ' ' }}</span><span><a @click="toMission(item.id)">{{ '#' + item.id }}</a></span>
+                    <span style="font-weight: bold"> {{ item.name + '  ' }}</span><span>{{ (item.actionId === 1 ? '发布案件' : (item.actionId === 2 ?'完成案件':(item.actionId === 3 ?'取消案件':(item.actionId === 4 ? '案件已归档':(item.actionId === 5 ? '志愿者加入案件':(item.actionId === 6 ? '志愿者退出案件':(item.actionId === 7 ? '志愿者匹配人脸成功':'无操作')))))))+ ' ' + ' ' }}</span><span><a @click="toMission(item.id)">{{ '#' + item.caseId }}</a></span>
                   </div>
-                  <div slot="description">{{ item.time }}</div>
+                  <!--                  <div slot="description">{{ item.time }}</div>-->
                 </a-list-item-meta>
               </a-list-item>
             </a-list>
@@ -146,17 +146,22 @@
 import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { adminUser } from '@/api/admin'
+import { adminUser, adminDymic } from '@/api/admin'
 import { getMission } from '@/api/missionList'
 import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 export default {
   mounted () {
-    this.getUser()
-    this.getAllData()
-    VolunteerFire({ city: this.$store.state.data.citys }).then(res => {
-      this.inAirVol = res.data.length
+    adminUser().then(res => {
+      this.$store.state.data.users = res.data
+      this.users = this.$store.state.data.users
+      this.$store.state.data.ids = this.users.district
+      this.$store.state.data.citys = this.users.citys
+      this.getAllData(res.data.district, res.data.citys)
     })
+    console.log(this.$store.state.data.ids)
+    console.log(this.$store.state.data.citys)
+    this.getDymic()
   },
   name: 'Workplace',
   components: {
@@ -182,7 +187,8 @@ export default {
       inAirVol: '',
       warningList: [],
       commonList: [],
-      redList: []
+      redList: [],
+      dymicList: []
     }
   },
   computed: {
@@ -193,25 +199,23 @@ export default {
     })
   },
   methods: {
+    getDymic: function () {
+      adminDymic().then(res => {
+        this.dymicList = res.data.data
+        console.log(this.dymicList)
+      })
+    },
     getHour: function (time) {
       return dayjs().diff(time, 'hour')
     },
     getUser: function () {
-      adminUser().then(res => {
-        this.users = res.data
-        this.$store.state.data.ids = res.data.district
-        console.log(this.$store.state.data.ids)
-        this.$store.state.data.citys = res.data.city
-      })
+
     },
-    getAllData: function () {
-      // console.log(this.$store.state.data.ids)
-      // 案件先不加id，等连上之后再说
-      console.log(this.$store.state.data.ids)
-      getMission({ district: this.$store.state.data.ids }).then(res => {
-        console.log(res)
+    getAllData: function (district, city) {
+      getMission({ district: district }).then(res => {
+        // console.log(res)
         this.missionLists = res.data
-        this.missionLists = this.missionLists.slice(0, 5)
+        this.missionLists = this.missionLists.slice(0, 7)
         if (res.data.length > 6) {
           res.data = res.data.slice(0, 6)
         }
@@ -240,9 +244,12 @@ export default {
         this.volnteerFire = res.data
         this.loading3 = false
       })
-      getVolunteerList({ city: this.$store.state.data.citys }).then(res => {
+      getVolunteerList({ city: city }).then(res => {
         this.$store.state.data.allVolss = res.data.totalCount
         this.allVols = this.$store.state.data.allVolss
+      })
+      VolunteerFire({ city: city }).then(res => {
+        this.inAirVol = res.data.length
       })
     },
     timewatch: function (val) {
@@ -365,10 +372,7 @@ export default {
   }
  .textMore{
    overflow: hidden;
-   text-overflow: ellipsis;
-   display: -webkit-box;
-   -webkit-line-clamp: 2;
-   -webkit-box-orient: vertical;
+   text-overflow:ellipsis; white-space: nowrap;
  }
   .mobile {
 

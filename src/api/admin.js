@@ -8,7 +8,15 @@ const adminAPI = {
   adminDelete: '/admin/del',
   adminByid: '/admin/id',
   adminCase: '/admin/case',
-  adminPhoto: '/admin/photo'
+  adminPhoto: '/admin/photo',
+  adminDynimic: '/admin/dynamic'
+}
+export function adminDymic (params) {
+  return request({
+    url: adminAPI.adminDynimic,
+    method: 'get',
+    params
+  })
 }
 // export function Case (params) {
 //   return request({

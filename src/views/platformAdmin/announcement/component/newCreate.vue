@@ -59,6 +59,8 @@
 import { PageGoBackTop, ImageCropper } from '@/components'
 import { announceCreate, announceEdit } from '@/api/announce'
 import WangEditor from 'wangeditor'
+import storage from 'store'
+import { ACCESS_TOKEN } from '@/store/mutation-types'
 import { axios } from '@/utils/request'
 export default {
   mounted () {
@@ -72,19 +74,21 @@ export default {
     if (this.state === 2) {
       editor.txt.html(this.announce.content)
     }
+    const token = storage.get(ACCESS_TOKEN)
+    const url = 'https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo'
+    // editor.config.uploadImgServer = 'https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo'
     editor.config.customUploadImg = function (resultFiles, insertImgFn) {
-      const file = resultFiles
-      const param = new FormData() // 创建form对象
-      param.name = file.name// 通过append向form对象添加数据
-      // param.append('chunk','0');//添加form表单中其他数据
-      // console.log(param.get('tweetPic')); //FormData私有类对象，访问不到，可以通过get判断值是否传进去
+      const formData = new FormData()
+      formData.append('data', resultFiles[0])
       const config = {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      } // 添加请求头
-      axios.post('https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo', param, config)
-        .then(response => {
-          console.log(response)
-        })
+        headers: {
+          'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime(),
+          Authorization: token
+        }
+      }
+      axios.post(url, formData, config).then(function (res) {
+        console.log(res)
+      })
     }
     editor.create()
   },

@@ -5,6 +5,7 @@ const data = {
     citys: '',
     roleId: 0,
     allVolss: '',
+    users: [],
     oldManData: {
       oldmanWatch: [],
       oldmanEdit: []
