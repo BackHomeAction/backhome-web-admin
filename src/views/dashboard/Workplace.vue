@@ -51,8 +51,8 @@
                     {{ '走失于' + item.place }}
                   </div>
                   <div class="project-item" @click="toMission(item.id)">
-                    <a href="/#/"><span style="color: red">紧急</span></a>
-                    <span class="datetime" style="color:#ff0000" >{{ timewatch(item.lostTime) }}</span>
+                    <a><span style="color: red">紧急</span></a>
+                    <a><span class="datetime" style="color:#ff0000" >{{ timewatch(item.lostTime) }}</span></a>
                   </div>
                 </div>
               </div>
@@ -73,7 +73,7 @@
                     {{ '走失于' + item.place }}
                   </div>
                   <div class="project-item" @click="toMission(item.id)">
-                    <a href="/#/"><span style="color: #1AFA29">优先</span></a>
+                    <a><span style="color: #1AFA29">优先</span></a>
                     <span class="datetime" style="color: #1AFA29" >{{ timewatch(item.lostTime) }}</span>
                   </div>
                 </div>
@@ -91,8 +91,8 @@
                     {{ '走失于' + item.place }}
                   </div>
                   <div class="project-item" @click="toMission(item.id)">
-                    <a href="/#/">一般</a>
-                    <span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span>
+                    <a>一般</a>
+                    <a><span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span></a>
                   </div>
                 </div>
               </div>
@@ -152,9 +152,8 @@ import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 export default {
   mounted () {
-    this.getAllData()
     this.getUser()
-    // console.log(this.$store.state.data.citys)
+    this.getAllData()
     VolunteerFire({ city: this.$store.state.data.citys }).then(res => {
       this.inAirVol = res.data.length
     })
@@ -200,15 +199,19 @@ export default {
     getUser: function () {
       adminUser().then(res => {
         this.users = res.data
-        this.$store.state.data.ids = res.data.id
+        this.$store.state.data.ids = res.data.district
+        console.log(this.$store.state.data.ids)
         this.$store.state.data.citys = res.data.city
       })
     },
     getAllData: function () {
       // console.log(this.$store.state.data.ids)
       // 案件先不加id，等连上之后再说
-      getMission().then(res => {
+      console.log(this.$store.state.data.ids)
+      getMission({ district: this.$store.state.data.ids }).then(res => {
+        console.log(res)
         this.missionLists = res.data
+        this.missionLists = this.missionLists.slice(0, 5)
         if (res.data.length > 6) {
           res.data = res.data.slice(0, 6)
         }
@@ -238,7 +241,6 @@ export default {
         this.loading3 = false
       })
       getVolunteerList({ city: this.$store.state.data.citys }).then(res => {
-        console.log(res.data.totalCount)
         this.$store.state.data.allVolss = res.data.totalCount
         this.allVols = this.$store.state.data.allVolss
       })
