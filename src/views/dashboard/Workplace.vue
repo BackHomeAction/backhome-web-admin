@@ -130,7 +130,7 @@
                 <a-col :span="12" v-for="(item, index) in volnteerFire" :key="index">
                   <a>
                     <a-avatar size="small" :src="item.avatarUrl"/>
-                    <span class="member">{{ item.nickName }}</span>
+                    <span class="member"><div class="textMore">{{ item.nickName }}</div></span>
                   </a>
                 </a-col>
               </a-row>
@@ -363,7 +363,13 @@ export default {
       }
     }
   }
-
+ .textMore{
+   overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-line-clamp: 2;
+   -webkit-box-orient: vertical;
+ }
   .mobile {
 
     .project-list {
