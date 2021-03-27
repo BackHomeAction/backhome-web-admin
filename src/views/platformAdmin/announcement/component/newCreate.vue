@@ -78,6 +78,7 @@ export default {
     const url = 'https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo'
     // editor.config.uploadImgServer = 'https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo'
     editor.config.customUploadImg = function (resultFiles, insertImgFn) {
+      console.log(resultFiles)
       const formData = new FormData()
       formData.append('data', resultFiles[0])
       const config = {
