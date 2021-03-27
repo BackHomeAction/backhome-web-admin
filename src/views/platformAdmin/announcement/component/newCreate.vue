@@ -79,17 +79,19 @@ export default {
     // editor.config.uploadImgServer = 'https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo'
     editor.config.customUploadImg = function (resultFiles, insertImgFn) {
       console.log(resultFiles)
-      const formData = new FormData()
-      formData.append('data', resultFiles[0])
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime(),
-          Authorization: token
-        }
-      }
-      axios.post(url, formData, config).then(function (res) {
-        console.log(res)
-      })
+      //不会写，太惨了
+      // console.log(resultFiles)
+      // const formData = new FormData()
+      // formData.append('data', resultFiles[0])
+      // const config = {
+      //   headers: {
+      //     'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime(),
+      //     Authorization: token
+      //   }
+      // }
+      // axios.post(url, formData, config).then(function (res) {
+      //   console.log(res)
+      // })
     }
     editor.create()
   },
