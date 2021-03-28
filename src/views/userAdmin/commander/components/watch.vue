@@ -147,8 +147,9 @@ export default {
         this.missionGet(this.source.id)
         this.orLoading = false
       } else {
+        console.log(this.source.district)
         adminCase({
-          id: this.source.id,
+          district: this.source.district,
           state: e.target.value
         }).then(res => {
           this.datas = res.data.data
@@ -187,9 +188,9 @@ export default {
     missionGet: function (e) {
       this.orLoading = true
       adminCase({
-        id: this.source.id
+        district: this.source.district
       }).then(res => {
-        console.log('案件')
+        console.log(res)
         this.datas = res.data.data
         if (res.data.data.length) {
           this.WatchPage.total = res.data.totalCount

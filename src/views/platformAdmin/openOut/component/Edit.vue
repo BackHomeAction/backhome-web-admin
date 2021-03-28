@@ -7,7 +7,7 @@
           <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
             <a-col :span="15" >
               <a-form-model-item label="应用名称" required>
-                <a-input v-model="datas.name" @change="getKeyHead" :placeholder="placeholder" ></a-input>
+                <a-input v-model="datas.name" :placeholder="placeholder" ></a-input>
               </a-form-model-item>
               <a-form-model-item label="APP ID" required>
                 <a-input v-model="datas.appId" :placeholder="placeholder"></a-input>

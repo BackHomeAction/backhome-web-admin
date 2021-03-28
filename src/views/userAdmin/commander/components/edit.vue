@@ -11,7 +11,7 @@
             <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
           </a-col>
           <a-col :md="12" :xl="14">
-            <a-form-model :model="form[0]" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
+            <a-form-model :model="form[0]" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
               <a-form-model-item label="账号" required >
                 <a-input v-model="form.userName" placeholder="请输入(登录账号)" />
               </a-form-model-item>
@@ -105,14 +105,6 @@ export default {
       wrapperCol: { span: 14 },
       adminBean: [],
       regionPoxy: [],
-      rules: {
-        name: [
-          { required: true, trigger: 'blur' }
-        ],
-        idcard: [
-          { required: true, trigger: 'blur' }
-        ]
-      },
       form: []
     }
   },

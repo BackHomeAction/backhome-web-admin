@@ -11,7 +11,7 @@
             </a-button>
           </a-col>
           <a-col :md="12" :xl="14">
-            <a-form-model :model="form" :rules="rules" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
+            <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
               <a-form-model-item label="姓名" required prop="name">
                 <a-input v-model="form.name" placeholder="请输入" />
               </a-form-model-item>
@@ -94,14 +94,6 @@ export default {
         region: undefined,
         sex: undefined,
         state: 1
-      },
-      rules: {
-        name: [
-          { required: true, trigger: 'blur' }
-        ],
-        idcard: [
-          { required: true, trigger: 'blur' }
-        ]
       }
     }
   },

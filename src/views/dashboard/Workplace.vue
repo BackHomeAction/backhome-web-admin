@@ -20,7 +20,7 @@
           <!--          数据未插入-->
         </div>
         <div class="stat-item">
-          <a-statistic title="区域内志愿者" :value="138" suffix="/ 1625" />
+          <a-statistic title="区域内志愿者" :value="inAirVol" :suffix="'/'+allVols" />
         </div>
       </div>
     </template>
@@ -29,12 +29,13 @@
       <a-row :gutter="24">
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card
+            :loading="loading1"
             class="project-list"
             style="margin-bottom: 24px;justify-content: space-between"
             :bordered="false"
             title="进行中的任务"
             :body-style="{ padding: 0 }">
-            <a slot="extra">全部项目</a>
+            <a slot="extra" @click="toMission" >全部项目</a>
             <a-card-grid style="width:33.3%;" :key="index+1" v-for="(item,index) in warningList">
               <div>
                 <div style="width: 100%;">
@@ -42,16 +43,16 @@
                     src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/bcb349c7-8508-4c86-9e59-9dd212ca01c8.png"
                     :size="30"
                     style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  {{ '  ' + '  ' +item.district+ '走失老人' }}
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%">
+                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item">
-                    <a href="/#/"><span style="color: red">紧急</span></a>
-                    <span class="datetime" style="color:red" >{{ timewatch(item.lostTime) }}</span>
+                  <div class="project-item" @click="toMission(item.id)">
+                    <a><span style="color: red">紧急</span></a>
+                    <a><span class="datetime" style="color:#ff0000" >{{ timewatch(item.lostTime) }}</span></a>
                   </div>
                 </div>
               </div>
@@ -64,15 +65,15 @@
                     src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/e3dd47eb-2b0e-4c9f-979b-e775aa4678fa.png"
                     :size="30"
                     style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  {{ '  ' + '  ' +item.district+ '走失老人' }}
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%">
+                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item">
-                    <a href="/#/"><span style="color: #1AFA29">优先</span></a>
+                  <div class="project-item" @click="toMission(item.id)">
+                    <a><span style="color: #1AFA29">优先</span></a>
                     <span class="datetime" style="color: #1AFA29" >{{ timewatch(item.lostTime) }}</span>
                   </div>
                 </div>
@@ -82,30 +83,30 @@
               <div>
                 <div style="width: 100%;">
                   <a-avatar src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/5fa5d77f-d8ae-434f-9f82-c2f5ade35141.png" :size="30" style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +users.district+ '走失老人' }}
+                  {{ '  ' + '  ' +item.district+ '走失老人' }}
                   <div style="margin-top: 5%">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%">
+                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item">
-                    <a href="/#/">一般</a>
-                    <span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span>
+                  <div class="project-item" @click="toMission(item.id)">
+                    <a>一般</a>
+                    <a><span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span></a>
                   </div>
                 </div>
               </div>
             </a-card-grid>
           </a-card>
-          <a-card title="动态" :bordered="false">
+          <a-card :loading="loading2" title="动态" :bordered="false">
             <a-list>
-              <a-list-item :key="index" v-for="(item, index) in missionLists">
-                <a-list-item-meta :description="timewatch(item.startTime)">
-                  <a-avatar slot="avatar" :src="item.family.avatarUrl"/>
+              <a-list-item :key="index" v-for="(item, index) in dymicList">
+                <a-list-item-meta :description="timewatch(item.time)">
+                  <a-avatar slot="avatar" :src="item.avatarUrl"/>
                   <div slot="title" style="font-size: 12px" >
-                    <span style="font-weight: bold"> {{ item.family.name + '  ' }}</span><span>{{ '完成了任务'+ ' ' + ' ' }}</span><span><a @click="toMission(item.id)">{{ '#' + item.id }}</a></span>
+                    <span style="font-weight: bold"> {{ item.name + '  ' }}</span><span>{{ (item.actionId === 1 ? '发布案件' : (item.actionId === 2 ?'完成案件':(item.actionId === 3 ?'取消案件':(item.actionId === 4 ? '案件已归档':(item.actionId === 5 ? '志愿者加入案件':(item.actionId === 6 ? '志愿者退出案件':(item.actionId === 7 ? '志愿者匹配人脸成功':'无操作')))))))+ ' ' + ' ' }}</span><span><a @click="toMission(item.id)">{{ '#' + item.caseId }}</a></span>
                   </div>
-                  <div slot="description">{{ item.time }}</div>
+                  <!--                  <div slot="description">{{ item.time }}</div>-->
                 </a-list-item-meta>
               </a-list-item>
             </a-list>
@@ -123,13 +124,13 @@
               暂时空
             </div>
           </a-card>
-          <a-card title="今日活跃志愿者" :bordered="false">
+          <a-card :loading="loading3" title="今日活跃志愿者" :bordered="false">
             <div class="members">
               <a-row>
                 <a-col :span="12" v-for="(item, index) in volnteerFire" :key="index">
                   <a>
                     <a-avatar size="small" :src="item.avatarUrl"/>
-                    <span class="member">{{ item.nickName }}</span>
+                    <span class="member"><div class="textMore">{{ item.nickName }}</div></span>
                   </a>
                 </a-col>
               </a-row>
@@ -145,11 +146,23 @@
 import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { adminUser } from '@/api/admin'
+import { adminUser, adminDymic } from '@/api/admin'
 import { getMission } from '@/api/missionList'
-import { VolunteerFire } from '@/api/volunteerAdmin'
+import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 export default {
+  mounted () {
+    adminUser().then(res => {
+      this.$store.state.data.users = res.data
+      this.users = this.$store.state.data.users
+      this.$store.state.data.ids = this.users.district
+      this.$store.state.data.citys = this.users.citys
+      this.getAllData(res.data.district, res.data.citys)
+    })
+    console.log(this.$store.state.data.ids)
+    console.log(this.$store.state.data.citys)
+    this.getDymic()
+  },
   name: 'Workplace',
   components: {
     PageHeaderWrapper, dayjs
@@ -162,14 +175,20 @@ export default {
   data () {
     return {
       timeFix: timeFix(),
-      datas: [],
-      loading: true,
-      users: [{}],
+      loading1: true,
+      loading2: true,
+      loading3: true,
+      ids: '',
+      citys: '',
+      users: [],
+      allVols: '',
       missionLists: [],
       volnteerFire: [],
+      inAirVol: '',
       warningList: [],
       commonList: [],
-      redList: []
+      redList: [],
+      dymicList: []
     }
   },
   computed: {
@@ -177,34 +196,29 @@ export default {
       nickname: (state) => state.user.nickname,
       name: (state) => state.user.name,
       welcome: (state) => state.user.welcome
-    }),
-    currentUser () {
-      return {
-        name: 'Serati Ma',
-        avatar: 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'
-      }
-    },
-    userInfo () {
-      return this.$store.getters.userInfo
-    }
-  },
-  created () {
-    this.user = this.userInfo
-    this.avatar = this.userInfo.avatar
-  },
-  mounted () {
-    this.getAllData()
+    })
   },
   methods: {
+    getDymic: function () {
+      adminDymic().then(res => {
+        this.dymicList = res.data.data
+        console.log(this.dymicList)
+      })
+    },
     getHour: function (time) {
       return dayjs().diff(time, 'hour')
     },
-    getAllData: function () {
-      adminUser().then(res => {
-        this.users = res.data
-      })
-      getMission({ id: this.users.id }).then(res => {
+    getUser: function () {
+
+    },
+    getAllData: function (district, city) {
+      getMission({ district: district }).then(res => {
+        // console.log(res)
         this.missionLists = res.data
+        this.missionLists = this.missionLists.slice(0, 7)
+        if (res.data.length > 6) {
+          res.data = res.data.slice(0, 6)
+        }
         var a = 0
         var b = 0
         var c = 0
@@ -223,16 +237,30 @@ export default {
             c++
           }
         }
+        this.loading1 = false
+        this.loading2 = false
       })
       VolunteerFire({}).then(res => {
         this.volnteerFire = res.data
+        this.loading3 = false
+      })
+      getVolunteerList({ city: city }).then(res => {
+        this.$store.state.data.allVolss = res.data.totalCount
+        this.allVols = this.$store.state.data.allVolss
+      })
+      VolunteerFire({ city: city }).then(res => {
+        this.inAirVol = res.data.length
       })
     },
     timewatch: function (val) {
       return dayjs(val).fromNow(true)
     },
     toMission: function (text) {
-      this.$router.push({ path: '/missionAdmin/missionList/', query: { id: text } })
+      if (text) {
+        this.$router.push({ path: '/missionAdmin/missionList/', query: { id: text } })
+      } else {
+        this.$router.push({ path: '/missionAdmin/missionList/' })
+      }
     },
     getHoursFromTime: function (time) {
       return dayjs().diff(time, 'hour')
@@ -342,7 +370,10 @@ export default {
       }
     }
   }
-
+ .textMore{
+   overflow: hidden;
+   text-overflow:ellipsis; white-space: nowrap;
+ }
   .mobile {
 
     .project-list {
