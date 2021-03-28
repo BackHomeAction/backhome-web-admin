@@ -59,9 +59,6 @@
 import { PageGoBackTop, ImageCropper } from '@/components'
 import { announceCreate, announceEdit } from '@/api/announce'
 import WangEditor from 'wangeditor'
-import storage from 'store'
-import { ACCESS_TOKEN } from '@/store/mutation-types'
-import { axios } from '@/utils/request'
 export default {
   mounted () {
     this.getDatas()
@@ -74,25 +71,7 @@ export default {
     if (this.state === 2) {
       editor.txt.html(this.announce.content)
     }
-    const token = storage.get(ACCESS_TOKEN)
-    const url = 'https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo'
-    // editor.config.uploadImgServer = 'https://fwwb2020-app-volunteer.tgucsdn.com/admin/photo'
-    editor.config.customUploadImg = function (resultFiles, insertImgFn) {
-      console.log(resultFiles)
-      //不会写，太惨了
-      // console.log(resultFiles)
-      // const formData = new FormData()
-      // formData.append('data', resultFiles[0])
-      // const config = {
-      //   headers: {
-      //     'Content-Type': 'multipart/form-data;boundary = ' + new Date().getTime(),
-      //     Authorization: token
-      //   }
-      // }
-      // axios.post(url, formData, config).then(function (res) {
-      //   console.log(res)
-      // })
-    }
+    editor.config.customUploadImg = function (resultFiles, insertImgFn) {}
     editor.create()
   },
   data () {
