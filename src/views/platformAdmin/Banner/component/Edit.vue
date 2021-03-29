@@ -6,11 +6,19 @@
         <a-form-model layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" :model="datas[0]" >
           <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
             <a-col :span="12" >
-              <a-form-model-item v-if="state === 1" label="对应公告" has-feedback :validate-status="getInputShow" help="匹配到多个公告或公告不存在">
-                <a-input v-model="datas.title" :placeholder="placeholder" @change="noticeIdSearch"></a-input>
-              </a-form-model-item>
-              <a-form-model-item v-if="state === 2" label="对应公告" >
-                <a-input v-model="datas.title" :placeholder="placeholder" @change="noticeIdSearch"></a-input>
+              <a-form-model-item label="对应公告">
+                <a-select
+                  show-search
+                  :show-arrow="false"
+                  placeholder="input search text"
+                  :value="datas.title"
+                  @search="noticeIdSearch"
+                  :filter-option="false"
+                  @change="chooseSelect">
+                  <a-select-option v-for="(item,key) in dataListScource" :key="key" >
+                    {{ item }}
+                  </a-select-option>
+                </a-select>
               </a-form-model-item>
               <a-form-model-item label="Banner 图片" >
                 <a-button @click="showPhoto" :loading="photoLoad"><a-icon type="arrow-up" />上传图片</a-button>
@@ -54,13 +62,14 @@ export default {
       announce: {},
       loadings: false,
       state: 1,
-      getInputShow: 'error',
+      dataListScource: [],
       pageLoading: false,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
       placeholder: '请输入',
       getPhoto: false,
       datas: [],
+      openSelect: false,
       photoLoad: false
     }
   },
@@ -117,6 +126,9 @@ export default {
         })
       }
     },
+    lab: function () {
+      console.log('1')
+    },
     deleteAll: function () {
       if (this.state === 1) {
         this.datas = []
@@ -143,20 +155,21 @@ export default {
       this.photoLoad = false
     },
     noticeIdSearch: function (titles) {
-      if (this.state === 1 && this.datas.title) {
-        // const search = this.datas
+      console.log(titles)
+      if (titles) {
         listSearch({
-          title: this.datas.title
+          title: titles
         }).then(res => {
-          if (res.data.data[0] && !(res.data.data[1]) && (this.datas.title === res.data.data[0].title)) {
-            this.noticeIds = res.data.data[0].id
-            this.getInputShow = 'success'
-          } else {
-            this.getInputShow = 'error'
-            this.noticeIds = ''
+          console.log(res)
+          for (var i = 0; i < res.data.totalCount; i++) {
+            this.dataListScource[i] = res.data.data[i].title
           }
+          console.log(this.dataListScource)
         })
       }
+    },
+    chooseSelect: function (titles) {
+      this.datas.title = titles
     }
   },
   name: 'NewCreate'

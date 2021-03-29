@@ -21,7 +21,7 @@
               <a-form-model-item label="备注" >
                 <a-input v-model="datas.comment" :placeholder="placeholder"></a-input>
               </a-form-model-item>
-              <a-form-model-item label=" ">
+              <a-form-model-item :wrapper-col="{ span: 14, offset: 5 }">
                 <a-button v-if="state === 2" @click="saveThree" type="primary" style="margin-right: 20px">
                   保存
                 </a-button>
@@ -83,6 +83,7 @@ export default {
     deleteAll: function () {
       if (this.state === 1) {
         this.datas = []
+        this.getKey(48)
       }
       if (this.state === 2) {
         this.datas = []
