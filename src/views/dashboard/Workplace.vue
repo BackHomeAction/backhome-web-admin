@@ -7,7 +7,7 @@
         </div>
         <div class="content">
           <div class="content-title">
-            {{ timeFix }}，{{ name }}！
+            {{ timeFix }}，{{ name }}!
           </div>
           <div v-if="users">{{ (users.roleId === 3) ? '区域指战员' +'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) : ((users.roleId=== 5)?'总指战员':'系统指战员') }}</div>
         </div>
@@ -17,7 +17,6 @@
       <div class="extra-content">
         <div class="stat-item">
           <a-statistic title="区域内开启案件" :value="lengths[1]" :suffix="'/'+lengths[0]" />
-          <!--          数据未插入-->
         </div>
         <div class="stat-item">
           <a-statistic title="区域内志愿者" :value="inAirVol" :suffix="'/'+allVols" />
@@ -188,7 +187,7 @@ export default {
       users: [],
       allVols: '',
       missionLists: [],
-      missionShow: true,
+      missionShow: false,
       volnteerFire: [],
       inAirVol: '',
       warningList: [],
@@ -208,7 +207,7 @@ export default {
   methods: {
     getDymic: function () {
       adminDymic().then(res => {
-        this.dymicList = res.data.data
+        this.dymicList = res.data.data.slice(0, 7)
       }).finally(() => {
         this.loading2 = false
       })
@@ -220,9 +219,13 @@ export default {
 
     },
     getAllData: function (district, city) {
+      if (this.users.roleId !== 3) {
+        district = null
+      }
       getMissionListAll({ district: district }).then(res => {
-        if (res.data.length === 0) {
-          this.missionShow = false
+        console.log(res)
+        if (res.data.length) {
+          this.missionShow = true
         }
         this.missionNum(res)
         this.missionLists = res.data

@@ -64,9 +64,6 @@
         </a-row>
       </a-spin>
     </a-card>
-    <a-modal v-model="visible" title="权限警告" @ok="handleOk">
-      <p>系统管理员不得更改超级管理员信息!!!</p>
-    </a-modal>
     <a-modal :visible="visibles" title="删除提醒" @ok="deleteAdmin" @cancel="cancel">
       <p>您确定要删除ID为{{ '' + form.id+ '' }}的指战员么?</p>
     </a-modal>
@@ -95,7 +92,6 @@ export default {
   },
   data () {
     return {
-      visible: false,
       changeVis: false,
       loadingPage: false,
       visibles: false,
