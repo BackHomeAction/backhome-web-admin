@@ -30,7 +30,7 @@
         </a-row>
         <a-row :gutter="48">
           <a-spin :spinning="loading">
-            <a-table style="padding: 1%;padding-top: 0px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
+            <a-table style="padding: 0 24px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
               <div slot-scope="text" slot="roleId">
                 {{ (text === 2)?'志愿者':'家属' }}
               </div>
@@ -58,9 +58,12 @@ export default {
   mounted () {
     this.pagination.pageSize = 10
     this.pagination.total = 80
+    this.loading = true
     announSearch().then(res => {
       this.dataOflist = res.data.data
       this.$store.state.data.announce.announceAll = res.data.data
+    }).finally(() => {
+      this.loading = false
     })
   },
   name: 'List',
@@ -123,7 +126,7 @@ export default {
       this.$emit('create')
     },
     getNewShow: function () {
-      this.$store.state.data.announce.announceEdit = []
+      this.$store.state.data.announce.announceEdit = {}
       this.$store.state.data.announce.state = 1
       this.$emit('create')
     },
@@ -136,8 +139,7 @@ export default {
           console.log(res)
           this.dataOflist = []
           this.dataOflist = res.data.data
-          this.loading = false
-        }).catch(res => {
+        }).finally(() => {
           this.loading = false
         })
       }

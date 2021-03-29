@@ -77,13 +77,13 @@ export const asyncRouterMap = [
         children: [
           {
             path: '/missionAdmin/missionList',
-            name: 'missionList',
+            name: 'MissionList',
             component: () => import('@/views/missionAdmin/missionList/index'),
             meta: { title: '任务列表', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
             path: '/missionAdmin/faceRecord',
-            name: 'faceRecord',
+            name: 'FaceRecord',
             component: () => import('@/views/missionAdmin/faceRecord/index'),
             meta: { title: '人脸识别记录', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           }

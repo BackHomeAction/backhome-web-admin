@@ -29,6 +29,7 @@ import ArticleListContent from '@/components/ArticleListContent'
 import RegionSelector from '@/components/RegionSelector'
 import PageGoBackTop from '@/components/PageGoBackTop'
 import ImageCropper from '@/components/ImageCropper'
+import RichTextEditor from '@/components/RichTextEditor'
 
 import Dialog from '@/components/Dialog'
 
@@ -60,6 +61,7 @@ export {
   RegionSelector,
   PageGoBackTop,
   ImageCropper,
+  RichTextEditor,
 
   Dialog
 }

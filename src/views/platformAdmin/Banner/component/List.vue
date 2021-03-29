@@ -22,7 +22,7 @@
         </a-row>
         <a-row :gutter="48">
           <a-spin :spinning="loading">
-            <a-table style="padding: 1%;padding-top: 0px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
+            <a-table style="padding: 0 24px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
               <div slot-scope="url" slot="urls">
                 <a-avatar shape="square" :size="120" :src="url" />
               </div>
