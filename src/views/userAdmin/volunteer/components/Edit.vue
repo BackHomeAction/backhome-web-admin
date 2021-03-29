@@ -86,15 +86,7 @@ export default {
       showAvatarUploader: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      form: {
-        avatarUrl: '',
-        name: '',
-        idcard: '',
-        phone: '',
-        region: undefined,
-        sex: undefined,
-        state: 1
-      }
+      form: []
     }
   },
   methods: {
