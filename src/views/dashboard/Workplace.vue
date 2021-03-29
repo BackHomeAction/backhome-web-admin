@@ -16,7 +16,7 @@
     <template v-slot:extraContent>
       <div class="extra-content">
         <div class="stat-item">
-          <a-statistic title="区域内开启案件" :value="823" suffix="/ 4856" />
+          <a-statistic title="区域内开启案件" :value="lengths[1]" :suffix="'/'+lengths[0]" />
           <!--          数据未插入-->
         </div>
         <div class="stat-item">
@@ -35,7 +35,7 @@
           :xs="24"
           style="margin-bottom: 24px">
           <a-card
-            v-if="warningList && warningList.length"
+            v-if="missionShow"
             :loading="loading1"
             class="project-list"
             style="margin-bottom: 24px;justify-content: space-between"
@@ -166,8 +166,6 @@ export default {
       this.$store.state.data.citys = this.users.citys
       this.getAllData(res.data.district, res.data.citys)
     })
-    console.log(this.$store.state.data.ids)
-    console.log(this.$store.state.data.citys)
     this.getDymic()
   },
   name: 'Workplace',
@@ -190,12 +188,14 @@ export default {
       users: [],
       allVols: '',
       missionLists: [],
+      missionShow: true,
       volnteerFire: [],
       inAirVol: '',
       warningList: [],
       commonList: [],
       redList: [],
-      dymicList: []
+      dymicList: [],
+      lengths: []
     }
   },
   computed: {
@@ -209,9 +209,7 @@ export default {
     getDymic: function () {
       adminDymic().then(res => {
         this.dymicList = res.data.data
-        // console.log(this.dymicList)
-        this.loading2 = false
-      }).catch(res => {
+      }).finally(() => {
         this.loading2 = false
       })
     },
@@ -223,27 +221,30 @@ export default {
     },
     getAllData: function (district, city) {
       getMission({ district: district }).then(res => {
-        // console.log(res)
+        if (res.data.length === 0) {
+          this.missionShow = false
+        }
+        this.missionNum(res)
         this.missionLists = res.data
         this.missionLists = this.missionLists.slice(0, 7)
-        if (res.data.length > 6) {
-          res.data = res.data.slice(0, 6)
+        if (res.data.length >= 6) {
+          this.missionLists = res.data.slice(0, 6)
         }
         var a = 0
         var b = 0
         var c = 0
-        for (var i = 0; i < res.data.length; i++) {
-          var lostTime = dayjs().diff(res.data[i].lostTime, 'hour')
+        for (var i = 0; i < this.missionLists.length; i++) {
+          var lostTime = dayjs().diff(this.missionLists[i].lostTime, 'hour')
           if (lostTime < 24) {
-            this.warningList[a] = res.data[i]
+            this.warningList[a] = this.missionLists[i]
             a++
           }
           if (lostTime >= 24 && lostTime < 48) {
-            this.redList[b] = res.data[i]
+            this.redList[b] = this.missionLists[i]
             b++
           }
           if (lostTime >= 48) {
-            this.commonList[c] = res.data[i]
+            this.commonList[c] = this.missionLists[i]
             c++
           }
         }
@@ -273,6 +274,15 @@ export default {
     },
     getHoursFromTime: function (time) {
       return dayjs().diff(time, 'hour')
+    },
+    missionNum: function (datas) {
+      this.lengths[0] = datas.data.length
+      this.lengths[1] = 0
+      for (var t = 0; t < datas.data.length; t++) {
+        if (datas.data[t].state !== 4) {
+          this.lengths[1]++
+        }
+      }
     }
   }
 }
