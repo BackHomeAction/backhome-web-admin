@@ -62,7 +62,7 @@
               <span>{{ text.province ? (text.province+ ' ' +text.city+ ' ' +text.district) : ' ' }}</span>
             </div>
             <div slot-scope="text" slot="identity">
-              <span>{{ (text === 3) ? '总指战员' : ((text=== 5)?'区域指战员':'系统指战员') }}</span>
+              <span>{{ (text === 3) ? '区域指战员' : ((text=== 5)?'总指战员':'系统指战员') }}</span>
             </div>
             <span slot="sex" slot-scope="sex">{{ (sex=== 1 )?'男':'女' }}</span>
             <span slot="action" slot-scope="list">

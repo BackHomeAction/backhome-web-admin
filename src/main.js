@@ -21,7 +21,12 @@ import './permission' // permission control
 import './utils/filter' // global filter
 import './global.less' // global style
 
+import 'viewerjs/dist/viewer.css'
+import Viewer from 'v-viewer'
+
 Vue.config.productionTip = false
+
+Vue.use(Viewer)
 
 // mount axios to `Vue.$http` and `this.$http`
 Vue.use(VueAxios)

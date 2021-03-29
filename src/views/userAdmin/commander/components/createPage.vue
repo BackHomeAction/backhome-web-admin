@@ -14,9 +14,9 @@
               </a-form-item>
               <a-form-item label="身份" required prop="identify">
                 <a-select v-model="create.roleId" placeholder="请选择" @change="originSelect">
-                  <a-select-option value="3" >总指战员</a-select-option>
+                  <a-select-option value="3" >区域指战员</a-select-option>
                   <a-select-option value="4" >系统管理员</a-select-option>
-                  <a-select-option value="5" >区域指战员</a-select-option>
+                  <a-select-option value="5" >总指战员</a-select-option>
                 </a-select>
               </a-form-item>
               <a-form-item v-if="showOrigin" label="地区">
@@ -89,7 +89,7 @@ export default {
         this.$message.info('您的权限不够')
         this.create.identify = null
       }
-      if (value === '5') {
+      if (value === '3') {
         this.showOrigin = true
       } else {
         this.showOrigin = false

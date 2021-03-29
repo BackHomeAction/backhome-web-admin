@@ -20,9 +20,9 @@
               </a-form-model-item>
               <a-form-model-item label="身份" required>
                 <a-select v-model="form.roleId" placeholder="请选择" @change="originSelect">
-                  <a-select-option :value="3">总指战员</a-select-option>
+                  <a-select-option :value="3">区域指战员</a-select-option>
                   <a-select-option :value="4">系统指战员</a-select-option>
-                  <a-select-option :value="5">区域指战员</a-select-option>
+                  <a-select-option :value="5">总指战员</a-select-option>
                 </a-select>
               </a-form-model-item>
               <a-form-model-item label="地区" v-if="showOrigin">
@@ -83,6 +83,9 @@ import { adminUpdate, adminAvaratChange, adminDelete } from '@/api/admin'
 export default {
   mounted () {
     this.form = this.$store.state.data.commander.editUser
+    if (this.form.roleId === 3) {
+      this.showOrigin = false
+    }
     console.log(this.form)
     if ((this.$store.state.data.roleId === 4) && (this.form.roleId === 3)) {
       this.showModal()
@@ -151,7 +154,7 @@ export default {
     },
     onSubmit: function () {
       if (this.form.userName !== '' && this.form.name !== '') {
-        if (this.form.roleId === 5) {
+        if (this.form.roleId === 3) {
           if (this.regionPoxy[0] !== null) {
             if (!this.form.password) {
               console.log(2)
@@ -217,7 +220,7 @@ export default {
     },
     originSelect: function (value) {
       // console.log(value)
-      this.showOrigin = value === 5
+      this.showOrigin = value === 3
     },
     regionPoxyUse: function (provin, city, district) {
       this.regionPoxy = [provin, city, district]
@@ -241,6 +244,7 @@ export default {
         }
         this.loadingPage = false
       }).catch(res => {
+        console.log(res)
         this.loadingPage = false
       })
     },
@@ -266,6 +270,7 @@ export default {
           })
         }
         this.loadingPage = false
+        this.goBack()
       }).catch(res => {
         this.pageLoading = false
       })
