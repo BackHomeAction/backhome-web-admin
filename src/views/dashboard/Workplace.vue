@@ -9,7 +9,7 @@
           <div class="content-title">
             {{ timeFix }}，{{ name }}！
           </div>
-          <div>{{ (users.roleId === 3) ? '区域指战员' : ((users.roleId=== 5)?'总指战员':'系统指战员')+'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) }}</div>
+          <div v-if="users">{{ (users.roleId === 3) ? '区域指战员' +'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) : ((users.roleId=== 5)?'总指战员':'系统指战员') }}</div>
         </div>
       </div>
     </template>
@@ -29,13 +29,14 @@
       <a-row :gutter="24">
         <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
           <a-card
+            v-if="warningList && warningList.length"
             :loading="loading1"
             class="project-list"
             style="margin-bottom: 24px;justify-content: space-between"
             :bordered="false"
             title="进行中的任务"
             :body-style="{ padding: 0 }">
-            <a slot="extra" @click="toMission" >全部项目</a>
+            <a slot="extra" @click="toMission" >全部任务</a>
             <a-card-grid style="width:33.3%;" :key="index+1" v-for="(item,index) in warningList">
               <div>
                 <div style="width: 100%;">
