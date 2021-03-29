@@ -9,7 +9,7 @@
           <div class="content-title">
             {{ timeFix }}，{{ name }}！
           </div>
-          <div>{{ (users.roleId === 3) ? '区域指战员' : ((users.roleId=== 5)?'总指战员':'系统指战员')+'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) }}</div>
+          <div v-if="users">{{ (users.roleId === 3) ? '区域指战员' +'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) : ((users.roleId=== 5)?'总指战员':'系统指战员') }}</div>
         </div>
       </div>
     </template>
@@ -27,15 +27,22 @@
 
     <div>
       <a-row :gutter="24">
-        <a-col :xl="16" :lg="24" :md="24" :sm="24" :xs="24">
+        <a-col
+          :xl="16"
+          :lg="24"
+          :md="24"
+          :sm="24"
+          :xs="24"
+          style="margin-bottom: 24px">
           <a-card
+            v-if="warningList && warningList.length"
             :loading="loading1"
             class="project-list"
             style="margin-bottom: 24px;justify-content: space-between"
             :bordered="false"
             title="进行中的任务"
             :body-style="{ padding: 0 }">
-            <a slot="extra" @click="toMission" >全部项目</a>
+            <a slot="extra" @click="toMission" >全部任务</a>
             <a-card-grid style="width:33.3%;" :key="index+1" v-for="(item,index) in warningList">
               <div>
                 <div style="width: 100%;">
@@ -104,7 +111,7 @@
                 <a-list-item-meta :description="timewatch(item.time)">
                   <a-avatar slot="avatar" :src="item.avatarUrl"/>
                   <div slot="title" style="font-size: 12px" >
-                    <span style="font-weight: bold"> {{ item.name + '  ' }}</span><span>{{ (item.actionId === 1 ? '发布案件' : (item.actionId === 2 ?'完成案件':(item.actionId === 3 ?'取消案件':(item.actionId === 4 ? '案件已归档':(item.actionId === 5 ? '志愿者加入案件':(item.actionId === 6 ? '志愿者退出案件':(item.actionId === 7 ? '志愿者匹配人脸成功':'无操作')))))))+ ' ' + ' ' }}</span><span><a @click="toMission(item.id)">{{ '#' + item.caseId }}</a></span>
+                    <span style="font-weight: bold"> {{ item.name + '  ' }}</span><span>{{ (item.actionId === 1 ? '发布案件' : (item.actionId === 2 ?'完成案件':(item.actionId === 3 ?'取消案件':(item.actionId === 4 ? '案件已归档':(item.actionId === 5 ? '志愿者加入案件':(item.actionId === 6 ? '志愿者退出案件':(item.actionId === 7 ? '志愿者匹配人脸成功':'无操作')))))))+ ' ' + ' ' }}</span><span><a @click="toMission(item.caseId)">{{ '#' + item.caseId }}</a></span>
                   </div>
                   <!--                  <div slot="description">{{ item.time }}</div>-->
                 </a-list-item-meta>
