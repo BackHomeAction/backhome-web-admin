@@ -23,8 +23,8 @@
         <a-row :gutter="48">
           <a-spin :spinning="loading">
             <a-table style="padding: 0 24px" :pagination="pagination" rowKey="id" :columns="columns" :data-source="dataOflist">
-              <div slot-scope="url" slot="urls">
-                <a-avatar shape="square" :size="120" :src="url" />
+              <div slot-scope="url" slot="urls" v-viewer>
+                <img class="table__image" :src="url" />
               </div>
               <div slot="action" slot-scope="text" >
                 <span>
@@ -105,7 +105,7 @@ export default {
   },
   methods: {
     getEditOrNew: function () {
-      this.$store.state.data.banner.bannerEdit = []
+      this.$store.state.data.banner.bannerEdit = {}
       this.$store.state.data.banner.state = 1
       this.$emit('toEdit')
     },
@@ -133,7 +133,6 @@ export default {
     },
     dataList: function () {},
     editBanner: function (text) {
-      console.log('111123213')
       console.log(text)
       this.$store.state.data.banner.bannerEdit = text
       this.$store.state.data.banner.state = 2
@@ -183,6 +182,13 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style lang="less" scoped>
+.table {
+  &__image {
+    width: 120px;
+    height: 80px;
+    object-fit: contain;
+    cursor: pointer;
+  }
+}
 </style>
