@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="value.length===3 && !isEdit">{{ `${value[0]} ${value[1]} ${value[2]}` }} <a @click="isEdit = true">修改</a></div>
+    <div v-if="value.length>=1 && !isEdit">{{ `${value[0] || ''} ${value[1] || ''} ${value[2] || ''}` }} <a @click="isEdit = true">修改</a></div>
     <a-cascader
       v-if="!value.length || isEdit"
       :options="options"

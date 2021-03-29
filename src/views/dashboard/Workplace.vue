@@ -35,11 +35,7 @@
           :xs="24"
           style="margin-bottom: 24px">
           <a-card
-<<<<<<< HEAD
             v-if="missionShow"
-=======
-            v-if="warningList && warningList.length"
->>>>>>> master
             :loading="loading1"
             class="project-list"
             style="margin-bottom: 24px;justify-content: space-between"
@@ -158,7 +154,7 @@ import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { adminUser, adminDymic } from '@/api/admin'
-import { getMission } from '@/api/missionList'
+import { getMissionListAll } from '@/api/mission'
 import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 export default {
@@ -224,7 +220,7 @@ export default {
 
     },
     getAllData: function (district, city) {
-      getMission({ district: district }).then(res => {
+      getMissionListAll({ district: district }).then(res => {
         if (res.data.length === 0) {
           this.missionShow = false
         }

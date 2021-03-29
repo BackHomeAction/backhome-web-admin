@@ -14,7 +14,7 @@
             </a-row>
             <a-row :gutter="48" style="z-index: 20;position:relative">
               <a-col :span="6" >
-                <a-form-item label="是否展示?" >
+                <a-form-item label="是否展示" >
                   <a-select v-model="announce.display" placeholder="请选择" >
                     <a-select-option :value="1">展示</a-select-option>
                     <a-select-option :value="2">不展示</a-select-option>
@@ -30,7 +30,7 @@
             </a-row>
             <a-row style="z-index:1;position: relative" :gutter="48" >
               <a-col :span="24">
-                <div id="demo" style="height: 100%;width: 100%;"></div>
+                <rich-text-editor v-model="announce.content" />
               </a-col>
             </a-row>
             <a-row style="margin-top: 10px;">
@@ -51,28 +51,16 @@
         </div>
       </a-spin>
     </a-card>
-    <image-cropper v-model="showPhoto" @success="handleAvataruploaded" />
   </div>
 </template>
 
 <script>
-import { PageGoBackTop, ImageCropper } from '@/components'
+import { PageGoBackTop, RichTextEditor } from '@/components'
 import { announceCreate, announceEdit } from '@/api/announce'
-import WangEditor from 'wangeditor'
+
 export default {
   mounted () {
     this.getDatas()
-    const editor = new WangEditor('#demo')
-    editor.config.onchange = (newHtml) => {
-      this.announce.content = newHtml
-      console.log(this.announce.content)
-    }
-    editor.config.onchangeTimeout = 200
-    if (this.state === 2) {
-      editor.txt.html(this.announce.content)
-    }
-    editor.config.customUploadImg = function (resultFiles, insertImgFn) {}
-    editor.create()
   },
   data () {
     return {
@@ -80,12 +68,11 @@ export default {
       editor: null,
       editorData: '',
       imageUrl: '',
-      showPhoto: false,
-      announce: [{
+      announce: {
         title: '',
         roleId: '',
         content: ''
-      }],
+      },
       contents: '',
       state: '',
       loadings: false,
@@ -95,7 +82,7 @@ export default {
     }
   },
   components: {
-    PageGoBackTop, ImageCropper
+    PageGoBackTop, RichTextEditor
   },
   methods: {
     getPhoto: function () {
@@ -103,29 +90,20 @@ export default {
     },
     editOut: function () {
       this.loadings = true
-      const notice = this.announce
+      const notice = Object.assign(this.announce, {})
       announceCreate({
         ...notice
-      }).then(res => {
-        if (res.status === 200) {
-          this.$notification.success({
-            message: '成功',
-            description: '创建成功'
-          })
-        }
-        this.loadings = false
+      }).then(() => {
+        this.$notification.success({
+          message: '成功',
+          description: '创建成功'
+        })
         this.goBack()
-      }).catch(res => {
-        console.log(res)
+      }).finally(() => {
         this.loadings = false
       })
     },
-    getNewOffers: function (text) {
-      console.log(text)
-      this.announce.content = text
-    },
     goBack: function () {
-      console.log('111')
       this.$emit('onGoBack')
     },
     takeOut: function () {
@@ -143,19 +121,13 @@ export default {
           })
           this.goBack()
         }
-        this.loadings = false
-      }).catch(res => {
+      }).finally(() => {
         this.loadings = false
       })
-    },
-    handleAvataruploaded (url) {
-      this.imageUrl = url
     },
     getDatas: function () {
       this.announce = this.$store.state.data.announce.announceEdit
       this.state = this.$store.state.data.announce.state
-      console.log(this.state)
-      console.log(this.announce)
     }
   },
   name: 'NewCreate'

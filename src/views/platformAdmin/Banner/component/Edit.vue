@@ -10,7 +10,7 @@
                 <a-select
                   show-search
                   :show-arrow="false"
-                  placeholder="input search text"
+                  placeholder="请输入公告标题关键词"
                   v-model="datas.title"
                   @search="noticeIdSearch"
                   @select="chooseSelect"

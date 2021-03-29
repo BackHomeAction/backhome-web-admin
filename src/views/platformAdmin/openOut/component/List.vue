@@ -17,7 +17,7 @@
           </div>
           <a-row :gutter="48" >
             <a-spin :spinning="pageLoading">
-              <a-table rowKey="id" :pagination="pagination" style="padding: 1%;padding-top: 0px" :columns="columns" :data-source="datas">
+              <a-table rowKey="id" :pagination="pagination" style="padding: 0 24px" :columns="columns" :data-source="datas">
                 <div slot="action" slot-scope="text">
                   <a @click="editThree(text)">编辑</a>
                   <a-divider type="vertical" />
