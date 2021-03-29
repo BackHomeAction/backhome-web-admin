@@ -156,42 +156,6 @@ export default {
       if (this.form.userName !== '' && this.form.name !== '') {
         if (this.form.roleId === 3) {
           if (this.regionPoxy[0] !== null) {
-            if (!this.form.password) {
-              console.log(2)
-              this.changeVis = true
-            } else {
-              this.loadingPage = true
-              this.form.province = this.regionPoxy[0]
-              this.form.district = this.regionPoxy[1]
-              this.form.city = this.regionPoxy[2]
-              this.form.id = parseInt(this.form.id)
-              this.adminBean = this.form
-              var adminBean = this.adminBean
-              adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
-                console.log(res)
-                if (res.status === 200) {
-                  this.$notification.success({
-                    message: '成功',
-                    description: '保存成功!'
-                  })
-                  this.goBack()
-                }
-                this.loadingPage = false
-              }).catch(res => {
-                this.loadingPage = false
-              })
-            }
-          } else {
-            this.$notification.error({
-              message: '地区选择有误',
-              description: '区域指战员必须选择指站区域!'
-            })
-          }
-        } else {
-          if (!this.form.password) {
-            console.log(1)
-            this.changeVis = true
-          } else {
             this.loadingPage = true
             this.form.province = this.regionPoxy[0]
             this.form.district = this.regionPoxy[1]
@@ -199,6 +163,9 @@ export default {
             this.form.id = parseInt(this.form.id)
             this.adminBean = this.form
             const adminBean = this.adminBean
+            if (!this.form.password) {
+              delete adminBean.password
+            }
             adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
               console.log(res)
               if (res.status === 200) {
@@ -206,10 +173,38 @@ export default {
                   message: '成功',
                   description: '保存成功!'
                 })
+                this.goBack()
               }
-              this.goBack()
+              this.loadingPage = false
+            }).catch(res => {
+              this.loadingPage = false
+            })
+          } else {
+            this.$notification.error({
+              message: '地区选择有误',
+              description: '区域指战员必须选择指站区域!'
             })
           }
+        } else {
+          this.loadingPage = true
+          this.form.province = this.regionPoxy[0]
+          this.form.district = this.regionPoxy[1]
+          this.form.city = this.regionPoxy[2]
+          this.form.id = parseInt(this.form.id)
+          this.adminBean = this.form
+          const adminBean = this.adminBean
+          adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
+            console.log(res)
+            if (res.status === 200) {
+              this.$notification.success({
+                message: '成功',
+                description: '保存成功!'
+              })
+            }
+            this.goBack()
+          }).catch(res => {
+            this.loadingPage = false
+          })
         }
       } else {
         this.$notification.error({

@@ -11,11 +11,13 @@
                   show-search
                   :show-arrow="false"
                   placeholder="input search text"
-                  :value="datas.title"
+                  v-model="datas.title"
                   @search="noticeIdSearch"
-                  :filter-option="false"
-                  @change="chooseSelect">
-                  <a-select-option v-for="(item,key) in dataListScource" :key="key" >
+                  @select="chooseSelect"
+                  :defaultOpen="false"
+                  :open="openSelect"
+                  @blur="openSelect = false">
+                  <a-select-option v-for="(item, key) in dataListScource" :key="key" :value="item">
                     {{ item }}
                   </a-select-option>
                 </a-select>
@@ -69,6 +71,7 @@ export default {
       placeholder: '请输入',
       getPhoto: false,
       datas: [],
+      noticeId: '',
       openSelect: false,
       photoLoad: false
     }
@@ -80,11 +83,8 @@ export default {
     goBack: function () {
       this.$emit('onGoBack')
     },
-    takeOut: function () {
-      console.log(this.announce)
-    },
     showPhoto: function () {
-      if (this.noticeIds && this.state === 1) {
+      if (this.noticeId && this.state === 1) {
         this.getPhoto = true
       } else {
         this.$message.info('未查询到相应公告，请检查您的公告标题')
@@ -96,7 +96,7 @@ export default {
     newCreates: function () {
       const banner = this.datas
       this.pageLoading = true
-      bannerCreate({ ...banner, noticeId: this.noticeIds }).then(res => {
+      bannerCreate({ ...banner, noticeId: this.noticeId }).then(res => {
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',
@@ -104,6 +104,7 @@ export default {
           })
           this.goBack()
         }
+      }).finally(() => {
         this.pageLoading = false
       })
     },
@@ -111,10 +112,8 @@ export default {
       if (this.datas.title !== '' && this.datas.url !== '' && this.state === 2) {
         this.pageLoading = true
         const banner = this.datas
-        console.log(banner)
         bannerChange({ ...banner }).then(res => {
           if (res.status === 200) {
-            console.log(res)
             this.$emit('onGoBack')
           }
           this.pageLoading = false
@@ -125,9 +124,6 @@ export default {
           description: '信息不全'
         })
       }
-    },
-    lab: function () {
-      console.log('1')
     },
     deleteAll: function () {
       if (this.state === 1) {
@@ -155,21 +151,30 @@ export default {
       this.photoLoad = false
     },
     noticeIdSearch: function (titles) {
-      console.log(titles)
       if (titles) {
         listSearch({
           title: titles
         }).then(res => {
-          console.log(res)
+          this.dataListScource = []
           for (var i = 0; i < res.data.totalCount; i++) {
             this.dataListScource[i] = res.data.data[i].title
           }
-          console.log(this.dataListScource)
+          if (this.dataListScource) {
+            this.openSelect = true
+          }
         })
       }
     },
     chooseSelect: function (titles) {
       this.datas.title = titles
+      listSearch({
+        title: titles
+      }).then(res => {
+        this.noticeId = res.data.data[0].id
+        console.log(this.noticeId)
+      }).catch(res => {
+        console.log(res)
+      })
     }
   },
   name: 'NewCreate'
