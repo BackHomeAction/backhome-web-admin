@@ -6,7 +6,7 @@
         <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
         <a-row :gutter="32" type="flex" justify="center">
           <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
-            <a-avatar :url="form.avatarUrl" :size="120" icon="user" />
+            <a-avatar :src="form.avatarUrl" :size="120" icon="user" />
             <br>
             <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
           </a-col>
