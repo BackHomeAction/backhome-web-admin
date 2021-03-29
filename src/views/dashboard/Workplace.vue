@@ -154,7 +154,7 @@ import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { adminUser, adminDymic } from '@/api/admin'
-import { getMission } from '@/api/missionList'
+import { getMissionListAll } from '@/api/mission'
 import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 export default {
@@ -222,7 +222,7 @@ export default {
 
     },
     getAllData: function (district, city) {
-      getMission({ district: district }).then(res => {
+      getMissionListAll({ district: district }).then(res => {
         // console.log(res)
         this.missionLists = res.data
         this.missionLists = this.missionLists.slice(0, 7)
