@@ -94,25 +94,25 @@ export const asyncRouterMap = [
         component: PageView,
         redirect: '/platformAdmin/announcement',
         name: 'platformAdmin',
-        meta: { title: '平台管理', keepAlive: true, icon: bxPlat, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '平台管理', keepAlive: true, icon: bxPlat, roles: ['admin', 'superAdmin'] },
         children: [
           {
             path: '/platformAdmin/announcement',
             name: 'announcement',
             component: () => import('@/views/platformAdmin/announcement/index'),
-            meta: { title: '公告管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '公告管理', keepAlive: true, roles: ['admin', 'superAdmin'] }
           },
           {
             path: '/platformAdmin/Banner',
             name: 'Banner',
             component: () => import('@/views/platformAdmin/Banner/index'),
-            meta: { title: 'Banner管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: 'Banner管理', keepAlive: true, roles: ['admin', 'superAdmin'] }
           },
           {
             path: '/platformAdmin/openOut',
             name: 'openOut',
             component: () => import('@/views/platformAdmin/openOut/index'),
-            meta: { title: '开放平台管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '开放平台管理', keepAlive: true, roles: ['superAdmin'] }
           }
 
         ]
