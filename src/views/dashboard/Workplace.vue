@@ -9,7 +9,7 @@
           <div class="content-title">
             {{ timeFix }}，{{ name }}！
           </div>
-          <div>{{ (users.roleId === 3) ? '总指战员' : ((users.roleId=== 5)?'区域指战员':'系统指战员')+'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) }}</div>
+          <div>{{ (users.roleId === 3) ? '区域指战员' : ((users.roleId=== 5)?'总指战员':'系统指战员')+'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) }}</div>
         </div>
       </div>
     </template>
@@ -202,7 +202,10 @@ export default {
     getDymic: function () {
       adminDymic().then(res => {
         this.dymicList = res.data.data
-        console.log(this.dymicList)
+        // console.log(this.dymicList)
+        this.loading2 = false
+      }).catch(res => {
+        this.loading2 = false
       })
     },
     getHour: function (time) {
@@ -238,7 +241,6 @@ export default {
           }
         }
         this.loading1 = false
-        this.loading2 = false
       })
       VolunteerFire({}).then(res => {
         this.volnteerFire = res.data

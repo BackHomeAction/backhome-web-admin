@@ -46,11 +46,11 @@ export function adminByid (params) {
     params
   })
 }
-export function adminDelete (data) {
+export function adminDelete (params) {
   return request({
     url: adminAPI.adminDelete,
     method: 'delete',
-    data
+    params
   })
 }
 export function adminUpdate (data) {

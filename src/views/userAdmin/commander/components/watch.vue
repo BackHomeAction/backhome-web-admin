@@ -14,10 +14,10 @@
               {{ source.userName }}
             </a-descriptions-item>
             <a-descriptions-item label="身份">
-              {{ (source.roleId=== 3) ? '总指战员' : ((source.roleId=== 5)?'区域指战员':'系统指战员') }}
+              {{ (source.roleId=== 3) ? '区域指战员' : ((source.roleId=== 5)?'总指战员':'系统指战员') }}
             </a-descriptions-item>
             <a-descriptions-item label="指战区域">
-              {{ source.province ? (source.province + ' ' + source.district + ' ' + source.city ) : '暂无' }}
+              {{ source.province ? (source.province + ' ' + source.district + ' ' + source.city ) : '暂时无' }}
             </a-descriptions-item>
             <a-descriptions-item label="加入时间">
               {{ source.registerTime }}
@@ -122,7 +122,7 @@ export default {
         },
         {
           title: '创建时间',
-          dataIndex: 'time',
+          dataIndex: 'startTime',
           scopedSlots: { customRender: 'time' },
           width: '400px'
         },
