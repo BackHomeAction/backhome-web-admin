@@ -70,7 +70,7 @@
         </span>
         <span slot="action" slot-scope="text, record">
           <template>
-            <a @click="handleView(record)" v-if="record.volunteer">进入</a>
+            <a @click="handleView(record)">进入</a>
           </template>
         <!-- <a-dropdown>
           <a class="ant-dropdown-link">

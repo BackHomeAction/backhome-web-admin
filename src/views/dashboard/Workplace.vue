@@ -35,12 +35,7 @@
           :xs="24"
           style="margin-bottom: 24px">
           <a-card
-            <<<<<<<
-            HEAD
             v-if="missionShow"
-            =="====="
-            v-if="warningList && warningList.length"
-          >>>>>>> master
             :loading="loading1"
             class="project-list"
             style="margin-bottom: 24px;justify-content: space-between"
