@@ -6,7 +6,7 @@
         <page-go-back-top @back="goBack" ><a style="color: #999999;margin-top: 5px;font-size: 15px"><a-icon type="left" />返回</a></page-go-back-top>
         <a-row :gutter="32" type="flex" justify="center">
           <a-col :md="6" :xl="4" style="display: flex;flex-direction: column;align-items: center">
-            <a-avatar :url="form.avatarUrl" :size="120" icon="user" />
+            <a-avatar :src="form.avatarUrl" :size="120" icon="user" />
             <br>
             <a-button type="default" style="margin-top:5px" @click="showAvatarUploader = true" :loading="isChangingAvatar">更改头像</a-button>
           </a-col>
@@ -64,9 +64,6 @@
         </a-row>
       </a-spin>
     </a-card>
-    <a-modal v-model="visible" title="权限警告" @ok="handleOk">
-      <p>系统管理员不得更改超级管理员信息!!!</p>
-    </a-modal>
     <a-modal :visible="visibles" title="删除提醒" @ok="deleteAdmin" @cancel="cancel">
       <p>您确定要删除ID为{{ '' + form.id+ '' }}的指战员么?</p>
     </a-modal>
@@ -95,7 +92,6 @@ export default {
   },
   data () {
     return {
-      visible: false,
       changeVis: false,
       loadingPage: false,
       visibles: false,

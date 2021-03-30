@@ -152,9 +152,9 @@ export default {
           this.dataOflist = []
           this.getdata()
         }
+      }).finally(() => {
         this.loading = false
-      }).catch(res => {
-        this.loading = false
+        this.shows = false
       })
     },
     showModal: function (id) {
