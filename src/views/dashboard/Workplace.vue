@@ -112,7 +112,6 @@
                   <div slot="title" style="font-size: 12px" >
                     <span style="font-weight: bold"> {{ item.name + '  ' }}</span><span>{{ (item.actionId === 1 ? '发布案件' : (item.actionId === 2 ?'完成案件':(item.actionId === 3 ?'取消案件':(item.actionId === 4 ? '案件已归档':(item.actionId === 5 ? '志愿者加入案件':(item.actionId === 6 ? '志愿者退出案件':(item.actionId === 7 ? '志愿者匹配人脸成功':'无操作')))))))+ ' ' + ' ' }}</span><span><a @click="toMission(item.caseId)">{{ '#' + item.caseId }}</a></span>
                   </div>
-                  <!--                  <div slot="description">{{ item.time }}</div>-->
                 </a-list-item-meta>
               </a-list-item>
             </a-list>
@@ -126,8 +125,22 @@
           :sm="24"
           :xs="24">
           <a-card title="团队指数" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
-            <div>
-              <charts></charts>
+            <charts/>
+            <div class="chartpoint">
+              <div style="width: 100px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
+                <span><a-badge color="blue" text="全国" /></span>
+                <div>49.5h</div>
+              </div>
+              <a-divider type="vertical" style="height: 70px" />
+              <div style="width: 100px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
+                <span><a-badge color="yellow" text="全省" /></span>
+                <div>49.5h</div>
+              </div>
+              <a-divider type="vertical" style="height: 70px" />
+              <div style="width: 100px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
+                <span><a-badge color="green" text="全国" /></span>
+                <div>49.5h</div>
+              </div>
             </div>
           </a-card>
           <a-card :loading="loading3" title="今日活跃志愿者" :bordered="false">
@@ -417,6 +430,17 @@ export default {
     .headerContent .title .welcome-text {
       display: none;
     }
+  }
+  .chartpoint{
+    height: 100px;
+    margin-top: 15px;
+    color: rgba(16, 16, 16, 100);
+    font-size: 24px;
+    text-align: left;
+    font-family: SourceHanSansSC-regular;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
   }
 
 </style>

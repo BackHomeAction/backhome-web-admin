@@ -2,7 +2,7 @@
   <div>
     <v-chart
       :forceFit="true"
-      height="400"
+      height="350"
       :data="datas"
       :padding="padding"
       :scale="scale">
