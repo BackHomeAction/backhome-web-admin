@@ -235,7 +235,6 @@ export default {
 
     },
     getAllData: function (district, city) {
-<<<<<<< HEAD
       if (this.users.roleId !== 3) {
         district = null
       }
@@ -243,11 +242,6 @@ export default {
         console.log(res)
         if (res.data.length) {
           this.missionShow = true
-=======
-      getMissionListAll({ district: district }).then(res => {
-        if (res.data.length === 0) {
-          this.missionShow = false
->>>>>>> master
         }
         this.missionNum(res)
         this.missionLists = res.data
