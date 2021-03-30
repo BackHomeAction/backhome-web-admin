@@ -214,7 +214,7 @@ export default {
       this.isLoadingInfo = false
     },
     handleViewTask (item) {
-      // TODO
+      this.$router.push({ path: '/missionAdmin/missionDetail', query: { id: item.id } })
     },
     getHoursFromTime (time) {
       return dayjs().diff(time, 'hour')

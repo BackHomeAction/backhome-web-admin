@@ -82,6 +82,13 @@ export const asyncRouterMap = [
             meta: { title: '任务列表', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
+            path: '/missionAdmin/missionDetail',
+            name: 'missionDetail',
+            hidden: true,
+            component: () => import('@/views/missionAdmin/missionDetail/index'),
+            meta: { title: '任务详情', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+          },
+          {
             path: '/missionAdmin/faceRecord',
             name: 'FaceRecord',
             component: () => import('@/views/missionAdmin/faceRecord/index'),
