@@ -7,7 +7,7 @@
         </div>
         <div class="content">
           <div class="content-title">
-            {{ timeFix }}，{{ name }}！
+            {{ timeFix }}，{{ name }}!
           </div>
           <div v-if="users">{{ (users.roleId === 3) ? '区域指战员' +'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) : ((users.roleId=== 5)?'总指战员':'系统指战员') }}</div>
         </div>
@@ -17,7 +17,6 @@
       <div class="extra-content">
         <div class="stat-item">
           <a-statistic title="区域内开启案件" :value="lengths[1]" :suffix="'/'+lengths[0]" />
-          <!--          数据未插入-->
         </div>
         <div class="stat-item">
           <a-statistic title="区域内志愿者" :value="inAirVol" :suffix="'/'+allVols" />
@@ -113,7 +112,6 @@
                   <div slot="title" style="font-size: 12px" >
                     <span style="font-weight: bold"> {{ item.name + '  ' }}</span><span>{{ (item.actionId === 1 ? '发布案件' : (item.actionId === 2 ?'完成案件':(item.actionId === 3 ?'取消案件':(item.actionId === 4 ? '案件已归档':(item.actionId === 5 ? '志愿者加入案件':(item.actionId === 6 ? '志愿者退出案件':(item.actionId === 7 ? '志愿者匹配人脸成功':'无操作')))))))+ ' ' + ' ' }}</span><span><a @click="toMission(item.caseId)">{{ '#' + item.caseId }}</a></span>
                   </div>
-                  <!--                  <div slot="description">{{ item.time }}</div>-->
                 </a-list-item-meta>
               </a-list-item>
             </a-list>
@@ -127,8 +125,22 @@
           :sm="24"
           :xs="24">
           <a-card title="团队指数" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
-            <div class="item-group">
-              暂时空
+            <charts/>
+            <div class="chartpoint">
+              <div style="width: 100px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
+                <span><a-badge color="blue" text="全国" /></span>
+                <div>49.5h</div>
+              </div>
+              <a-divider type="vertical" style="height: 70px" />
+              <div style="width: 100px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
+                <span><a-badge color="yellow" text="全省" /></span>
+                <div>49.5h</div>
+              </div>
+              <a-divider type="vertical" style="height: 70px" />
+              <div style="width: 100px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
+                <span><a-badge color="green" text="全国" /></span>
+                <div>49.5h</div>
+              </div>
             </div>
           </a-card>
           <a-card :loading="loading3" title="今日活跃志愿者" :bordered="false">
@@ -157,6 +169,8 @@ import { adminUser, adminDymic } from '@/api/admin'
 import { getMissionListAll } from '@/api/mission'
 import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
+import charts from '@/views/dashboard/component/charts'
+
 export default {
   mounted () {
     adminUser().then(res => {
@@ -170,7 +184,7 @@ export default {
   },
   name: 'Workplace',
   components: {
-    PageHeaderWrapper, dayjs
+    PageHeaderWrapper, dayjs, charts
   },
   filters: {
     timeget: function (val) {
@@ -179,6 +193,7 @@ export default {
   },
   data () {
     return {
+      padding: [20, 20, 20, 20],
       timeFix: timeFix(),
       loading1: true,
       loading2: true,
@@ -188,7 +203,7 @@ export default {
       users: [],
       allVols: '',
       missionLists: [],
-      missionShow: true,
+      missionShow: false,
       volnteerFire: [],
       inAirVol: '',
       warningList: [],
@@ -208,7 +223,7 @@ export default {
   methods: {
     getDymic: function () {
       adminDymic().then(res => {
-        this.dymicList = res.data.data
+        this.dymicList = res.data.data.slice(0, 7)
       }).finally(() => {
         this.loading2 = false
       })
@@ -220,9 +235,13 @@ export default {
 
     },
     getAllData: function (district, city) {
+      if (this.users.roleId !== 3) {
+        district = null
+      }
       getMissionListAll({ district: district }).then(res => {
-        if (res.data.length === 0) {
-          this.missionShow = false
+        console.log(res)
+        if (res.data.length) {
+          this.missionShow = true
         }
         this.missionNum(res)
         this.missionLists = res.data
@@ -411,6 +430,17 @@ export default {
     .headerContent .title .welcome-text {
       display: none;
     }
+  }
+  .chartpoint{
+    height: 100px;
+    margin-top: 15px;
+    color: rgba(16, 16, 16, 100);
+    font-size: 24px;
+    text-align: left;
+    font-family: SourceHanSansSC-regular;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
   }
 
 </style>
