@@ -6,7 +6,7 @@
       :data="datas"
       :padding="padding"
       :scale="scale">
-      <v-tooltip />
+      <v-tooltip :onChange="takeDown" />
       <v-axis :dataKey="axis1Opts.dataKey" :line="axis1Opts.line" :tickLine="axis1Opts.tickLine" :grid="axis1Opts.grid" />
       <v-axis :dataKey="axis2Opts.dataKey" :line="axis2Opts.line" :tickLine="axis2Opts.tickLine" :grid="axis2Opts.grid" />
       <v-legend dataKey="user" marker="circle" :offset="30" />
@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { adminTeam, adminUser } from '@/api/admin'
 import Viser from 'viser-vue'
 const axis1Opts = {
   dataKey: 'item',
@@ -44,6 +45,7 @@ const axis2Opts = {
 const DataSet = require('@antv/data-set')
 export default {
   mounted () {
+    this.getTeam()
     const dv = new DataSet.View().source(this.dataSource)
     dv.transform({
       type: 'fold',
@@ -51,7 +53,9 @@ export default {
       key: 'user',
       value: 'score'
     })
-    this.datas = dv.rows
+    this.digest = dv
+    this.digest.transforms[0].fields = ['全国', '全省']
+    this.datas = this.digest.rows
   },
   name: 'Charts',
   data () {
@@ -66,16 +70,51 @@ export default {
       ],
       axis2Opts,
       axis1Opts,
-      padding: [30, 30, 30, 30],
+      digest: null,
+      region: [],
+      padding: [10, 10, 10, 10],
       scale: [{
         dataKey: 'score',
         min: 20,
         max: 80
-      }]
+      }],
+      userData: [],
+      takeDown: (ev, chart) => {
+        console.log(ev.items)
+      }
     }
   },
   components: {
     Viser
+  },
+  methods: {
+    getTeam: function () {
+      adminUser().then(res => {
+        this.userData = res.data
+        if (this.userData.roleId === 5 || this.userData.roleId === 4) {
+          adminTeam({
+            province: res.data.province,
+            district: res.data.district,
+            city: res.data.city
+          }).then(res => {
+            console.log(res)
+          })
+        }
+        if (this.userData.roleId === 3) {
+          adminTeam({
+            province: this.userData.province,
+            district: this.userData.district,
+            city: this.userData.city
+          }).then(res => {
+            console.log(res)
+          })
+        }
+      })
+    },
+    getMouseMove: function (ev, chart) {
+      console.log(ev)
+      console.log(chart)
+    }
   }
 }
 </script>

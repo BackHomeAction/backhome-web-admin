@@ -125,7 +125,7 @@
           :sm="24"
           :xs="24">
           <a-card title="团队指数" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
-            <charts/>
+            <charts />
             <div class="chartpoint">
               <div style="width: 100px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
                 <span><a-badge color="blue" text="全国" /></span>
@@ -172,7 +172,7 @@ import dayjs from '@/utils/dayjs'
 import charts from '@/views/dashboard/component/charts'
 
 export default {
-  mounted () {
+  beforeMount () {
     adminUser().then(res => {
       this.$store.state.data.users = res.data
       this.users = this.$store.state.data.users
@@ -239,7 +239,6 @@ export default {
         district = null
       }
       getMissionListAll({ district: district }).then(res => {
-        console.log(res)
         if (res.data.length) {
           this.missionShow = true
         }
