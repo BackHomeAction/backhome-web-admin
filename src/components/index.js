@@ -30,6 +30,7 @@ import RegionSelector from '@/components/RegionSelector'
 import PageGoBackTop from '@/components/PageGoBackTop'
 import ImageCropper from '@/components/ImageCropper'
 import RichTextEditor from '@/components/RichTextEditor'
+import MissionStateBadge from '@/components/MissionStateBadge'
 
 import Dialog from '@/components/Dialog'
 
@@ -62,6 +63,7 @@ export {
   PageGoBackTop,
   ImageCropper,
   RichTextEditor,
+  MissionStateBadge,
 
   Dialog
 }
