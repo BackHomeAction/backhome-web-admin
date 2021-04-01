@@ -15,6 +15,7 @@ export default class WebSocket {
     }
 
     this.client = Stomp.client('wss://fwwb2020-app-volunteer.tgucsdn.com/websocket')
+    this.client.debug = false
     this.client.connect(
       {
         Authorization: 'Bearer ' + storage.get(ACCESS_TOKEN)
