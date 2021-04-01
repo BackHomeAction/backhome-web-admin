@@ -23,7 +23,7 @@
               <tab-item-face-record />
             </a-tab-pane>
             <a-tab-pane key="volunteers" tab="志愿者列表">
-              Content of Tab Pane 5
+              <tab-item-volunteer-list />
             </a-tab-pane>
             <a-tab-pane key="log" tab="案件日志">
               <tab-item-log />
@@ -41,6 +41,7 @@ import BasicInfo from './components/BasicInfo.vue'
 import TabItemMap from './components/TabItemMap.vue'
 import TabItemFaceRecord from './components/TabItemFaceRecord.vue'
 import TabItemLog from './components/TabItemLog.vue'
+import TabItemVolunteerList from './components/TabItemVolunteerList.vue'
 import Ws from '@/services/websocket'
 
 const SocketStateTypes = {
@@ -58,7 +59,7 @@ const SocketStateTypes = {
 
 export default {
   name: 'MissionDetail',
-  components: { BasicInfo, TabItemMap, TabItemFaceRecord, TabItemLog },
+  components: { BasicInfo, TabItemMap, TabItemFaceRecord, TabItemLog, TabItemVolunteerList },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo'])
   },

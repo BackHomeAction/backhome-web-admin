@@ -13,7 +13,8 @@ const getters = {
   multiTab: state => state.app.multiTab,
   currentMission: state => state.mission.currentMission,
   currentMissionInfo: state => state.mission.currentMission.missionInfo,
-  onlineMembers: state => state.mission.currentMission.onlineMembers,
+  teamMembers: state => state.mission.currentMission.teamMembers,
+  onlineMembers: state => state.mission.currentMission.onlineTeamMembers,
   faceRecognitionHistory: state => state.mission.currentMission.faceRecognitionHistory
 }
 
