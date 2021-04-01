@@ -6,7 +6,12 @@
           <a-row :gutter="48">
             <a-col :md="8" :sm="24">
               <a-form-item label="志愿者 ID">
-                <a-input v-model="queryParam.id" placeholder="请输入"/>
+                <a-input v-model="queryParam.volunteerId" placeholder="请输入"/>
+              </a-form-item>
+            </a-col>
+            <a-col :md="8" :sm="24">
+              <a-form-item label="老人 ID">
+                <a-input v-model="queryParam.oldManId" placeholder="请输入"/>
               </a-form-item>
             </a-col>
             <a-col :md="8" :sm="24">
