@@ -3,16 +3,31 @@
     <span class="ant-pro-account-avatar">
       <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
       <span>{{ currentUser.name }}</span>
+      <a-modal
+        title="修改密码"
+        :visible="showModifyPasswordModal"
+        :confirm-loading="isModifingPassword"
+        @ok="handleModifyPassword"
+        @cancel="showModifyPasswordModal = false"
+      >
+        <a-form-model ref="form" :model="modifyPasswordForm" :rules="rules" v-bind="layout">
+          <a-form-model-item has-feedback label="旧密码" prop="oldPassword">
+            <a-input v-model="modifyPasswordForm.oldPassword" type="password" autocomplete="off" />
+          </a-form-model-item>
+          <a-form-model-item has-feedback label="新密码" prop="newPassword">
+            <a-input v-model="modifyPasswordForm.newPassword" type="password" autocomplete="off" />
+          </a-form-model-item>
+          <a-form-model-item has-feedback label="重复新密码" prop="confirmPassword">
+            <a-input v-model="modifyPasswordForm.confirmPassword" type="password" autocomplete="off" />
+          </a-form-model-item>
+        </a-form-model>
+      </a-modal>
     </span>
     <template v-slot:overlay>
       <a-menu class="ant-pro-drop-down menu" :selected-keys="[]">
-        <a-menu-item v-if="menu" key="center" @click="handleToCenter">
-          <a-icon type="user" />
-          {{ $t('menu.account.center') }}
-        </a-menu-item>
-        <a-menu-item v-if="menu" key="settings" @click="handleToSettings">
+        <a-menu-item v-if="menu" key="settings" @click="showModifyPasswordModal = true">
           <a-icon type="setting" />
-          {{ $t('menu.account.settings') }}
+          修改密码
         </a-menu-item>
         <a-menu-divider v-if="menu" />
         <a-menu-item key="logout" @click="handleLogout">
@@ -29,6 +44,7 @@
 
 <script>
 import { Modal } from 'ant-design-vue'
+import { changePassword } from '@/api/login'
 
 export default {
   name: 'AvatarDropdown',
@@ -40,6 +56,26 @@ export default {
     menu: {
       type: Boolean,
       default: true
+    }
+  },
+  data () {
+    return {
+      modifyPasswordForm: {
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      rules: {
+        oldPassword: [{ required: true, trigger: ['blur', 'change'], message: '请输入旧密码' }],
+        newPassword: [{ required: true, trigger: ['blur', 'change'], message: '请输入新密码' }],
+        confirmPassword: [{ required: true, validator: this.validateConfirmPassword, trigger: ['blur', 'change'] }]
+      },
+      layout: {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 14 }
+      },
+      showModifyPasswordModal: false,
+      isModifingPassword: false
     }
   },
   methods: {
@@ -63,6 +99,42 @@ export default {
         },
         onCancel () {}
       })
+    },
+    handleModifyPassword () {
+      this.$refs.form.validate(async (valid) => {
+        if (valid) {
+          this.isModifingPassword = true
+          try {
+            await changePassword({
+              oldPassword: this.modifyPasswordForm.oldPassword,
+              newPassword: this.modifyPasswordForm.newPassword
+            })
+            this.$notification.success({
+              message: '修改密码成功',
+              description: '请重新登录'
+            })
+            this.$store.dispatch('Logout').then(() => {
+              setTimeout(() => {
+                window.location.reload()
+              }, 1500)
+            })
+          } catch (e) {
+            console.log(e)
+          }
+          this.isModifingPassword = false
+        } else {
+          return false
+        }
+      })
+    },
+    validateConfirmPassword (rule, value, callback) {
+      if (value === '') {
+        callback(new Error('请再次输入新密码'))
+      } else if (value !== this.modifyPasswordForm.newPassword) {
+        callback(new Error('两次输入的密码不一致!'))
+      } else {
+        callback()
+      }
     }
   }
 }

@@ -6,8 +6,9 @@ const userApi = {
   // ForgePassword: '/auth/forge-password',
   // Register: '/auth/register',
   // get my info
-  UserInfo: '/admin'
+  UserInfo: '/admin',
   // UserMenu: '/user/nav'
+  ChangePassword: '/admin/password'
 }
 
 /**
@@ -33,6 +34,14 @@ export function getInfo () {
   return request({
     url: userApi.UserInfo,
     method: 'get'
+  })
+}
+
+export function changePassword (data) {
+  return request({
+    url: userApi.ChangePassword,
+    method: 'put',
+    data
   })
 }
 
