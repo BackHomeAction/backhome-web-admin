@@ -11,16 +11,16 @@
         <div v-if="currentMission && currentMissionInfo">
           <a-tabs default-active-key="map" >
             <a-tab-pane key="map" tab="实时地图">
-              <tab-item-map ref="item-map" />
+              <tab-item-map ref="map" force-render />
             </a-tab-pane>
-            <a-tab-pane key="chat" tab="在线沟通">
+            <a-tab-pane key="chat" tab="在线沟通" force-render>
               Content of Tab Pane 2
             </a-tab-pane>
             <a-tab-pane key="info" tab="案件信息">
               Content of Tab Pane 3
             </a-tab-pane>
             <a-tab-pane key="face" tab="人脸识别记录">
-              Content of Tab Pane 4
+              <tab-item-face-record />
             </a-tab-pane>
             <a-tab-pane key="volunteers" tab="志愿者列表">
               Content of Tab Pane 5
@@ -39,6 +39,7 @@
 import { mapGetters } from 'vuex'
 import BasicInfo from './components/BasicInfo.vue'
 import TabItemMap from './components/TabItemMap.vue'
+import TabItemFaceRecord from './components/TabItemFaceRecord.vue'
 import Ws from '@/services/websocket'
 
 const SocketStateTypes = {
@@ -56,7 +57,7 @@ const SocketStateTypes = {
 
 export default {
   name: 'MissionDetail',
-  components: { BasicInfo, TabItemMap },
+  components: { BasicInfo, TabItemMap, TabItemFaceRecord },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo'])
   },
@@ -103,10 +104,10 @@ export default {
         this.$notification.warning('提示', '案件信息发生变化，请您留意！')
       } else if (data.status === SocketStateTypes.VOLUNTEER_LOCATION_CHANGED) {
         this.$store.commit('UPDATE_MISSION_VOLUNTEER_LOCATION', data.data)
-        this.$refs['item-map'].updateVolunteerPlaces()
+        this.$refs.map.updateVolunteerPlaces()
       } else if (data.status === SocketStateTypes.VOLUNTEER_OFFLINE) {
         this.$store.commit('UPDATE_MISSION_VOLUNTEER_OFFLINE', data.data)
-        this.$refs['item-map'].updateVolunteerPlaces()
+        this.$refs.map.updateVolunteerPlaces()
       } else if (
         data.status === SocketStateTypes.VOLUNTEER_JOIN_MISSION ||
         data.status === SocketStateTypes.VOLUNTEER_QUIT_MISSION

@@ -1,4 +1,5 @@
 import { getMissionList, requestGetVolunteersInCase } from '@/api/mission'
+import { getFaceIdentificationRecords } from '@/api/face'
 
 const mission = {
   state: {
@@ -72,6 +73,10 @@ const mission = {
         }
       }
       console.debug(state)
+    },
+    SET_FACE_RECOGNITION_HISTORY: (state, faceRecognitionHistory) => {
+      state.currentMission.faceRecognitionHistory = faceRecognitionHistory
+      console.debug(state)
     }
   },
 
@@ -128,7 +133,25 @@ const mission = {
         }
       })
     },
-    initCurrentMission: ({ dispatch }, params) => {
+    getCurrentMissionFaceRecognitionHistories: ({ commit }, params) => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const res = await getFaceIdentificationRecords({
+            oldManId: params.oldManId
+          })
+          if (res.data) {
+            commit('SET_FACE_RECOGNITION_HISTORY', res.data)
+            resolve()
+          } else {
+            reject(new Error('no data'))
+          }
+        } catch (e) {
+          console.log(e)
+          reject(e)
+        }
+      })
+    },
+    initCurrentMission: ({ state, dispatch }, params) => {
       return new Promise(async (resolve, reject) => {
         try {
           // 清空选中的案件信息
@@ -138,6 +161,10 @@ const mission = {
             dispatch('getCurrentMissionInfo', params),
             dispatch('getCurrentMissionMembers', params)
           ])
+          await dispatch(
+            'getCurrentMissionFaceRecognitionHistories',
+            { oldManId: state.currentMission.missionInfo.oldMan.id }
+          )
           resolve()
         } catch (e) {
           console.log(e)

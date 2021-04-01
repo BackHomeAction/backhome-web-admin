@@ -1,8 +1,17 @@
 import request from '@/utils/request'
 
 const faceApi = {
+  one: '/face',
   list: '/face/admin',
   check: '/face/result/admin'
+}
+
+export const getFaceIdentificationRecords = (params) => {
+  return request({
+    url: faceApi.one,
+    method: 'get',
+    params
+  })
 }
 
 export function getFaceRecognizationList (params) {
