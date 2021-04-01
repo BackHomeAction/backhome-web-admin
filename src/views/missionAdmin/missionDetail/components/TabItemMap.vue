@@ -107,30 +107,11 @@ export default {
         })
       })
 
-      const onlineMembers = this.currentMission.onlineTeamMembers
-      const onlineMembersStyles = {}
-      onlineMembers.map(ele => {
-        onlineMembersStyles[`volunteer-marker-${ele.id}`] = new TMap.MarkerStyle({
-          'src': `https://fwwb2020-fc-aliyun.tgucsdn.com/volunteer_avatar/get?url=${ele.avatarUrl}`,
-          'width': 45,
-          'height': 45
-        })
-      })
       this.markers.volunteers = new TMap.MultiMarker({
         id: 'layer-marker-volunteer',
-        map: this.map,
-        styles: onlineMembersStyles,
-        geometries: onlineMembers.map(ele => {
-          return {
-            'id': `volunteer-marker-${ele.id}`,
-            'styleId': `volunteer-marker-${ele.id}`,
-            'position': new TMap.LatLng(ele.latitude, ele.longitude),
-            'properties': {
-              'title': `${ele.name}`
-            }
-          }
-        })
+        map: this.map
       })
+      this.updateVolunteerPlaces()
 
       console.log(this.markers)
     },
