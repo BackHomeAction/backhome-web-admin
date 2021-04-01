@@ -3,7 +3,8 @@ import request from '@/utils/request'
 const missionApi = {
   caseListAll: '/case',
   caseList: '/admin/case',
-  volunteerInCase: '/case/volunteer'
+  volunteerInCase: '/case/volunteer',
+  timeline: '/admin/case/dynamic'
 }
 
 export function getMissionListAll (params) {
@@ -25,6 +26,14 @@ export function getMissionList (params) {
 export const requestGetVolunteersInCase = (params) => {
   return request({
     url: missionApi.volunteerInCase,
+    method: 'get',
+    params
+  })
+}
+
+export function getMissionTimeline (params) {
+  return request({
+    url: missionApi.timeline,
     method: 'get',
     params
   })

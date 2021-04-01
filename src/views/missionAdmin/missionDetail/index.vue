@@ -26,7 +26,7 @@
               Content of Tab Pane 5
             </a-tab-pane>
             <a-tab-pane key="log" tab="案件日志">
-              Content of Tab Pane 6
+              <tab-item-log />
             </a-tab-pane>
           </a-tabs>
         </div>
@@ -40,6 +40,7 @@ import { mapGetters } from 'vuex'
 import BasicInfo from './components/BasicInfo.vue'
 import TabItemMap from './components/TabItemMap.vue'
 import TabItemFaceRecord from './components/TabItemFaceRecord.vue'
+import TabItemLog from './components/TabItemLog.vue'
 import Ws from '@/services/websocket'
 
 const SocketStateTypes = {
@@ -57,7 +58,7 @@ const SocketStateTypes = {
 
 export default {
   name: 'MissionDetail',
-  components: { BasicInfo, TabItemMap, TabItemFaceRecord },
+  components: { BasicInfo, TabItemMap, TabItemFaceRecord, TabItemLog },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo'])
   },
