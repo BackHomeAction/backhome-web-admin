@@ -12,7 +12,8 @@ const getters = {
   addRouters: state => state.permission.addRouters,
   multiTab: state => state.app.multiTab,
   currentMission: state => state.mission.currentMission,
-  currentMissionInfo: state => state.mission.currentMission.missionInfo
+  currentMissionInfo: state => state.mission.currentMission.missionInfo,
+  onlineMembers: state => state.mission.currentMission.onlineMembers
 }
 
 export default getters
