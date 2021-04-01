@@ -6,7 +6,7 @@
       :data="datas"
       :padding="padding"
       :scale="scale">
-      <v-tooltip />
+      <v-tooltip :onChange="takeDown" />
       <v-axis :dataKey="axis1Opts.dataKey" :line="axis1Opts.line" :tickLine="axis1Opts.tickLine" :grid="axis1Opts.grid" />
       <v-axis :dataKey="axis2Opts.dataKey" :line="axis2Opts.line" :tickLine="axis2Opts.tickLine" :grid="axis2Opts.grid" />
       <v-legend dataKey="user" marker="circle" :offset="30" />
@@ -14,11 +14,28 @@
       <v-line position="item*score" color="user" :size="2" />
       <v-point position="item*score" color="user" :size="4" shape="circle" />
     </v-chart>
-  </div>
-</template>
+    <div class="chartpoint">
+      <div >
+        <span><a-badge color="blue" text="全国" /></span>
+        <div>{{ (arrayFather[0] ? arrayFather[0] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '' ) + (arrayFather[4] ? arrayFather[4] : '') }}</div>
+      </div>
+      <a-divider type="vertical" style="height: 70px" />
+      <div >
+        <span><a-badge color="yellow" text="全省" /></span>
+        <div>{{ (arrayFather[1] ? arrayFather[1] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div>
+      </div>
+      <a-divider type="vertical" style="height: 70px" />
+      <div >
+        <span><a-badge color="green" text="全区" /></span>
+        <div>{{ (arrayFather[2] ? arrayFather[2] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div>
+      </div>
+    </div></div></template>
 
 <script>
+import { adminTeam, adminUser } from '@/api/admin'
 import Viser from 'viser-vue'
+const DataSet = require('@antv/data-set')
+
 const axis1Opts = {
   dataKey: 'item',
   line: null,
@@ -41,8 +58,30 @@ const axis2Opts = {
     }
   }
 }
-const DataSet = require('@antv/data-set')
+
 export default {
+  beforeMount () {
+    this.getTeam()
+    console.log(this.$store.state.data.users)
+    if (this.$store.state.data.users.roleId === 4 || this.$store.state.data.users.roleId === 5) {
+      this.dataSource = [
+        { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100) },
+        { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess },
+        { item: '注册数', '全国': this.$store.state.data.dataSource.country.registerNum },
+        { item: '结案数', '全国': this.$store.state.data.dataSource.country.finishCaseNum },
+        { item: '结案时间', '全国': this.$store.state.data.dataSource.country.finishCaseTime }
+      ]
+    }
+    if (this.$store.state.data.users.roleId === 3) {
+      this.dataSource = [
+        { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100), '全省': Math.ceil(this.$store.state.data.dataSource.province.finishCaseRate * 100), '全区': Math.ceil(this.$store.state.data.dataSource.district.finishCaseRate * 100) },
+        { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess, '全省': this.$store.state.data.dataSource.province.liveNess, '全区': this.$store.state.data.dataSource.district.liveNess },
+        { item: '注册数', '全国': this.$store.state.data.dataSource.country.registerNum, '全省': this.$store.state.data.dataSource.province.registerNum, '全区': this.$store.state.data.dataSource.district.registerNum },
+        { item: '结案数', '全国': this.$store.state.data.dataSource.country.finishCaseNum, '全省': this.$store.state.data.dataSource.province.finishCaseNum, '全区': this.$store.state.data.dataSource.district.finishCaseNum },
+        { item: '结案时间', '全国': this.$store.state.data.dataSource.country.finishCaseTime, '全省': this.$store.state.data.dataSource.province.finishCaseTime, '全区': this.$store.state.data.dataSource.district.finishCaseTime }
+      ]
+    }
+  },
   mounted () {
     const dv = new DataSet.View().source(this.dataSource)
     dv.transform({
@@ -57,29 +96,105 @@ export default {
   data () {
     return {
       datas: null,
-      dataSource: [
-        { item: '结案率', '全国': 70, '全省': 46, '全区': 33 },
-        { item: '活跃度', '全国': 45, '全省': 34, '全区': 46 },
-        { item: '注册数', '全国': 62, '全省': 58, '全区': 73 },
-        { item: '结案数', '全国': 58, '全省': 46, '全区': 61 },
-        { item: '结案时间', '全国': 41, '全省': 12, '全区': 28 }
-      ],
       axis2Opts,
+      arrayFather: [0, 0, 0],
       axis1Opts,
-      padding: [30, 30, 30, 30],
+      dataSource: null,
+      digest: null,
+      region: [],
+      padding: [10, 10, 10, 10],
       scale: [{
         dataKey: 'score',
         min: 20,
-        max: 80
-      }]
+        max: 250
+      }],
+      userData: [],
+      takeDown: (ev, chart) => {
+        if (ev.items.length === 1) {
+          this.arrayFather = []
+          this.arrayFather[0] = ev.items[0].value
+          if (ev.items[0].title === '结案数' || ev.items[0].title === '注册数') {
+            this.arrayFather[4] = '个'
+          }
+          if (ev.items[0].title === '结案时间') {
+            this.arrayFather[4] = 'h'
+          }
+          if (ev.items[0].title === '活跃度') {
+            this.arrayFather[4] = '/人次'
+          }
+          if (ev.items[0].title === '结案率') {
+            this.arrayFather[4] = '/%'
+            this.arrayFather[0] = ev.items[0].value
+          }
+        } else {
+          this.arrayFather = []
+          this.arrayFather[0] = ev.items[0].value
+          this.arrayFather[1] = ev.items[1].value
+          this.arrayFather[2] = ev.items[2].value
+          if (ev.items[0].title === '结案数' || ev.items[0].title === '注册数') {
+            this.arrayFather[3] = '个'
+          }
+          if (ev.items[0].title === '结案率') {
+            this.arrayFather[3] = '/%'
+            this.arrayFather[0] = ev.items[0].value
+            this.arrayFather[1] = ev.items[1].value
+            this.arrayFather[2] = ev.items[2].value
+          }
+          if (ev.items[0].title === '结案时间') {
+            this.arrayFather[3] = 'h'
+          }
+          if (ev.items[0].title === '活跃度') {
+            this.arrayFather[3] = '/人次'
+          }
+        }
+      }
     }
   },
   components: {
     Viser
+  },
+  methods: {
+    getTeam: function () {
+      adminUser().then(res => {
+        this.userData = res.data
+        if (this.userData.roleId === 5 || this.userData.roleId === 4) {
+          adminTeam({
+            province: this.userData.province,
+            district: this.userData.district,
+            city: this.userData.city
+          }).then(res => {
+            console.log(res.data)
+            this.$store.state.data.dataSource = res.data
+          })
+        }
+        if (this.userData.roleId === 3) {
+          adminTeam({
+            province: this.userData.province,
+            district: this.userData.district,
+            city: this.userData.city
+          }).then(res => {
+            console.log(res)
+          })
+        }
+      })
+    },
+    getMouseMove: function (ev, chart) {
+      console.log(ev)
+      console.log(chart)
+    }
   }
 }
 </script>
 
 <style scoped>
-
+.chartpoint{
+  height: 100px;
+  margin-top: 15px;
+  color: rgba(16, 16, 16, 100);
+  font-size: 24px;
+  text-align: left;
+  font-family: SourceHanSansSC-regular;
+  display: flex;
+  justify-content: space-evenly;
+}
 </style>

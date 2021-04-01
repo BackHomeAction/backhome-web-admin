@@ -9,7 +9,15 @@ const adminAPI = {
   adminByid: '/admin/id',
   adminCase: '/admin/case',
   adminPhoto: '/admin/photo',
-  adminDynimic: '/admin/dynamic'
+  adminDynimic: '/admin/dynamic',
+  adminTeam: '/admin/team'
+}
+export function adminTeam (params) {
+  return request({
+    url: adminAPI.adminTeam,
+    method: 'get',
+    params
+  })
 }
 export function adminDymic (params) {
   return request({
