@@ -47,7 +47,7 @@
         <span slot="time" slot-scope="text">
           {{ text | moment }}
         </span>
-        <span slot="action" slot-scope="text, record" v-if="record.state === 1 || record.state === 2">
+        <span slot="action" slot-scope="text, record" v-if="record.state === 2">
           <template>
             <a @click="handleConfirm(record)">确认是</a>
             <a-divider type="vertical" v-if="record.state !== 3" />
