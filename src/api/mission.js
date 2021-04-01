@@ -4,7 +4,8 @@ const missionApi = {
   caseListAll: '/case',
   caseList: '/admin/case',
   volunteerInCase: '/case/volunteer',
-  timeline: '/admin/case/dynamic'
+  timeline: '/admin/case/dynamic',
+  end: '/admin/case/end'
 }
 
 export function getMissionListAll (params) {
@@ -36,5 +37,13 @@ export function getMissionTimeline (params) {
     url: missionApi.timeline,
     method: 'get',
     params
+  })
+}
+
+export function endMission (data) {
+  return request({
+    url: missionApi.end,
+    method: 'post',
+    data
   })
 }

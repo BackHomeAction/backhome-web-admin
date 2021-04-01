@@ -7,10 +7,13 @@
       <mission-state-badge :mission="currentMissionInfo" />
     </template>
     <template slot="extra">
-      <a-dropdown>
+      <a-dropdown v-if="currentMissionInfo.state === 1 || currentMissionInfo.state === 3">
         <a-menu slot="overlay">
-          <a-menu-item key="1" @click="handleCloseMission">
-            关闭任务
+          <a-menu-item key="1" @click="handleCompleteMission">
+            完成任务
+          </a-menu-item>
+          <a-menu-item key="2" @click="handleCloseMission">
+            终止任务
           </a-menu-item>
         </a-menu>
         <a-button> 操作 <a-icon type="down" /> </a-button>
@@ -42,6 +45,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import { MissionStateBadge } from '@/components'
+import { endMission } from '@/api/mission'
 
 export default {
   components: { MissionStateBadge },
@@ -49,12 +53,36 @@ export default {
     ...mapGetters(['currentMission', 'currentMissionInfo'])
   },
   methods: {
-    async handleCloseMission () {
+    async changeState (state) {
+      try {
+        await endMission({
+          caseId: this.currentMissionInfo.id,
+          state
+        })
+        this.$notification.success({
+          message: '修改任务状态成功'
+        })
+        this.$router.back()
+      } catch (e) {
+        console.log(e)
+      }
+    },
+    handleCompleteMission () {
+      this.$confirm({
+        title: '是否确认完成该任务',
+        content: '完成后将无法重新开启！',
+        onOk: () => {
+          this.changeState(2)
+        }
+      })
+    },
+    handleCloseMission () {
       this.$confirm({
         title: '是否确认关闭该任务',
         content: '关闭后将无法重新开启！',
         okType: 'danger',
         onOk: () => {
+          this.changeState(4)
         }
       })
     }
