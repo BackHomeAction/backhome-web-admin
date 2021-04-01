@@ -115,7 +115,7 @@ export default {
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
         const query = cleanObject(Object.assign(parameter, {
-          caseId: this.currentMissionInfo.id
+          oldManId: this.currentMissionInfo.oldMan.id
         }))
         return getFaceRecognizationList(query)
           .then(res => {
