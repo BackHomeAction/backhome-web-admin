@@ -1,6 +1,5 @@
 // eslint-disable-next-line
 import { UserLayout, BasicLayout, PageView } from '@/layouts'
-import { bxAnaalyse, bxAna, bxPlat, team } from '@/core/icons'
 
 const RouteView = {
   name: 'RouteView',
@@ -21,7 +20,7 @@ export const asyncRouterMap = [
         name: 'dashboard',
         redirect: '/dashboard/workplace',
         component: RouteView,
-        meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '仪表盘', keepAlive: true, icon: 'dashboard', roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/dashboard/workplace',
@@ -42,7 +41,7 @@ export const asyncRouterMap = [
         name: 'userAdmin',
         redirect: '/useradmin/volunteer',
         component: PageView,
-        meta: { title: '用户管理', keepAlive: true, icon: team, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '用户管理', keepAlive: true, icon: 'team', roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/useradmin/volunteer/:pageNo([1-9]\\d*)?',
@@ -73,7 +72,7 @@ export const asyncRouterMap = [
         name: 'missionAdmin',
         redirect: '/missionAdmin/missionList',
         component: PageView,
-        meta: { title: '任务管理', keepAlive: false, icon: bxAna, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '任务管理', keepAlive: false, icon: 'audit', roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/missionAdmin/missionList',
@@ -101,7 +100,7 @@ export const asyncRouterMap = [
         component: PageView,
         redirect: '/platformAdmin/announcement',
         name: 'platformAdmin',
-        meta: { title: '平台管理', keepAlive: true, icon: bxPlat, roles: ['admin', 'superAdmin'] },
+        meta: { title: '平台管理', keepAlive: true, icon: 'control', roles: ['admin', 'superAdmin'] },
         children: [
           {
             path: '/platformAdmin/announcement',
