@@ -73,26 +73,26 @@ export const asyncRouterMap = [
         name: 'missionAdmin',
         redirect: '/missionAdmin/missionList',
         component: PageView,
-        meta: { title: '任务管理', keepAlive: true, icon: bxAna, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '任务管理', keepAlive: false, icon: bxAna, roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/missionAdmin/missionList',
             name: 'MissionList',
             component: () => import('@/views/missionAdmin/missionList/index'),
-            meta: { title: '任务列表', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '任务列表', keepAlive: false, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
             path: '/missionAdmin/missionDetail',
             name: 'missionDetail',
             hidden: true,
             component: () => import('@/views/missionAdmin/missionDetail/index'),
-            meta: { title: '任务详情', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '任务详情', keepAlive: false, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
             path: '/missionAdmin/faceRecord',
             name: 'FaceRecord',
             component: () => import('@/views/missionAdmin/faceRecord/index'),
-            meta: { title: '人脸识别记录', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '人脸识别记录', keepAlive: false, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           }
         ]
       },

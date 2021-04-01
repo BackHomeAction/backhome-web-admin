@@ -4,7 +4,7 @@ import { ACCESS_TOKEN } from '@/store/mutation-types'
 
 export default class WebSocket {
   constructor () {
-    this.client = Stomp.client('wss://fwwb2020-app-volunteer.tgucsdn.com/websocket')
+    this.client = null
     this.subscribes = {}
     this.heartBeatTimer = null
   }
@@ -14,6 +14,7 @@ export default class WebSocket {
       return
     }
 
+    this.client = Stomp.client('wss://fwwb2020-app-volunteer.tgucsdn.com/websocket')
     this.client.connect(
       {
         Authorization: 'Bearer ' + storage.get(ACCESS_TOKEN)
@@ -36,10 +37,11 @@ export default class WebSocket {
   }
 
   disconnect () {
-    if (this.client) {
+    if (this.client && this.client.connected) {
       this.client.disconnect()
       clearInterval(this.heartBeatTimer)
       this.heartBeatTimer = null
+      this.subscribes = {}
     }
   }
 

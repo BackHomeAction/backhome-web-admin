@@ -75,7 +75,7 @@ export default {
     this.caseId = parseInt(query.id, 10)
     this.init()
   },
-  unmounted () {
+  beforeDestroy () {
     this.$store.dispatch('clearCurrentMission')
     this.closeWebSocket()
   },
