@@ -198,7 +198,7 @@ export default {
           this.onetype = ' 人次'
         }
         if (ev.items[0].title === '结案率') {
-          this.onetype = '/%'
+          this.onetype = '%'
           this.tipone = ev.items[0].value
         }
       } else {
@@ -211,7 +211,7 @@ export default {
           this.twotype = '个'
         }
         if (ev.items[0].title === '结案率') {
-          this.twotype = '/%'
+          this.twotype = '%'
           this.tipone = ev.items[0].value
           this.tiptwo = ev.items[1].value
           this.tipthree = ev.items[2].value
