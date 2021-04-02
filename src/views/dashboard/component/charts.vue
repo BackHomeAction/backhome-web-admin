@@ -1,26 +1,31 @@
 <template>
   <div>
-    <v-chart :forceFit="true" height="350" :data="data" :padding="padding" :scale="scale">
-      <v-tooltip :onChange="takeDown" />
+    <v-chart
+      :forceFit="true"
+      height="350"
+      :data="datas"
+      :padding="padding"
+      :scale="scale">
       <v-axis :dataKey="axis1Opts.dataKey" :line="axis1Opts.line" :tickLine="axis1Opts.tickLine" :grid="axis1Opts.grid" />
       <v-axis :dataKey="axis2Opts.dataKey" :line="axis2Opts.line" :tickLine="axis2Opts.tickLine" :grid="axis2Opts.grid" />
       <v-legend dataKey="user" marker="circle" :offset="30" />
       <v-coord type="polar" radius="0.8" />
       <v-line position="item*score" color="user" :size="2" />
       <v-point position="item*score" color="user" :size="4" shape="circle" />
+      <v-tooltip :onChange="takeDown" />
     </v-chart>
     <div class="chartpoint">
-      <div>
+      <div >
         <span><a-badge color="blue" text="全国" /></span>
         <div>{{ (arrayFather[0] ? arrayFather[0] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '' ) + (arrayFather[4] ? arrayFather[4] : '') }}</div>
       </div>
       <a-divider type="vertical" style="height: 70px" />
-      <div >
+      <div>
         <span><a-badge color="yellow" text="全省" /></span>
         <div>{{ (arrayFather[1] ? arrayFather[1] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div>
       </div>
       <a-divider type="vertical" style="height: 70px" />
-      <div >
+      <div>
         <span><a-badge color="green" text="全区" /></span>
         <div>{{ (arrayFather[2] ? arrayFather[2] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div>
       </div>
@@ -74,14 +79,15 @@ export default {
       padding: [10, 10, 10, 10],
       scale: [{
         dataKey: 'score',
-        min: 20,
-        max: 50
+        min: 0,
+        max: 25
       }],
       userData: [],
       takeDown: (ev, chart) => {
         if (ev.items.length === 1) {
           this.arrayFather = []
           this.arrayFather[0] = ev.items[0].value
+          this.$store.state.data.titles = ev.items[0].title
           if (ev.items[0].title === '结案数' || ev.items[0].title === '注册数') {
             this.arrayFather[4] = '个'
           }
@@ -96,6 +102,8 @@ export default {
             this.arrayFather[0] = ev.items[0].value
           }
         } else {
+          this.$store.state.data.titles = null
+          this.$store.state.data.titles = ev.items[0].title
           this.arrayFather = []
           this.arrayFather[0] = ev.items[0].value
           this.arrayFather[1] = ev.items[1].value
@@ -130,6 +138,7 @@ export default {
         if (this.userData.roleId === 5 || this.userData.roleId === 4) {
           adminTeam({}).then(res => {
             this.$store.state.data.dataSource = res.data
+            console.log(this.$store.state.data.dataSource)
             this.dataSource = [
               { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100) },
               { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess },
@@ -151,10 +160,11 @@ export default {
           })
         }
         if (this.userData.roleId === 3) {
+          console.log(res.data.city)
           adminTeam({
-            province: this.userData.province,
-            district: this.userData.district,
-            city: this.userData.city
+            province: res.data.province,
+            district: res.data.city,
+            city: res.data.district
           }).then(res => {
             this.$store.state.data.dataSource = res.data
             this.dataSource = [
@@ -186,12 +196,15 @@ export default {
 <style scoped>
 .chartpoint{
   height: 100px;
-  margin-top: 15px;
+  margin-top: 5px;
   color: rgba(16, 16, 16, 100);
   font-size: 24px;
-  text-align: left;
   font-family: SourceHanSansSC-regular;
   display: flex;
   justify-content: space-evenly;
+}
+.items{
+  width: 150px;
+  height: 100px;
 }
 </style>

@@ -124,7 +124,7 @@
           :md="24"
           :sm="24"
           :xs="24">
-          <a-card title="团队指数" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
+          <a-card :title="'团队指数' + '  ' + ( this.$store.state.data.titles ? this.$store.state.data.titles : '--') " style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
             <charts/>
           </a-card>
           <a-card :loading="loading3" title="今日活跃志愿者" :bordered="false">
