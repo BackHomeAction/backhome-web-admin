@@ -9,7 +9,7 @@
           <div class="content-title">
             {{ timeFix }}，{{ name }}!
           </div>
-          <div v-if="users">{{ (users.roleId === 3) ? '区域指战员' +'  '+'|' + '  ' + (users.province+ '-' +users.city+ '-' +users.district) : ((users.roleId=== 5)?'总指战员':'系统指战员') }}</div>
+          <div v-if="users">{{ (users.roleId === 3) ? '区域指战员' +'  '+'|' + '  ' + (users.province+ '-' +users.district+ '-' +users.city) : ((users.roleId=== 5)?'总指战员':'系统指战员') }}</div>
         </div>
       </div>
     </template>
@@ -223,7 +223,7 @@ export default {
       if (this.users.roleId !== 3) {
         district = null
       }
-      getMissionListAll({ district: district }).then(res => {
+      getMissionListAll({ district: city }).then(res => {
         if (res.data.length) {
           this.missionShow = true
         }
@@ -279,6 +279,7 @@ export default {
       return dayjs().diff(time, 'hour')
     },
     missionNum: function (datas) {
+      console.log(datas)
       this.lengths[0] = datas.data.length
       this.lengths[1] = 0
       for (var t = 0; t < datas.data.length; t++) {
