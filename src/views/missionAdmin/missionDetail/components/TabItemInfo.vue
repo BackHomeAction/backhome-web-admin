@@ -49,7 +49,7 @@ export default {
     ...mapGetters(['currentMissionInfo']),
     offenPlaceText () {
       let text = ''
-      const list = JSON.parse(this.currentMissionInfo.oldMan.offerPlace)
+      const list = this.currentMissionInfo.oldMan.offerPlace && JSON.parse(this.currentMissionInfo.oldMan.offerPlace) || []
       list.map((ele, index) => {
         if (index !== list.length - 1) {
           text += `${ele.name}、`
