@@ -1,7 +1,7 @@
 <template>
   <a-dropdown v-if="currentUser && currentUser.name" placement="bottomRight">
     <span class="ant-pro-account-avatar">
-      <a-avatar size="small" src="https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png" class="antd-pro-global-header-index-avatar" />
+      <a-avatar size="small" :src="avatar || 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png'" class="antd-pro-global-header-index-avatar" />
       <span>{{ currentUser.name }}</span>
       <a-modal
         title="修改密码"
@@ -45,6 +45,7 @@
 <script>
 import { Modal } from 'ant-design-vue'
 import { changePassword } from '@/api/login'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'AvatarDropdown',
@@ -57,6 +58,9 @@ export default {
       type: Boolean,
       default: true
     }
+  },
+  computed: {
+    ...mapGetters(['avatar'])
   },
   data () {
     return {

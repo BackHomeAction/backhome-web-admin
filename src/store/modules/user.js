@@ -75,7 +75,7 @@ const user = {
 
           // commit('SET_NAME', { name: result.name, welcome: welcome() })
           commit('SET_NAME', { name: result.userName, welcome: welcome() })
-          commit('SET_AVATAR', result.avatar)
+          commit('SET_AVATAR', result.avatarUrl)
 
           IM.getInstance().login()
 
