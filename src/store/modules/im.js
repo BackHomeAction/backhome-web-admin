@@ -1,5 +1,8 @@
 import dayjs from '@/utils/dayjs'
 import notification from 'ant-design-vue/es/notification'
+import IM from '@/services/im'
+
+const tim = IM.getInstance().tim
 
 function formatTime (date) {
   if (dayjs(date).isToday()) {
@@ -8,7 +11,7 @@ function formatTime (date) {
   return dayjs(date).format('MM-DD AHH:mm')
 }
 
-const tim = {
+const im = {
   state: {
     isSdkReady: false, // TIM SDK 初始化状态
     myInfo: {}, // 个人信息
@@ -198,4 +201,4 @@ const tim = {
   }
 }
 
-export default tim
+export default im

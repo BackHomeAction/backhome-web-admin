@@ -54,8 +54,9 @@ export default class IM {
   }
 
   async login () {
-    const state = store.getters.tim && store.getters.tim.isSdkReady
+    const state = store.getters.im && store.getters.im.isSdkReady
     if (state) return
+    if (!this.tim) return
 
     const uid = store.getters.userInfo.id
     const userID = `admin_${uid}`
@@ -72,21 +73,22 @@ export default class IM {
   }
 
   async checkLogin () {
-    const state = store.getters.tim.isSdkReady
+    const state = store.getters.im.isSdkReady
     if (!state) {
       await this.login()
     }
   };
 
   getGroupID (caseId) {
-    return store.getters.tim.groupIDsMap.get(`case_${caseId}`)
+    return store.getters.im.groupIDsMap.get(`case_${caseId}`)
   };
 
   getConversationID (caseId) {
     return 'GROUP' + this.getGroupID(caseId)
   };
 
-  checkoutGroup (caseId) {
+  async checkoutGroup (caseId) {
+    await this.checkLogin()
     store.dispatch('checkoutConversation', this.getConversationID(caseId))
   };
 

@@ -44,6 +44,8 @@ import TabItemLog from './components/TabItemLog.vue'
 import TabItemVolunteerList from './components/TabItemVolunteerList.vue'
 import TabItemInfo from './components/TabItemInfo.vue'
 import Ws from '@/services/websocket'
+import IM from '@/services/im'
+import { joinIMGroup, leaveIMGroup } from '@/api/im'
 
 const SocketStateTypes = {
   NEW_MISSION: 10,
@@ -68,7 +70,8 @@ export default {
     return {
       caseId: null,
       isLoadingInfo: true,
-      ws: Ws.getInstance()
+      ws: Ws.getInstance(),
+      im: IM.getInstance()
     }
   },
   mounted () {
@@ -79,11 +82,13 @@ export default {
   beforeDestroy () {
     this.$store.dispatch('clearCurrentMission')
     this.closeWebSocket()
+    leaveIMGroup({ caseId: this.caseId })
   },
   methods: {
     async init () {
       this.getMissionInfo()
       this.initWebSocket()
+      this.initIM()
     },
     async getMissionInfo () {
       this.isLoadingInfo = true
@@ -118,6 +123,14 @@ export default {
         await this.$store.dispatch('getCurrentMissionMembers', {
           id: this.caseId
         })
+      }
+    },
+    async initIM () {
+      try {
+        await joinIMGroup({ caseId: this.caseId })
+        this.im.checkoutGroup(this.caseId)
+      } catch (e) {
+        console.log(e)
       }
     }
   }

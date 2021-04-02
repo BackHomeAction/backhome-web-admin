@@ -16,7 +16,7 @@ const getters = {
   teamMembers: state => state.mission.currentMission.teamMembers,
   onlineMembers: state => state.mission.currentMission.onlineTeamMembers,
   faceRecognitionHistory: state => state.mission.currentMission.faceRecognitionHistory,
-  tim: state => state.tim
+  im: state => state.im
 }
 
 export default getters
