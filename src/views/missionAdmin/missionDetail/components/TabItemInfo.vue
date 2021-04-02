@@ -7,7 +7,7 @@
       {{ currentMissionInfo.oldMan.sex === 1 ? '男' : '女' }}
     </a-descriptions-item>
     <a-descriptions-item label="出生日期">
-      {{ currentMissionInfo.oldMan.birthDate | moment }}
+      {{ currentMissionInfo.oldMan.birthDate | date }}
     </a-descriptions-item>
     <a-descriptions-item label="报案时间">
       {{ currentMissionInfo.startTime }}
