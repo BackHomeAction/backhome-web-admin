@@ -80,11 +80,11 @@ export default {
     this.init()
   },
   beforeDestroy () {
-    this.$store.dispatch('clearCurrentMission')
-    this.closeWebSocket()
     if (this.currentMissionInfo.state === 2 || this.currentMissionInfo.state === 4) {
       leaveIMGroup({ caseId: this.caseId })
     }
+    this.closeWebSocket()
+    this.$store.dispatch('clearCurrentMission')
   },
   methods: {
     async init () {
