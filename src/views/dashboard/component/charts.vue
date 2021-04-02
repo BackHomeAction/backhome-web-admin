@@ -15,19 +15,19 @@
       <v-tooltip :onChange="takeDown" />
     </v-chart>
     <div class="chartpoint">
-      <div >
-        <span><a-badge color="blue" text="全国" /></span>
-        <div>{{ (arrayFather[0] ? arrayFather[0] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '' ) + (arrayFather[4] ? arrayFather[4] : '') }}</div>
+      <div style="width: 100px">
+        <div class="center" ><span><a-badge color="blue" text="全国" /></span></div>
+        <div class="center" ><div>{{ (arrayFather[0] ? arrayFather[0] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '' ) + (arrayFather[4] ? arrayFather[4] : '') }}</div></div>
       </div>
       <a-divider type="vertical" style="height: 70px" />
-      <div>
-        <span><a-badge color="yellow" text="全省" /></span>
-        <div>{{ (arrayFather[1] ? arrayFather[1] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div>
+      <div style="width: 100px" >
+        <div class="center" ><span><a-badge color="yellow" text="全省" /></span></div>
+        <div class="center" ><div>{{ (arrayFather[1] ? arrayFather[1] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div></div>
       </div>
       <a-divider type="vertical" style="height: 70px" />
-      <div>
-        <span><a-badge color="green" text="全区" /></span>
-        <div>{{ (arrayFather[2] ? arrayFather[2] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div>
+      <div style="width: 100px" >
+        <div class="center" ><span><a-badge color="green" text="全区" /></span></div>
+        <div class="center" ><div>{{ (arrayFather[2] ? arrayFather[2] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div></div>
       </div>
     </div>
   </div>
@@ -203,8 +203,7 @@ export default {
   display: flex;
   justify-content: space-evenly;
 }
-.items{
-  width: 150px;
-  height: 100px;
+.center{
+  width: 100%;display: flex;justify-content: center;align-items: center;
 }
 </style>
