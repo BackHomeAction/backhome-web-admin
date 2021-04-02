@@ -6,7 +6,7 @@
     <template slot="subTitle">
       <mission-state-badge :mission="currentMissionInfo" />
     </template>
-    <template slot="extra">
+    <template slot="extra" v-if="currentMissionInfo">
       <a-dropdown v-if="currentMissionInfo.state === 1 || currentMissionInfo.state === 3">
         <a-menu slot="overlay">
           <a-menu-item key="1" @click="handleCompleteMission">
