@@ -13,7 +13,7 @@
             <a-tab-pane key="map" tab="实时地图">
               <tab-item-map ref="map" force-render />
             </a-tab-pane>
-            <a-tab-pane key="chat" tab="在线沟通" force-render>
+            <a-tab-pane key="chat" tab="在线沟通" v-if="currentMissionInfo.state === 1 || currentMissionInfo.state === 3">
               Content of Tab Pane 2
             </a-tab-pane>
             <a-tab-pane key="info" tab="案件信息">
@@ -82,11 +82,13 @@ export default {
   beforeDestroy () {
     this.$store.dispatch('clearCurrentMission')
     this.closeWebSocket()
-    leaveIMGroup({ caseId: this.caseId })
+    if (this.currentMissionInfo.state === 2 || this.currentMissionInfo.state === 4) {
+      leaveIMGroup({ caseId: this.caseId })
+    }
   },
   methods: {
     async init () {
-      this.getMissionInfo()
+      await this.getMissionInfo()
       this.initWebSocket()
       this.initIM()
     },
@@ -126,6 +128,9 @@ export default {
       }
     },
     async initIM () {
+      // 已结束的案件不允许聊天
+      if (this.currentMissionInfo.state === 2 || this.currentMissionInfo.state === 4) return
+
       try {
         await joinIMGroup({ caseId: this.caseId })
         this.im.checkoutGroup(this.caseId)
