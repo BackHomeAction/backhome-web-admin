@@ -6,6 +6,7 @@ const data = {
     roleId: 0,
     allVolss: '',
     users: [],
+    titles: null,
     dataSource: [],
     oldManData: {
       oldmanWatch: [],
