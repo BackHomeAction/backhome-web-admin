@@ -1,6 +1,5 @@
 // eslint-disable-next-line
 import { UserLayout, BasicLayout, PageView } from '@/layouts'
-import { bxAnaalyse, bxAna, bxPlat, team } from '@/core/icons'
 
 const RouteView = {
   name: 'RouteView',
@@ -21,7 +20,7 @@ export const asyncRouterMap = [
         name: 'dashboard',
         redirect: '/dashboard/workplace',
         component: RouteView,
-        meta: { title: '仪表盘', keepAlive: true, icon: bxAnaalyse, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '仪表盘', keepAlive: true, icon: 'dashboard', roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/dashboard/workplace',
@@ -42,7 +41,7 @@ export const asyncRouterMap = [
         name: 'userAdmin',
         redirect: '/useradmin/volunteer',
         component: PageView,
-        meta: { title: '用户管理', keepAlive: true, icon: team, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '用户管理', keepAlive: true, icon: 'team', roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/useradmin/volunteer/:pageNo([1-9]\\d*)?',
@@ -73,19 +72,26 @@ export const asyncRouterMap = [
         name: 'missionAdmin',
         redirect: '/missionAdmin/missionList',
         component: PageView,
-        meta: { title: '任务管理', keepAlive: true, icon: bxAna, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '任务管理', keepAlive: false, icon: 'audit', roles: ['districtAdmin', 'admin', 'superAdmin'] },
         children: [
           {
             path: '/missionAdmin/missionList',
             name: 'MissionList',
             component: () => import('@/views/missionAdmin/missionList/index'),
-            meta: { title: '任务列表', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '任务列表', keepAlive: false, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+          },
+          {
+            path: '/missionAdmin/missionDetail',
+            name: 'missionDetail',
+            hidden: true,
+            component: () => import('@/views/missionAdmin/missionDetail/index'),
+            meta: { title: '任务详情', keepAlive: false, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
             path: '/missionAdmin/faceRecord',
             name: 'FaceRecord',
             component: () => import('@/views/missionAdmin/faceRecord/index'),
-            meta: { title: '人脸识别记录', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '人脸识别记录', keepAlive: false, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           }
         ]
       },
@@ -94,25 +100,25 @@ export const asyncRouterMap = [
         component: PageView,
         redirect: '/platformAdmin/announcement',
         name: 'platformAdmin',
-        meta: { title: '平台管理', keepAlive: true, icon: bxPlat, roles: ['districtAdmin', 'admin', 'superAdmin'] },
+        meta: { title: '平台管理', keepAlive: true, icon: 'control', roles: ['admin', 'superAdmin'] },
         children: [
           {
             path: '/platformAdmin/announcement',
             name: 'announcement',
             component: () => import('@/views/platformAdmin/announcement/index'),
-            meta: { title: '公告管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '公告管理', keepAlive: true, roles: ['admin', 'superAdmin'] }
           },
           {
             path: '/platformAdmin/Banner',
             name: 'Banner',
             component: () => import('@/views/platformAdmin/Banner/index'),
-            meta: { title: 'Banner管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: 'Banner管理', keepAlive: true, roles: ['admin', 'superAdmin'] }
           },
           {
             path: '/platformAdmin/openOut',
             name: 'openOut',
             component: () => import('@/views/platformAdmin/openOut/index'),
-            meta: { title: '开放平台管理', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '开放平台管理', keepAlive: true, roles: ['superAdmin'] }
           }
 
         ]
