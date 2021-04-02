@@ -125,7 +125,7 @@
           :sm="24"
           :xs="24">
           <a-card title="团队指数" style="margin-bottom: 24px" :bordered="false" :body-style="{padding: 0}">
-            <charts />
+            <charts/>
           </a-card>
           <a-card :loading="loading3" title="今日活跃志愿者" :bordered="false">
             <div class="members">
@@ -159,6 +159,7 @@ export default {
   beforeMount () {
     adminUser().then(res => {
       this.$store.state.data.users = res.data
+      // console.log(this.$store.state.data.users)
       this.users = this.$store.state.data.users
       this.$store.state.data.ids = this.users.district
       this.$store.state.data.citys = this.users.citys

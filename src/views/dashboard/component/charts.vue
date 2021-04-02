@@ -1,11 +1,6 @@
 <template>
   <div>
-    <v-chart
-      :forceFit="true"
-      height="350"
-      :data="datas"
-      :padding="padding"
-      :scale="scale">
+    <v-chart :forceFit="true" height="350" :data="data" :padding="padding" :scale="scale">
       <v-tooltip :onChange="takeDown" />
       <v-axis :dataKey="axis1Opts.dataKey" :line="axis1Opts.line" :tickLine="axis1Opts.tickLine" :grid="axis1Opts.grid" />
       <v-axis :dataKey="axis2Opts.dataKey" :line="axis2Opts.line" :tickLine="axis2Opts.tickLine" :grid="axis2Opts.grid" />
@@ -15,7 +10,7 @@
       <v-point position="item*score" color="user" :size="4" shape="circle" />
     </v-chart>
     <div class="chartpoint">
-      <div >
+      <div>
         <span><a-badge color="blue" text="全国" /></span>
         <div>{{ (arrayFather[0] ? arrayFather[0] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '' ) + (arrayFather[4] ? arrayFather[4] : '') }}</div>
       </div>
@@ -29,13 +24,13 @@
         <span><a-badge color="green" text="全区" /></span>
         <div>{{ (arrayFather[2] ? arrayFather[2] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div>
       </div>
-    </div></div></template>
+    </div>
+  </div>
+</template>
 
 <script>
 import { adminTeam, adminUser } from '@/api/admin'
 import Viser from 'viser-vue'
-const DataSet = require('@antv/data-set')
-
 const axis1Opts = {
   dataKey: 'item',
   line: null,
@@ -63,34 +58,8 @@ export default {
   beforeMount () {
     this.getTeam()
     console.log(this.$store.state.data.users)
-    if (this.$store.state.data.users.roleId === 4 || this.$store.state.data.users.roleId === 5) {
-      this.dataSource = [
-        { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100) },
-        { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess },
-        { item: '注册数', '全国': this.$store.state.data.dataSource.country.registerNum },
-        { item: '结案数', '全国': this.$store.state.data.dataSource.country.finishCaseNum },
-        { item: '结案时间', '全国': this.$store.state.data.dataSource.country.finishCaseTime }
-      ]
-    }
-    if (this.$store.state.data.users.roleId === 3) {
-      this.dataSource = [
-        { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100), '全省': Math.ceil(this.$store.state.data.dataSource.province.finishCaseRate * 100), '全区': Math.ceil(this.$store.state.data.dataSource.district.finishCaseRate * 100) },
-        { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess, '全省': this.$store.state.data.dataSource.province.liveNess, '全区': this.$store.state.data.dataSource.district.liveNess },
-        { item: '注册数', '全国': this.$store.state.data.dataSource.country.registerNum, '全省': this.$store.state.data.dataSource.province.registerNum, '全区': this.$store.state.data.dataSource.district.registerNum },
-        { item: '结案数', '全国': this.$store.state.data.dataSource.country.finishCaseNum, '全省': this.$store.state.data.dataSource.province.finishCaseNum, '全区': this.$store.state.data.dataSource.district.finishCaseNum },
-        { item: '结案时间', '全国': this.$store.state.data.dataSource.country.finishCaseTime, '全省': this.$store.state.data.dataSource.province.finishCaseTime, '全区': this.$store.state.data.dataSource.district.finishCaseTime }
-      ]
-    }
   },
   mounted () {
-    const dv = new DataSet.View().source(this.dataSource)
-    dv.transform({
-      type: 'fold',
-      fields: ['全国', '全省', '全区'],
-      key: 'user',
-      value: 'score'
-    })
-    this.datas = dv.rows
   },
   name: 'Charts',
   data () {
@@ -106,7 +75,7 @@ export default {
       scale: [{
         dataKey: 'score',
         min: 20,
-        max: 250
+        max: 50
       }],
       userData: [],
       takeDown: (ev, chart) => {
@@ -117,10 +86,10 @@ export default {
             this.arrayFather[4] = '个'
           }
           if (ev.items[0].title === '结案时间') {
-            this.arrayFather[4] = 'h'
+            this.arrayFather[4] = '天'
           }
           if (ev.items[0].title === '活跃度') {
-            this.arrayFather[4] = '/人次'
+            this.arrayFather[4] = ' 人次'
           }
           if (ev.items[0].title === '结案率') {
             this.arrayFather[4] = '/%'
@@ -141,10 +110,10 @@ export default {
             this.arrayFather[2] = ev.items[2].value
           }
           if (ev.items[0].title === '结案时间') {
-            this.arrayFather[3] = 'h'
+            this.arrayFather[3] = '天'
           }
           if (ev.items[0].title === '活跃度') {
-            this.arrayFather[3] = '/人次'
+            this.arrayFather[3] = ' 人次'
           }
         }
       }
@@ -157,14 +126,28 @@ export default {
     getTeam: function () {
       adminUser().then(res => {
         this.userData = res.data
+        this.$store.state.data.users = res.data
         if (this.userData.roleId === 5 || this.userData.roleId === 4) {
-          adminTeam({
-            province: this.userData.province,
-            district: this.userData.district,
-            city: this.userData.city
-          }).then(res => {
-            console.log(res.data)
+          adminTeam({}).then(res => {
             this.$store.state.data.dataSource = res.data
+            this.dataSource = [
+              { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100) },
+              { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess },
+              { item: '注册数', '全国': this.$store.state.data.dataSource.country.registerNum },
+              { item: '结案数', '全国': this.$store.state.data.dataSource.country.finishCaseNum },
+              { item: '结案时间', '全国': (this.$store.state.data.dataSource.country.finishCaseTime / 24).toFixed(2) }
+            ]
+            console.log(this.dataSource)
+            const DataSet = require('@antv/data-set')
+            const dv = new DataSet.View().source(this.dataSource)
+            this.digest = dv
+            this.digest.transform({
+              type: 'fold',
+              fields: ['全国', '全省', '全区'],
+              key: 'user',
+              value: 'score'
+            })
+            this.datas = this.digest.rows
           })
         }
         if (this.userData.roleId === 3) {
@@ -173,14 +156,28 @@ export default {
             district: this.userData.district,
             city: this.userData.city
           }).then(res => {
-            console.log(res)
+            this.$store.state.data.dataSource = res.data
+            this.dataSource = [
+              { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100), '全省': Math.ceil(this.$store.state.data.dataSource.province.finishCaseRate * 100), '全区': Math.ceil(this.$store.state.data.dataSource.district.finishCaseRate * 100) },
+              { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess, '全省': this.$store.state.data.dataSource.province.liveNess, '全区': this.$store.state.data.dataSource.district.liveNess },
+              { item: '注册数', '全国': this.$store.state.data.dataSource.country.registerNum, '全省': this.$store.state.data.dataSource.province.registerNum, '全区': this.$store.state.data.dataSource.district.registerNum },
+              { item: '结案数', '全国': this.$store.state.data.dataSource.country.finishCaseNum, '全省': this.$store.state.data.dataSource.province.finishCaseNum, '全区': this.$store.state.data.dataSource.district.finishCaseNum },
+              { item: '结案时间', '全国': (this.$store.state.data.dataSource.country.finishCaseTime / 24).toFixed(2), '全省': (this.$store.state.data.dataSource.province.finishCaseTime / 24).toFixed(2), '全区': (this.$store.state.data.dataSource.district.finishCaseTime / 24).toFixed(2) }
+            ]
+            console.log(this.dataSource)
+            const DataSet = require('@antv/data-set')
+            const dv = new DataSet.View().source(this.dataSource)
+            this.digest = dv
+            this.digest.transform({
+              type: 'fold',
+              fields: ['全国', '全省', '全区'],
+              key: 'user',
+              value: 'score'
+            })
+            this.datas = this.digest.rows
           })
         }
       })
-    },
-    getMouseMove: function (ev, chart) {
-      console.log(ev)
-      console.log(chart)
     }
   }
 }
