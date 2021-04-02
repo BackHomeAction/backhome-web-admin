@@ -19,13 +19,13 @@
         <div class="center" ><span><a-badge color="blue" text="全国" /></span></div>
         <div class="center" ><div>{{ (arrayFather[0] ? arrayFather[0] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '' ) + (arrayFather[4] ? arrayFather[4] : '') }}</div></div>
       </div>
-      <a-divider type="vertical" style="height: 70px" />
-      <div style="width: 100px" >
+      <a-divider type="vertical" style="height: 70px" v-if="showOther" />
+      <div style="width: 100px" v-if="showOther">
         <div class="center" ><span><a-badge color="yellow" text="全省" /></span></div>
         <div class="center" ><div>{{ (arrayFather[1] ? arrayFather[1] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div></div>
       </div>
-      <a-divider type="vertical" style="height: 70px" />
-      <div style="width: 100px" >
+      <a-divider type="vertical" style="height: 70px" v-if="showOther" />
+      <div style="width: 100px" v-if="showOther" >
         <div class="center" ><span><a-badge color="green" text="全区" /></span></div>
         <div class="center" ><div>{{ (arrayFather[2] ? arrayFather[2] : ' - - ') + (arrayFather[3] ? arrayFather[3] : '') }}</div></div>
       </div>
@@ -75,6 +75,7 @@ export default {
       axis1Opts,
       dataSource: null,
       digest: null,
+      showOther: false,
       region: [],
       padding: [10, 10, 10, 10],
       scale: [{
@@ -136,6 +137,7 @@ export default {
         this.userData = res.data
         this.$store.state.data.users = res.data
         if (this.userData.roleId === 5 || this.userData.roleId === 4) {
+          this.showOther = false
           adminTeam({}).then(res => {
             this.$store.state.data.dataSource = res.data
             console.log(this.$store.state.data.dataSource)
@@ -160,6 +162,7 @@ export default {
           })
         }
         if (this.userData.roleId === 3) {
+          this.showOther = true
           console.log(res.data.city)
           adminTeam({
             province: res.data.province,
