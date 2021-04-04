@@ -17,17 +17,17 @@
     <div class="chartpoint">
       <div style="width: 100px">
         <div class="center" ><span><a-badge color="blue" text="全国" /></span></div>
-        <div class="center" ><div>{{ (tipone ? tipone : ' - - ') + (twotype ? twotype : '' ) + (onetype ? onetype : '') }}</div></div>
+        <div class="center" ><div>{{ (tipone ? tipone : ' - ') + (twotype ? twotype : '' ) + (onetype ? onetype : '') }}</div></div>
       </div>
       <a-divider type="vertical" style="height: 70px" v-if="showOther" />
       <div style="width: 100px" v-if="showOther">
         <div class="center" ><span><a-badge color="yellow" text="全省" /></span></div>
-        <div class="center" ><div>{{ (tiptwo ? tiptwo : ' - - ') + (twotype ? twotype : '') }}</div></div>
+        <div class="center" ><div>{{ (tiptwo ? tiptwo : ' - ') + (twotype ? twotype : '') }}</div></div>
       </div>
       <a-divider type="vertical" style="height: 70px" v-if="showOther" />
       <div style="width: 100px" v-if="showOther" >
         <div class="center" ><span><a-badge color="green" text="全区" /></span></div>
-        <div class="center" ><div>{{ (tipthree ? tipthree : ' - - ') + (twotype ? twotype : '') }}</div></div>
+        <div class="center" ><div>{{ (tipthree ? tipthree : ' - ') + (twotype ? twotype : '') }}</div></div>
       </div>
     </div>
   </div>
@@ -195,17 +195,20 @@ export default {
       if (ev.items.length === 1) {
         this.tipone = ev.items[0].value
         this.$store.state.data.titles = ev.items[0].title
-        if (ev.items[0].title === '结案数' || ev.items[0].title === '注册数') {
-          this.onetype = '个'
+        if (ev.items[0].title === '结案数') {
+          this.onetype = ' 个'
+        }
+        if (ev.items[0].title === '注册数') {
+          this.twotype = ' 人'
         }
         if (ev.items[0].title === '结案时间') {
-          this.onetype = '天'
+          this.onetype = ' 天'
         }
         if (ev.items[0].title === '活跃度') {
           this.onetype = ' 人次'
         }
         if (ev.items[0].title === '结案率') {
-          this.onetype = '%'
+          this.onetype = ' %'
           this.tipone = ev.items[0].value
         }
       } else {
@@ -214,17 +217,20 @@ export default {
         this.tipone = ev.items[0].value
         this.tiptwo = ev.items[1].value
         this.tipthree = ev.items[2].value
-        if (ev.items[0].title === '结案数' || ev.items[0].title === '注册数') {
-          this.twotype = '个'
+        if (ev.items[0].title === '结案数') {
+          this.twotype = ' 个'
+        }
+        if (ev.items[0].title === '注册数') {
+          this.twotype = ' 人'
         }
         if (ev.items[0].title === '结案率') {
-          this.twotype = '%'
+          this.twotype = ' %'
           this.tipone = ev.items[0].value
           this.tiptwo = ev.items[1].value
           this.tipthree = ev.items[2].value
         }
         if (ev.items[0].title === '结案时间') {
-          this.twotype = '天'
+          this.twotype = ' 天'
         }
         if (ev.items[0].title === '活跃度') {
           this.twotype = ' 人次'
