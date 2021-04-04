@@ -149,22 +149,19 @@
 import { timeFix } from '@/utils/util'
 import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
-import { adminUser, adminDymic } from '@/api/admin'
+import { adminDymic } from '@/api/admin'
 import { getMissionListAll } from '@/api/mission'
 import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 import charts from '@/views/dashboard/component/charts'
 
 export default {
-  beforeMount () {
-    adminUser().then(res => {
-      this.$store.state.data.users = res.data
-      // console.log(this.$store.state.data.users)
-      this.users = this.$store.state.data.users
-      this.$store.state.data.ids = this.users.district
-      this.$store.state.data.citys = this.users.citys
-      this.getAllData(res.data.district, res.data.citys)
-    })
+  mounted () {
+    this.$store.state.data.users = this.$store.getters.userInfo
+    this.users = this.$store.getters.userInfo
+    this.$store.state.data.ids = this.$store.getters.userInfo.district
+    this.$store.state.data.citys = this.$store.getters.userInfo.citys
+    this.getAllData(this.$store.getters.userInfo.district, this.$store.getters.userInfo.citys)
     this.getDymic()
   },
   name: 'Workplace',
