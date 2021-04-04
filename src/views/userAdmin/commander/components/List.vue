@@ -117,7 +117,7 @@ export default {
           title: '身份',
           dataIndex: 'roleId',
           scopedSlots: { customRender: 'identity' },
-          width: '100px'
+          width: '120px'
         },
         {
           title: '指战区域',
