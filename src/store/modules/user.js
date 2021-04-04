@@ -2,6 +2,7 @@ import storage from 'store'
 import { login, getInfo } from '@/api/login'
 import { ACCESS_TOKEN, REFRESH_TOKEN } from '@/store/mutation-types'
 import { welcome } from '@/utils/util'
+import IM from '@/services/im'
 
 const user = {
   state: {
@@ -74,7 +75,9 @@ const user = {
 
           // commit('SET_NAME', { name: result.name, welcome: welcome() })
           commit('SET_NAME', { name: result.userName, welcome: welcome() })
-          commit('SET_AVATAR', result.avatar)
+          commit('SET_AVATAR', result.avatarUrl)
+
+          IM.getInstance().login()
 
           resolve(response)
         }).catch(error => {

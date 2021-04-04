@@ -7,7 +7,7 @@
       {{ currentMissionInfo.oldMan.sex === 1 ? '男' : '女' }}
     </a-descriptions-item>
     <a-descriptions-item label="出生日期">
-      {{ currentMissionInfo.oldMan.birthDate | moment }}
+      {{ currentMissionInfo.oldMan.birthDate | date }}
     </a-descriptions-item>
     <a-descriptions-item label="报案时间">
       {{ currentMissionInfo.startTime }}
@@ -49,7 +49,7 @@ export default {
     ...mapGetters(['currentMissionInfo']),
     offenPlaceText () {
       let text = ''
-      const list = JSON.parse(this.currentMissionInfo.oldMan.offerPlace)
+      const list = this.currentMissionInfo.oldMan.offerPlace && JSON.parse(this.currentMissionInfo.oldMan.offerPlace) || []
       list.map((ele, index) => {
         if (index !== list.length - 1) {
           text += `${ele.name}、`

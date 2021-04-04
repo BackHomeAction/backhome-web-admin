@@ -10718,6 +10718,16 @@ thunky@^1.0.2:
   resolved "https://registry.npm.taobao.org/thunky/download/thunky-1.1.0.tgz"
   integrity sha1-Wrr3FKlAXbBQRzK7zNLO3Z75U30=
 
+tim-js-sdk@^2.10.1:
+  version "2.10.1"
+  resolved "https://registry.npm.taobao.org/tim-js-sdk/download/tim-js-sdk-2.10.1.tgz#6494728ea7575d1240135a3ba0f3d9b0b6174531"
+  integrity sha1-ZJRyjqdXXRJAE1o7oPPZsLYXRTE=
+
+tim-upload-plugin@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npm.taobao.org/tim-upload-plugin/download/tim-upload-plugin-1.0.1.tgz#4fc0c4fa4a4916317075b66fb963ef4ba8483b27"
+  integrity sha1-T8DE+kpJFjFwdbZvuWPvS6hIOyc=
+
 timers-browserify@^2.0.4:
   version "2.0.11"
   resolved "https://registry.npm.taobao.org/timers-browserify/download/timers-browserify-2.0.11.tgz"

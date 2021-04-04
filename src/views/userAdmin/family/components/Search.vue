@@ -97,18 +97,16 @@ export default {
       columns: [
         {
           title: '用户 ID',
-          dataIndex: 'id',
-          width: '180px'
+          dataIndex: 'id'
         },
         {
           title: '姓名',
           dataIndex: 'name',
-          width: '120px'
+          width: '160px'
         },
         {
           title: '位置',
-          scopedSlots: { customRender: 'location' },
-          width: '230px'
+          scopedSlots: { customRender: 'location' }
         },
         {
           title: '状态',
@@ -118,12 +116,11 @@ export default {
         },
         {
           title: '注册时间',
-          dataIndex: 'registerTime',
-          width: '150px'
+          dataIndex: 'registerTime'
         },
         {
           title: '操作',
-          width: '100px',
+          width: '150px',
           scopedSlots: { customRender: 'action' }
         }
       ],

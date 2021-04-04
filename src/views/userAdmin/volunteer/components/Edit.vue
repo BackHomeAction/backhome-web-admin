@@ -86,7 +86,7 @@ export default {
       showAvatarUploader: false,
       labelCol: { span: 4 },
       wrapperCol: { span: 14 },
-      form: []
+      form: {}
     }
   },
   methods: {
