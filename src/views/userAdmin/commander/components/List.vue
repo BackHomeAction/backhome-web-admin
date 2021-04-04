@@ -100,13 +100,12 @@ export default {
       columns: [
         {
           title: '用户 ID',
-          dataIndex: 'id',
-          width: '180px'
+          dataIndex: 'id'
         },
         {
           title: '姓名',
           dataIndex: 'name',
-          width: '100px'
+          width: '160px'
         },
         {
           title: '性别',
@@ -122,8 +121,7 @@ export default {
         },
         {
           title: '指战区域',
-          scopedSlots: { customRender: 'location' },
-          width: '150px'
+          scopedSlots: { customRender: 'location' }
         },
         {
           title: '状态',
@@ -133,8 +131,7 @@ export default {
         },
         {
           title: '注册时间',
-          dataIndex: 'registerTime',
-          width: '150px'
+          dataIndex: 'registerTime'
         },
         {
           title: '操作',
