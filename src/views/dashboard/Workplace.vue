@@ -15,11 +15,11 @@
     </template>
     <template v-slot:extraContent>
       <div class="extra-content">
-        <div class="stat-item">
-          <a-statistic title="区域内开启案件" :value="lengths[1]" :suffix="'/'+lengths[0]" />
+        <div class="stat-item" v-if="lengths && lengths[0] && lengths[1]">
+          <a-statistic :title="users.roleId === 3 ? '区域内开启案件' : '开启案件'" :value="lengths[1]" :suffix="'/ '+lengths[0]" />
         </div>
-        <div class="stat-item">
-          <a-statistic title="区域内志愿者" :value="inAirVol" :suffix="'/'+allVols" />
+        <div class="stat-item" v-if="inAirVol && allVols">
+          <a-statistic :title="users.roleId === 3 ? '区域内在线志愿者' : '在线志愿者'" :value="inAirVol" :suffix="'/ '+allVols" />
         </div>
       </div>
     </template>
@@ -41,24 +41,25 @@
             :bordered="false"
             title="进行中的任务"
             :body-style="{ padding: 0 }">
-            <a slot="extra" @click="toMission" >全部任务</a>
+            <a slot="extra" @click="toMission()" >全部任务</a>
             <a-card-grid style="width:33.3%;" :key="index+1" v-for="(item,index) in warningList">
               <div>
                 <div style="width: 100%;">
-                  <a-avatar
-                    src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/bcb349c7-8508-4c86-9e59-9dd212ca01c8.png"
-                    :size="30"
-                    style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +item.district+ '走失老人' }}
-                  <div style="margin-top: 5%">
+                  <div class="mission-title" @click="toMission(item.id)">
+                    <div class="icon-wrapper" style="background-color: #c63f47">
+                      <a-icon theme="filled" style="font-size: 12px; color: #ffffff;" type="file-text" />
+                    </div>
+                    <span class="mission-title-text" style="color: #c63f47;">{{ '  ' + '  ' +item.district+ '走失老人' }}</span>
+                  </div>
+                  <div class="mission-lost-time">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
+                  <div class="mission-lost-place">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item" @click="toMission(item.id)">
-                    <a><span style="color: red">紧急</span></a>
-                    <a><span class="datetime" style="color:#ff0000" >{{ timewatch(item.lostTime) }}</span></a>
+                  <div class="project-item">
+                    <div style="color: #c63f47">紧急</div>
+                    <div class="datetime" style="color:#c1c1c1" >{{ timewatch(item.lostTime) }}</div>
                   </div>
                 </div>
               </div>
@@ -67,20 +68,21 @@
             <a-card-grid style="width:33.3%;" :key="(index+1)*(-1)" v-for="(item,index) in redList">
               <div>
                 <div style="width: 100%;">
-                  <a-avatar
-                    src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/e3dd47eb-2b0e-4c9f-979b-e775aa4678fa.png"
-                    :size="30"
-                    style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +item.district+ '走失老人' }}
-                  <div style="margin-top: 5%">
+                  <div class="mission-title" @click="toMission(item.id)">
+                    <div class="icon-wrapper" style="background-color: #008891">
+                      <a-icon theme="filled" style="font-size: 12px; color: #ffffff;" type="file-text" />
+                    </div>
+                    <span class="mission-title-text" style="color: #008891;">{{ '  ' + '  ' +item.district+ '走失老人' }}</span>
+                  </div>
+                  <div class="mission-lost-time">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
+                  <div class="mission-lost-place">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item" @click="toMission(item.id)">
-                    <a><span style="color: #1AFA29">优先</span></a>
-                    <span class="datetime" style="color: #1AFA29" >{{ timewatch(item.lostTime) }}</span>
+                  <div class="project-item">
+                    <div style="color: #008891">优先</div>
+                    <div class="datetime" style="color: #c1c1c1" >{{ timewatch(item.lostTime) }}</div>
                   </div>
                 </div>
               </div>
@@ -88,28 +90,33 @@
             <a-card-grid style="width:33.3%;" :key="(index+1)*(10)" v-for="(item,index) in commonList">
               <div>
                 <div style="width: 100%;">
-                  <a-avatar src="https://home-action.oss-cn-shanghai.aliyuncs.com/admin/2/5fa5d77f-d8ae-434f-9f82-c2f5ade35141.png" :size="30" style="margin-right: 3%"></a-avatar>
-                  {{ '  ' + '  ' +item.district+ '走失老人' }}
-                  <div style="margin-top: 5%">
+                  <div class="mission-title" @click="toMission(item.id)">
+                    <div class="icon-wrapper" style="background-color: #e6e6e6">
+                      <a-icon theme="filled" style="font-size: 12px; color: #595959;" type="file-text" />
+                    </div>
+                    <span class="mission-title-text">{{ '  ' + '  ' +item.district+ '走失老人' }}</span>
+                  </div>
+                  <div class="mission-lost-time">
                     {{ '于' +item.startTime }}
                   </div>
-                  <div style="margin-top: 5%;overflow: hidden;text-overflow:ellipsis; white-space: nowrap;width: 170px">
+                  <div class="mission-lost-place">
                     {{ '走失于' + item.place }}
                   </div>
-                  <div class="project-item" @click="toMission(item.id)">
-                    <a>一般</a>
-                    <a><span class="datetime" style="color: black" >{{ timewatch(item.lostTime) }}</span></a>
+                  <div class="project-item">
+                    <div>一般</div>
+                    <div class="datetime" style="color: #c1c1c1" >{{ timewatch(item.lostTime) }}</div>
                   </div>
                 </div>
               </div>
             </a-card-grid>
           </a-card>
           <a-card :loading="loading2" title="动态" :bordered="false">
-            <a-list>
+            <a-list style="margin: -18px 0">
               <a-list-item :key="index" v-for="(item, index) in dymicList">
-                <a-list-item-meta :description="timewatch(item.time)">
+                <a-list-item-meta>
+                  <span slot="description" style="font-size: 12px">{{ timewatch(item.time) }}</span>
                   <a-avatar slot="avatar" :src="item.avatarUrl"/>
-                  <div slot="title" style="font-size: 12px" >
+                  <div slot="title" style="font-size: 14px" >
                     <span style="font-weight: bold"> {{ item.name + '  ' }}</span><span>{{ (item.actionId === 1 ? '发布案件' : (item.actionId === 2 ?'完成案件':(item.actionId === 3 ?'取消案件':(item.actionId === 4 ? '案件已归档':(item.actionId === 5 ? '志愿者加入案件':(item.actionId === 6 ? '志愿者退出案件':(item.actionId === 7 ? '志愿者匹配人脸成功':'无操作')))))))+ ' ' + ' ' }}</span><span><a @click="toMission(item.caseId)">{{ '#' + item.caseId }}</a></span>
                   </div>
                 </a-list-item-meta>
@@ -263,11 +270,11 @@ export default {
       })
     },
     timewatch: function (val) {
-      return dayjs(val).fromNow(true)
+      return dayjs(val).fromNow()
     },
     toMission: function (text) {
       if (text) {
-        this.$router.push({ path: '/missionAdmin/missionList/', query: { id: text } })
+        this.$router.push({ path: '/missionAdmin/missionDetail/', query: { id: text } })
       } else {
         this.$router.push({ path: '/missionAdmin/missionList/' })
       }
@@ -321,6 +328,7 @@ export default {
 
     .project-item {
       display: flex;
+      justify-content: space-between;
       margin-top: 8px;
       overflow: hidden;
       font-size: 12px;
@@ -414,4 +422,40 @@ export default {
     }
   }
 
+.mission {
+  &-title {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+
+    .icon-wrapper {
+      width: 24px;
+      height: 24px;
+      border-radius: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    &-text{
+      margin-left: 8px;
+    }
+  }
+
+  &-lost-time {
+    color: #999999;
+    font-size: 13px;
+    margin-top: 8px;
+  }
+
+  &-lost-place {
+    color: #999999;
+    font-size: 13px;
+    margin-top: 4px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
 </style>
