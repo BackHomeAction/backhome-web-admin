@@ -62,7 +62,6 @@ const axis2Opts = {
 export default {
   beforeMount () {
     this.getTeam()
-    console.log(this.$store.state.data.users)
   },
   mounted () {
   },
@@ -106,7 +105,6 @@ export default {
           this.showOther = false
           adminTeam({}).then(res => {
             this.$store.state.data.dataSource = res.data
-            console.log(this.$store.state.data.dataSource)
             this.dataSource = [
               { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100) },
               { item: '活跃度', '全国': this.$store.state.data.dataSource.country.liveNess },
@@ -114,7 +112,8 @@ export default {
               { item: '结案数', '全国': this.$store.state.data.dataSource.country.finishCaseNum },
               { item: '结案时间', '全国': (this.$store.state.data.dataSource.country.finishCaseTime / 24).toFixed(2) }
             ]
-            console.log(this.dataSource)
+            const sources = res.data.country
+            var gmax = Math.ceil(Math.max(sources.liveNess, sources.registerNum, sources.finishCaseNum, (sources.finishCaseTime / 24), (sources.finishCaseRate * 100)))
             const DataSet = require('@antv/data-set')
             const dv = new DataSet.View().source(this.dataSource)
             this.digest = dv
@@ -124,12 +123,16 @@ export default {
               key: 'user',
               value: 'score'
             })
+            this.scale = [{
+              dataKey: 'score',
+              min: 0,
+              max: gmax + 5
+            }]
             this.datas = this.digest.rows
           })
         }
         if (this.userData.roleId === 3) {
           this.showOther = true
-          console.log(res.data.city)
           adminTeam({
             province: res.data.province,
             district: res.data.city,
@@ -168,7 +171,6 @@ export default {
                 '全区': (this.$store.state.data.dataSource.district.finishCaseTime / 24).toFixed(2)
               }
             ]
-            console.log(this.dataSource)
             const DataSet = require('@antv/data-set')
             const dv = new DataSet.View().source(this.dataSource)
             this.digest = dv
@@ -178,6 +180,13 @@ export default {
               key: 'user',
               value: 'score'
             })
+            const sourcess = res.data
+            var gmax = Math.ceil(Math.max((sourcess.district.finishCaseRate * 100), (sourcess.province.finishCaseRate * 100), sourcess.country.liveNess, sourcess.country.registerNum, sourcess.country.finishCaseNum, (sourcess.country.finishCaseTime / 24), (sourcess.country.finishCaseRate * 100)))
+            this.scale = [{
+              dataKey: 'score',
+              min: 0,
+              max: gmax + 5
+            }]
             this.datas = this.digest.rows
           })
         }
