@@ -19,13 +19,13 @@
                   <a-select-option value="5" >总指战员</a-select-option>
                 </a-select>
               </a-form-item>
-              <a-form-item v-if="showOrigin" label="地区">
+              <a-form-item v-if="showOrigin" required label="地区">
                 <region-selector v-model="create.region"></region-selector>
               </a-form-item>
-              <a-form-item label="手机号">
+              <a-form-item label="手机号" required>
                 <a-input :placeholder="placeholder" v-model="create.phone"></a-input>
               </a-form-item>
-              <a-form-item label="性别" prop="phoneNum" required >
+              <a-form-item label="性别" prop="phoneNum">
                 <a-radio-group name="radioGroup" v-model="create.sex">
                   <a-radio :value="1">
                     男
@@ -134,12 +134,13 @@ export default {
           })
         }
       } else {
-        console.log(this.create)
-        this.$message.info('请将信息填写完整')
+        this.$message.error('请将必要信息填写完整')
+        this.pageLoading = false
       }
     },
     deletes: function () {
       this.create = []
+      this.showOrigin = false
     },
     goBack: function () {
       this.$emit('onGoBack')
