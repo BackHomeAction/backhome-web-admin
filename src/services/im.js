@@ -101,6 +101,34 @@ export default class IM {
     store.commit('RESET_CURRENT_CONVERSATION')
   };
 
+  async sendGroupTextMessage (caseId, text) {
+    await this.checkLogin()
+
+    const message = this.tim.createTextMessage({
+      to: this.getGroupID(caseId),
+      conversationType: TIM.TYPES.CONV_GROUP,
+      payload: {
+        text
+      }
+    })
+    await this.tim.sendMessage(message)
+    store.commit('SEND_MESSAGE', message)
+  };
+
+  async sendGroupImageMessage (caseId, file) {
+    await this.checkLogin()
+
+    const message = this.tim.createImageMessage({
+      to: this.getGroupID(caseId),
+      conversationType: TIM.TYPES.CONV_GROUP,
+      payload: {
+        file
+      }
+    })
+    await this.tim.sendMessage(message)
+    store.commit('SEND_MESSAGE', message)
+  };
+
   static getInstance () {
     if (!this.instance) {
       this.instance = new IM()

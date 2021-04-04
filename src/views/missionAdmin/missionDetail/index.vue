@@ -9,12 +9,12 @@
     <a-card :bordered="false" style="margin-top: 24px">
       <a-spin :spinning="isLoadingInfo">
         <div v-if="currentMission && currentMissionInfo">
-          <a-tabs default-active-key="map" >
+          <a-tabs default-active-key="map" @change="handleTabChange">
             <a-tab-pane key="map" tab="实时地图">
               <tab-item-map ref="map" force-render />
             </a-tab-pane>
             <a-tab-pane key="chat" tab="在线沟通" v-if="currentMissionInfo.state === 1 || currentMissionInfo.state === 3">
-              Content of Tab Pane 2
+              <tab-item-chat ref="chat" force-render/>
             </a-tab-pane>
             <a-tab-pane key="info" tab="案件信息">
               <tab-item-info />
@@ -43,6 +43,7 @@ import TabItemFaceRecord from './components/TabItemFaceRecord.vue'
 import TabItemLog from './components/TabItemLog.vue'
 import TabItemVolunteerList from './components/TabItemVolunteerList.vue'
 import TabItemInfo from './components/TabItemInfo.vue'
+import TabItemChat from './components/TabItemChat'
 import Ws from '@/services/websocket'
 import IM from '@/services/im'
 import { joinIMGroup, leaveIMGroup } from '@/api/im'
@@ -62,7 +63,7 @@ const SocketStateTypes = {
 
 export default {
   name: 'MissionDetail',
-  components: { BasicInfo, TabItemMap, TabItemFaceRecord, TabItemLog, TabItemVolunteerList, TabItemInfo },
+  components: { BasicInfo, TabItemMap, TabItemFaceRecord, TabItemLog, TabItemVolunteerList, TabItemInfo, TabItemChat },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo'])
   },
@@ -80,7 +81,7 @@ export default {
     this.init()
   },
   beforeDestroy () {
-    if (this.currentMissionInfo.state === 2 || this.currentMissionInfo.state === 4) {
+    if (this.currentMissionInfo.state === 1 || this.currentMissionInfo.state === 3) {
       leaveIMGroup({ caseId: this.caseId })
     }
     this.closeWebSocket()
@@ -136,6 +137,12 @@ export default {
         this.im.checkoutGroup(this.caseId)
       } catch (e) {
         console.log(e)
+      }
+    },
+    handleTabChange (name) {
+      if (name === 'chat') {
+        if (!this.$refs.chat) return
+        this.$refs.chat.scrollToBottom()
       }
     }
   }
