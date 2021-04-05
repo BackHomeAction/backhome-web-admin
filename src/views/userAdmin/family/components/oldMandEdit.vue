@@ -208,6 +208,7 @@ export default {
       this.oldMan.offerPlace = JSON.stringify(this.datas)
       var  oldMan = this.oldMan
       oldManinfChange({ ...oldMan  }).then(res => {
+        console.log(res)
         if(res.status===200){
           this.$notification.success({
             message: '成功',
@@ -220,6 +221,7 @@ export default {
       })
     },
     addressEdit: function (e) {
+      console.log(e.data)
       this.newAction.name=e.data.poiname
       this.newAction.address=e.data.poiaddress
       this.newAction.city=e.data.cityname
@@ -228,6 +230,7 @@ export default {
       this.datas.push(this.newAction)
       this.newAction = {}
       this.oldPage.pageSize = 5
+      console.log(this.oldPage.pageSize)
     },
     makeSureData: function () {
       this.loadings = true

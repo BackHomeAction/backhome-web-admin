@@ -133,14 +133,18 @@ export default {
     },
     dataList: function () {},
     editBanner: function (text) {
+      console.log('111123213')
+      console.log(text)
       this.$store.state.data.banner.bannerEdit = text
       this.$store.state.data.banner.state = 2
       this.$emit('toEdit')
     },
     deleteBanner: function () {
+      console.log(this.chooseId)
       bannerDelete({
         id: this.chooseId
       }).then(res => {
+        console.log(res)
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',
@@ -161,6 +165,7 @@ export default {
     },
     getdata: function () {
       bannerSearch().then(res => {
+        console.log(res)
         this.dataOflist = res.data.data
         this.$store.state.data.banner.bannerAll = res.data.data
         this.pagination.pageSize = 10

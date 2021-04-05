@@ -83,6 +83,8 @@ export default {
   },
   methods: {
     originSelect: function (value) {
+      console.log(value)
+      console.log(this.$store.state.data.roleId)
       if ((this.$store.state.data.roleId === 4) && value === '3') {
         this.$message.info('您的权限不够')
         this.create.identify = null
@@ -100,6 +102,7 @@ export default {
       if (((this.create.name) && (this.create.roleId) && (this.create.phone) && (this.create.password))) {
         if (this.create.roleId === 5) {
           if (!(this.create.region)) {
+            console.log(adminData)
             adminCreate({ ...adminData }).then(res => {
               if (res.status === 200) {
                 this.$notification.success({
@@ -116,6 +119,7 @@ export default {
             this.$message.info('请将信息填写完整')
           }
         } else {
+          console.log(this.create.roleId)
           adminCreate({ ...adminData }).then(res => {
             if (res.status === 200) {
               this.$notification.success({

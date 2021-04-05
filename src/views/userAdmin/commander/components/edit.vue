@@ -83,6 +83,7 @@ export default {
     if (this.form.roleId === 3) {
       this.showOrigin = false
     }
+    console.log(this.form)
     if ((this.$store.state.data.roleId === 4) && (this.form.roleId === 3)) {
       this.showModal()
     }
@@ -118,12 +119,16 @@ export default {
           avatarUrl: url
         })
         this.form.avatarUrl = url
+        console.log(url)
+        console.log('我的URL')
         this.loadingPage = true
+        console.log(this.form.avatarUrl)
         this.$notification.success({
           message: '成功',
           description: `更换头像成功`
         })
       } catch (e) {
+        console.log(e)
       }
       this.isChangingAvatar = false
       this.loadingPage = false
@@ -136,6 +141,7 @@ export default {
       this.visible = true
     },
     goBack: function () {
+      console.log(1123)
       this.$emit('onGoBack')
     },
     cancel: function () {
@@ -157,6 +163,7 @@ export default {
               delete adminBean.password
             }
             adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
+              console.log(res)
               if (res.status === 200) {
                 this.$notification.success({
                   message: '成功',
@@ -183,6 +190,7 @@ export default {
           this.adminBean = this.form
           const adminBean = this.adminBean
           adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
+            console.log(res)
             if (res.status === 200) {
               this.$notification.success({
                 message: '成功',
@@ -202,6 +210,7 @@ export default {
       }
     },
     originSelect: function (value) {
+      // console.log(value)
       this.showOrigin = value === 3
     },
     regionPoxyUse: function (provin, city, district) {
@@ -226,6 +235,7 @@ export default {
         }
         this.loadingPage = false
       }).catch(res => {
+        console.log(res)
         this.loadingPage = false
       })
     },
@@ -243,6 +253,7 @@ export default {
       this.adminBean = this.form
       var adminBean = this.adminBean
       adminUpdate({ ...adminBean, roleId: this.$store.state.user.info.roleId }).then(res => {
+        console.log(res)
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',

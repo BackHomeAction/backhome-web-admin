@@ -107,6 +107,7 @@ export default {
       this.isChangingAvatar = false
     },
     goBack: function () {
+      console.log(1123)
       this.$emit('onGoBack')
     },
     onSubmit: function () {
@@ -123,6 +124,7 @@ export default {
           ...family,
           id: this.form.id
         }).then(res => {
+          console.log(res)
           if (res.status === 200) {
             this.$notification.success({
               message: '成功',
@@ -139,6 +141,7 @@ export default {
     dataList: function () {
       this.loadings = true
       this.form = this.$store.state.data.familyData.editUser
+      console.log(this.form)
       this.regionProxy[0] = this.form.province
       this.regionProxy[1] = this.form.district
       this.regionProxy[2] = this.form.city
