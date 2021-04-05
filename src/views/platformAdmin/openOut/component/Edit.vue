@@ -120,7 +120,6 @@ export default {
         threeChange({
           ...client
         }).then(res => {
-          console.log(res)
           if (res.status === 200) {
             this.$notification.success({
               message: '成功',
@@ -142,7 +141,6 @@ export default {
         threeNew({
           ...client
         }).then(res => {
-          console.log(res)
           if (res.status === 200) {
             this.$notification.success({
               message: '成功',

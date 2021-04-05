@@ -89,8 +89,6 @@ import dayjs from '@/utils/dayjs'
 export default {
   mounted () {
     this.source = this.$store.state.data.familyData.watchUser
-    // console.log('家属信息')
-    // console.log(this.source)
     this.oldManGet(this.source.id)
     this.missionListGet(this.source.id)
     this.orLoading = false
@@ -188,8 +186,6 @@ export default {
     },
     oldManinf: function (text) {
       this.$store.state.data.oldManData.oldmanWatch = text
-      // console.log(text)
-      // console.log('传递之前')
       this.$emit('oldView')
     },
     oldManGet: function (id) {
@@ -204,8 +200,6 @@ export default {
     },
     missionListGet: function (id) {
       familyMission({ familyId: id }).then(res => {
-        console.log('案件在这里')
-        console.log(res)
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize
         this.missionPage.pageSize = 5

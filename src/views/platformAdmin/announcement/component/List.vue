@@ -134,9 +134,7 @@ export default {
       if (this.search) {
         this.loading = true
         const search = this.search
-        console.log(search)
         listSearch({ ...search }).then(res => {
-          console.log(res)
           this.dataOflist = []
           this.dataOflist = res.data.data
         }).finally(() => {
@@ -152,7 +150,6 @@ export default {
       announDelete({
         id: this.chooseId
       }).then(res => {
-        console.log(res)
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',
@@ -166,7 +163,6 @@ export default {
       })
     },
     chooseAnnouceId: function (num) {
-      console.log(num)
       this.chooseId = num
       this.loading = true
       this.shows = true

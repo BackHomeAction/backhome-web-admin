@@ -85,9 +85,6 @@ export default {
     PageGoBackTop, RichTextEditor
   },
   methods: {
-    getPhoto: function () {
-      console.log(1)
-    },
     editOut: function () {
       this.loadings = true
       const notice = Object.assign(this.announce, {})
@@ -109,11 +106,9 @@ export default {
     takeOut: function () {
       this.loadings = true
       const notice = this.announce
-      console.log(this.announce)
       announceEdit({
         ...notice
       }).then(res => {
-        console.log(res)
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',

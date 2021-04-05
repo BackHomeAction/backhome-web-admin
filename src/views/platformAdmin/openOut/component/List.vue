@@ -83,7 +83,6 @@ export default {
     createThree: function () {
       this.$store.state.data.openOut.state = 1
       this.$store.state.data.openOut.openEdit = []
-      console.log(this.$store.state.data.openOut.openEdit)
       this.goEdit()
     },
     deleteSearch: function () {
@@ -97,7 +96,6 @@ export default {
         threeSearch({
           name: this.search.name
         }).then(res => {
-          console.log(res)
           this.datas = []
           this.datas = res.data.data
           this.pageLoading = false
@@ -118,7 +116,6 @@ export default {
         threeDelete({
           clientId: this.chooseId
         }).then(res => {
-          console.log(res)
           if (res.status === 200) {
             this.$notification.success({
               message: '成功',
@@ -139,7 +136,6 @@ export default {
       this.pageLoading = true
       threeSearch().then(res => {
         this.datas = res.data.data
-        console.log(this.datas)
         this.$store.state.data.openOut.openAll = res.data.data
         this.pageLoading = false
       }).catch(res => {
@@ -149,7 +145,6 @@ export default {
     editThree: function (text) {
       this.$store.state.data.openOut.openEdit = text
       this.$store.state.data.openOut.state = 2
-      console.log(this.$store.state.data.openOut.state)
       this.goEdit()
     }
   }
