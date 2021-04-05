@@ -158,7 +158,7 @@ import { mapState } from 'vuex'
 import { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import { adminDymic } from '@/api/admin'
 import { getMissionListAll } from '@/api/mission'
-import { getVolunteerList, VolunteerFire } from '@/api/volunteerAdmin'
+import { getVolunteerList, VolunteerAll, VolunteerFire, VolunteerNum } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 import charts from '@/views/dashboard/component/charts'
 
@@ -263,10 +263,12 @@ export default {
       })
       getVolunteerList({ city: city }).then(res => {
         this.$store.state.data.allVolss = res.data.totalCount
-        this.allVols = this.$store.state.data.allVolss
       })
-      VolunteerFire({ city: city }).then(res => {
-        this.inAirVol = res.data.length
+      VolunteerNum({ city: city }).then(res => {
+        this.allVols = res.data
+      })
+      VolunteerAll().then(res => {
+        this.inAirVol = res.data
       })
     },
     timewatch: function (val) {
@@ -283,7 +285,6 @@ export default {
       return dayjs().diff(time, 'hour')
     },
     missionNum: function (datas) {
-      console.log(datas)
       this.lengths[0] = datas.data.length
       this.lengths[1] = 0
       for (var t = 0; t < datas.data.length; t++) {
