@@ -9,7 +9,23 @@ const userAdminApi = {
   VolunteerTotalTasksNumber: '/admin/volunteer/case/totalNum',
   VolunteerTasks: '/admin/volunteer/case',
   VolunteerDelete: '/admin/volunteer',
-  VolunteerFireSearch: '/admin/volunteer/liveNess'
+  VolunteerFireSearch: '/admin/volunteer/liveNess',
+  VolunteerNum: '/volunteer/registerNumber',
+  VolunteerOnline: '/volunteer/onlineNumber'
+}
+export function VolunteerNum (params) {
+  return request({
+    url: userAdminApi.VolunteerNum,
+    method: 'get',
+    params
+  })
+}
+export function VolunteerAll (params) {
+  return request({
+    url: userAdminApi.VolunteerOnline,
+    method: 'get',
+    params
+  })
 }
 export function VolunteerFire (params) {
   return request({
