@@ -178,9 +178,7 @@ export default {
           delete search.region
         } else {
           delete search.region
-          console.log(search)
           adminList({ ...search }).then(res => {
-            console.log(res)
             this.datas = []
             this.datas = res.data.data
             if (!res.data.data) {

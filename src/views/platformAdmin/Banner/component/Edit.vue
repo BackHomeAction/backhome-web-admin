@@ -142,7 +142,6 @@ export default {
       this.photoLoad = true
       if (url) {
         this.datas.url = url
-        console.log('URL:' + url)
         this.$notification.success({
           message: '成功',
           description: '上传成功'
@@ -171,7 +170,6 @@ export default {
         title: titles
       }).then(res => {
         this.noticeId = res.data.data[0].id
-        console.log(this.noticeId)
       }).catch(res => {
         console.log(res)
       })

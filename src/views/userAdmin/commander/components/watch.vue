@@ -147,7 +147,6 @@ export default {
         this.missionGet(this.source.id)
         this.orLoading = false
       } else {
-        console.log(this.source.district)
         adminCase({
           district: this.source.district,
           state: e.target.value
@@ -178,19 +177,16 @@ export default {
           description:
               '请检查指战员信息或联系系统管理员',
           onClick: () => {
-            console.log('Notification Clicked!')
           }
         })
       }
       this.getInTime = dayjs(time).fromNow(true)
-      console.log(this.getInTime)
     },
     missionGet: function (e) {
       this.orLoading = true
       adminCase({
         district: this.source.district
       }).then(res => {
-        console.log(res)
         this.datas = res.data.data
         if (res.data.data.length) {
           this.WatchPage.total = res.data.totalCount

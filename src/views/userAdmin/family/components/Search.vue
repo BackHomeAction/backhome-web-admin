@@ -78,7 +78,6 @@ import { getFamilyData } from '@/api/familyData'
 export default {
   mounted () {
     getFamilyData().then(res => {
-      console.log(res)
       this.$store.state.data.familyList = res.data.data
       this.datas = this.$store.state.data.familyList
       this.WatchPages.total = res.data.totalCount
@@ -148,7 +147,6 @@ export default {
         } else {
           delete search.region
           getFamilyData({ ...search }).then(res => {
-            console.log(res)
             this.datas = []
             this.datas = res.data.data
             this.WatchPages.total = res.data.totalCount
