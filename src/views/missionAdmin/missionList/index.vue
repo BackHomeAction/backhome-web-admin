@@ -1,5 +1,5 @@
 <template>
-  <component @onView="handleView" @onGoBack="handleGoBack" :record="record" :is="currentComponet"></component>
+  <component @onView="handleView" :record="record" :is="currentComponet"></component>
 </template>
 
 <script>
@@ -22,13 +22,7 @@ export default {
   },
   methods: {
     handleView (record) {
-      this.record = record || ''
-      this.currentComponet = 'Info'
-      console.log(record)
-    },
-    handleGoBack () {
-      this.record = ''
-      this.currentComponet = 'List'
+      this.$router.push({ path: '/missionAdmin/missionDetail', query: { id: record.id } })
     }
   },
   watch: {

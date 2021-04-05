@@ -47,7 +47,8 @@ import {
   Space,
   message,
   notification,
-  Cascader
+  Cascader,
+  Timeline
 } from 'ant-design-vue'
 import Viser from 'viser-vue'
 
@@ -104,6 +105,7 @@ Vue.use(Statistic)
 Vue.use(Descriptions)
 Vue.use(Space)
 Vue.use(Cascader)
+Vue.use(Timeline)
 
 Vue.prototype.$confirm = Modal.confirm
 Vue.prototype.$message = message

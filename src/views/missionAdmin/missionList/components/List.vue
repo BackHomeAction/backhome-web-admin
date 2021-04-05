@@ -61,12 +61,7 @@
           {{ record.province && record.city && record.district ? `${record.province} ${record.city} ${record.district}` : '' }}
         </span>
         <span slot="state" slot-scope="text, row">
-          <a-badge v-if="text === 1 && getHoursFromTime(row.startTime) <= 24" color="red" text="紧急" />
-          <a-badge v-if="text === 1 && getHoursFromTime(row.startTime) > 24 && getHoursFromTime(row.startTime) <= 48" color="orange" text="优先" />
-          <a-badge v-if="text === 1 && getHoursFromTime(row.startTime) > 48" color="blue" text="正常" />
-          <a-badge v-if="text === 2" color="green" text="已完成" />
-          <a-badge v-if="text === 3" color="purple" text="已归档" />
-          <a-badge v-if="text === 4" status="default" text="已取消" />
+          <mission-state-badge :mission="row" />
         </span>
         <span slot="action" slot-scope="text, record">
           <template>
@@ -95,15 +90,15 @@
 </template>
 
 <script>
-import dayjs from '@/utils/dayjs'
-import { STable, RegionSelector } from '@/components'
+import { STable, RegionSelector, MissionStateBadge } from '@/components'
 import { getMissionList } from '@/api/mission'
 import { cleanObject } from '@/utils/util'
 
 export default {
   components: {
     STable,
-    RegionSelector
+    RegionSelector,
+    MissionStateBadge
   },
   data () {
     return {
@@ -171,9 +166,6 @@ export default {
     },
     toggleAdvanced () {
       this.advanced = !this.advanced
-    },
-    getHoursFromTime (time) {
-      return dayjs().diff(time, 'hour')
     }
   }
 }

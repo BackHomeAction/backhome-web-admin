@@ -190,7 +190,7 @@ export default {
       })
     },
     missionTo: function (id) {
-      this.$router.push({ path: '/missionAdmin/missionList/', query: { id } })
+      this.$router.push({ path: '/missionAdmin/missionDetail', query: { id } })
     }
   }
 }
