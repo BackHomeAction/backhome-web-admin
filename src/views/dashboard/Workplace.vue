@@ -15,10 +15,10 @@
     </template>
     <template v-slot:extraContent>
       <div class="extra-content">
-        <div class="stat-item" v-if="lengths && lengths[0] && lengths[1]">
+        <div class="stat-item" v-if="lengths && lengths[0]">
           <a-statistic :title="users.roleId === 3 ? '区域内开启案件' : '开启案件'" :value="lengths[1]" :suffix="'/ '+lengths[0]" />
         </div>
-        <div class="stat-item" v-if="inAirVol && allVols">
+        <div class="stat-item" v-if="allVols">
           <a-statistic :title="users.roleId === 3 ? '区域内在线志愿者' : '在线志愿者'" :value="inAirVol" :suffix="'/ '+allVols" />
         </div>
       </div>
