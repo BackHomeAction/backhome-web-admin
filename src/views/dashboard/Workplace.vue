@@ -286,12 +286,13 @@ export default {
     },
     missionNum: function (datas) {
       this.lengths[0] = datas.data.length
-      this.lengths[1] = 0
-      for (var t = 0; t < datas.data.length; t++) {
-        if (datas.data[t].state !== 4) {
-          this.lengths[1]++
+      this.lengths[1] = datas.data.reduce((total, item) => {
+        if (item.state === 1 || item.state === 3) {
+          return total + 1
+        } else {
+          return total
         }
-      }
+      }, 0)
     }
   }
 }
