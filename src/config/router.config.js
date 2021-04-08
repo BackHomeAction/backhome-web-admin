@@ -29,9 +29,9 @@ export const asyncRouterMap = [
             meta: { title: '工作台', keepAlive: true, roles: ['districtAdmin', 'admin', 'superAdmin'] }
           },
           {
-            path: '/dashboard/analysis/:pageNo([1-9]\\d*)?',
+            path: 'https://fwwb2020-bigscreen.tgucsdn.com/',
             name: 'Analysis',
-            meta: { title: '大屏监控', keepAlive: false, roles: ['districtAdmin', 'admin', 'superAdmin'] }
+            meta: { title: '大屏监控', target: '_blank', roles: ['districtAdmin', 'admin', 'superAdmin'] }
           }
         ]
       },
