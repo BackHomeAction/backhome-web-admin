@@ -57,10 +57,10 @@
               <a-radio-button :value="2">
                 进行中
               </a-radio-button>
-              <a-radio-button :value="3">
+              <a-radio-button :value="4">
                 已归档
               </a-radio-button>
-              <a-radio-button :value="4">
+              <a-radio-button :value="3">
                 已取消
               </a-radio-button>
             </a-radio-group>

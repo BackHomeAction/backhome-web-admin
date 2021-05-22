@@ -6,6 +6,9 @@ const data = {
     roleId: 0,
     allVolss: '',
     users: [],
+    pla: [],
+    chooseUses: [],
+    controlMap: false,
     titles: null,
     dataSource: [],
     oldManData: {
