@@ -33,13 +33,15 @@
       </a-row>
     </a-card>
     <a-card :bordered="false" style="margin-top: 30px">
-      <a-page-header title="老人信息"></a-page-header>
-      <a-table :pagination="oldPage" rowKey="id" size="default" :columns="oldMancol" :data-source="oldData" >
-        <span slot="sex" slot-scope="text">{{ (text===1)?'男':'女' }}</span>
-        <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
-      </a-table>
+      <a-spin :spinning="oldSessions">
+        <a-page-header title="老人信息"></a-page-header>
+        <a-table :pagination="oldPage" rowKey="id" size="default" :columns="oldMancol" :data-source="oldData" >
+          <span slot="sex" slot-scope="text">{{ (text===1)?'男':'女' }}</span>
+          <span slot="use" slot-scope="text"><a @click="oldManinf(text)">查看</a></span>
+        </a-table>
+      </a-spin>
     </a-card>
-    <a-card :bordered="false" style="margin-top: 24px;">
+    <a-card :bordered="false" style="margin-top: 24px;" >
       <a-row :gutter="48" style="display: flex;align-items: center">
         <a-col :span="16">
           <a-page-header title="关联任务"></a-page-header>
@@ -89,8 +91,6 @@ import dayjs from '@/utils/dayjs'
 export default {
   mounted () {
     this.source = this.$store.state.data.familyData.watchUser
-    // console.log('家属信息')
-    // console.log(this.source)
     this.oldManGet(this.source.id)
     this.missionListGet(this.source.id)
     this.orLoading = false
@@ -107,8 +107,9 @@ export default {
       chooseWatch: 0,
       oldPage: {},
       missionPage: {},
-      orLoading: false,
+      orLoading: true,
       datas: [],
+      oldSessions: true,
       columns: [
         {
           title: '任务ID',
@@ -198,6 +199,7 @@ export default {
         this.oldData = res.data
         this.oldPage.total = res.data.length
         this.oldPage.pageSize = 5
+        this.oldSessions = false
       }).catch(res => {
         this.orLoading = false
       })
@@ -209,6 +211,7 @@ export default {
         this.datas = res.data.data
         this.missionPage.total = res.data.pageSize
         this.missionPage.pageSize = 5
+        this.orLoading = false
       }).catch(res => {
         this.orLoading = false
       })

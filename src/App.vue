@@ -1,6 +1,9 @@
 <template>
   <a-config-provider :locale="locale">
     <div id="app">
+      <div v-if="this.$store.state.data.controlMap">
+        <choose-map/>
+      </div>
       <router-view/>
     </div>
   </a-config-provider>
@@ -9,11 +12,15 @@
 <script>
 import { domTitle, setDocumentTitle } from '@/utils/domUtil'
 import { i18nRender } from '@/locales'
+import chooseMap from '@/views/userAdmin/family/components/chooseMap'
 
 export default {
   data () {
     return {
     }
+  },
+  components: {
+    chooseMap
   },
   computed: {
     locale () {

@@ -10,7 +10,7 @@ import i18n from './locales'
 import { VueAxios } from './utils/request'
 import ProLayout, { PageHeaderWrapper } from '@ant-design-vue/pro-layout'
 import themePluginConfig from '../config/themePluginConfig'
-
+import { VueJsonp } from 'vue-jsonp'
 // mock
 // WARNING: `mockjs` NOT SUPPORT `IE` PLEASE DO NOT USE IN `production` ENV.
 // import './mock'
@@ -23,10 +23,10 @@ import './global.less' // global style
 
 import 'viewerjs/dist/viewer.css'
 import Viewer from 'v-viewer'
-
 Vue.config.productionTip = false
-
 Vue.use(Viewer)
+Vue.prototype.$jsonp = VueJsonp
+Vue.use(VueJsonp)
 
 // mount axios to `Vue.$http` and `this.$http`
 Vue.use(VueAxios)
@@ -34,7 +34,6 @@ Vue.use(VueAxios)
 Vue.component('pro-layout', ProLayout)
 Vue.component('page-container', PageHeaderWrapper)
 Vue.component('page-header-wrapper', PageHeaderWrapper)
-
 window.umi_plugin_ant_themeVar = themePluginConfig.theme
 
 new Vue({
