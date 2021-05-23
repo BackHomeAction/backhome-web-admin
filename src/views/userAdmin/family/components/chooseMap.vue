@@ -116,7 +116,6 @@ export default {
           }
           }
           if(res.data[0]) {
-
             this.changes(res.data[0].location.lat, res.data[0].location.lng)
             if (this.data[0]) {
               this.listShow = true
@@ -125,6 +124,7 @@ export default {
             if (that.objAray) {
               that.objAray.setMap(null)
             }
+            this.marketAray = []
             for (var d = 0; d < res.data.length; d++) {
               let arraySon = {
                 "id": '',
