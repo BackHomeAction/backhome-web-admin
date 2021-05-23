@@ -88,7 +88,7 @@ export default {
       }
       if(pla){
         this.$jsonp('http://apis.map.qq.com/ws/place/v1/search', {
-          region: city,
+          region: this.$store.state.data.oldManData.oldmanEdit.city,
           keyword: pla,
           boundary:'nearby('+lat+','+lng+',500000,1)',
           output: 'jsonp&callback=cb',
@@ -97,32 +97,49 @@ export default {
         }).then(res => {
           this.data = []
           this.data = res.data
-          for(let e=0;e<this.data.length;e++){
-            this.data[e].choose = false
-          }
-          this.changes(res.data[0].location.lat,res.data[0].location.lng)
-          if(this.data[0]){
-            this.listShow = true
-          }
-          var that = this
-          if(that.objAray){that.objAray.setMap(null)}
-          for(var d=0;d<res.data.length;d++){
-            let arraySon = {
-              "id": '',
-              "position": new window.TMap.LatLng(res.data[d].location.lat,res.data[d].location.lng),
-              "styleId": 'marker',
+          if(res.data[0]) {
+            for (let e = 0; e < this.data.length; e++) {
+              this.data[e].choose = false
             }
-            that.marketAray.push(arraySon)
-          }
-          this.objAray = new TMap.MultiMarker({
-            map: this.map,
-            geometries:this.marketAray,
-            styles: {
-              "marker": new TMap.MarkerStyle({
-                "src": 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png'
-              })
+            this.changes(res.data[0].location.lat, res.data[0].location.lng)
+            if (this.data[0]) {
+              this.listShow = true
             }
-          })
+            var that = this
+            if (that.objAray) {
+              that.objAray.setMap(null)
+            }
+            for (var d = 0; d < res.data.length; d++) {
+              let arraySon = {
+                "id": '',
+                "position": new window.TMap.LatLng(res.data[d].location.lat, res.data[d].location.lng),
+                "styleId": 'marker',
+              }
+              that.marketAray.push(arraySon)
+            }
+            this.objAray = new TMap.MultiMarker({
+              map: this.map,
+              geometries: this.marketAray,
+              styles: {
+                "marker": new TMap.MarkerStyle({
+                  "src": 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png'
+                })
+              }
+            })
+            var bounds = new TMap.LatLngBounds();
+            this.marketAray.forEach(item => {
+              if (bounds.isEmpty() || !bounds.contains(item.position)) {
+                bounds.extend(item.position);
+              }
+            })
+            this.map.fitBounds(bounds, {
+              padding:100
+            })
+          } else {
+            this.objAray.setMap(null)
+            this.listShow = false
+            this.searchInput = ''
+          }
         })
       } else {
         this.listShow = false
