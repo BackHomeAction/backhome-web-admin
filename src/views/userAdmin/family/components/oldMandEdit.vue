@@ -159,6 +159,7 @@ export default {
       }
     },
     showMaps: function () {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
       this.$store.state.data.controlMap = true
     },
     deleteWhere: function (text) {
