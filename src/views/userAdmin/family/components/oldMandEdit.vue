@@ -196,6 +196,7 @@ export default {
           })
         }
         this.loadings = false
+        this.goBack()
       }).catch(res => {
         this.loadings = false
       })

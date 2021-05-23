@@ -27,7 +27,7 @@
                   <a-list-item-meta :description="item.address">
                     <a slot="title" href="https://www.antdv.com/">{{ item.title }}</a>
                   </a-list-item-meta>
-                  <a-button type="primary" style="margin-right: 5px" @click="() => {chooseIt(item);item.choose = true;var ex =data;data = [];data = ex}" >添加</a-button>
+                  <a-button type="primary" style="margin-right: 5px" @click="() => {chooseIt(item,index);item.choose = true;var ex =data;data = [];data = ex}" >添加</a-button>
                 </a-list-item>
               </a-list>
             </div>
@@ -87,8 +87,8 @@ export default {
         lng = this.latlng[1]
       }
       if(pla){
-        this.$jsonp('http://apis.map.qq.com/ws/place/v1/search', {
-          region: this.$store.state.data.oldManData.oldmanEdit.city,
+        this.$jsonp('https://apis.map.qq.com/ws/place/v1/search', {
+          region: (this.$store.state.data.oldManData.oldmanEdit.city),
           keyword: pla,
           boundary:'nearby('+lat+','+lng+',500000,1)',
           output: 'jsonp&callback=cb',
@@ -97,10 +97,26 @@ export default {
         }).then(res => {
           this.data = []
           this.data = res.data
-          if(res.data[0]) {
-            for (let e = 0; e < this.data.length; e++) {
-              this.data[e].choose = false
+          for (let e = 0; e < this.data.length; e++) {
+            this.data[e].choose = false
+          }
+          if(this.$store.state.data.chooseUses){
+            for(let c=0;c<this.$store.state.data.chooseUses.length;c++){
+              for(let d=0;d<this.data.length;d++){
+                if(this.$store.state.data.chooseUses[c].name === this.data[d].title){
+                  this.data[d].choose = true
+                }
+              }
             }
+          for(let g=0;g<this.data.length;g++){
+            if(this.data[g].choose === false){
+              this.searchInput = this.data[g].title
+              break;
+            }
+          }
+          }
+          if(res.data[0]) {
+
             this.changes(res.data[0].location.lat, res.data[0].location.lng)
             if (this.data[0]) {
               this.listShow = true
@@ -133,7 +149,7 @@ export default {
               }
             })
             this.map.fitBounds(bounds, {
-              padding:100
+              padding:200
             })
           } else {
             this.objAray.setMap(null)
@@ -148,7 +164,7 @@ export default {
       }
     },
     placeRequest: function (lat,lng) {
-      this.$jsonp('http://apis.map.qq.com/ws/place/v1/search', {
+      this.$jsonp('https://apis.map.qq.com/ws/place/v1/search', {
         region : this.city,
         boundary:'nearby('+lat+','+lng+',5000,1)',
         output:'jsonp&callback=cb',
@@ -158,15 +174,40 @@ export default {
         this.searchInput = res.data[0].title
         this.data = []
         this.data = res.data
-        for(let e=0;e<this.data.length;e++){
+        for (let e = 0; e < this.data.length; e++) {
           this.data[e].choose = false
+        }
+        if(this.$store.state.data.chooseUses){
+          for(let c=0;c<this.$store.state.data.chooseUses.length;c++){
+            for(let d=0;d<this.data.length;d++){
+              if(this.$store.state.data.chooseUses[c].name === this.data[d].title){
+                this.data[d].choose = true
+              }
+            }
+          }
+          for(let g=0;g<this.data.length;g++){
+            if(this.data[g].choose === false){
+              this.searchInput = this.data[g].title
+              break;
+            }
+          }
         }
        if(this.data[0]){
          this.listShow = true
        }
       })
     },
-    chooseIt: function (num) {
+    chooseIt: function (num,index) {
+      for(let g=0;g<this.data.length;g++){
+        if(g !== index) {
+          if (this.data[g].choose === false) {
+            this.searchInput = ''
+            this.searchInput = this.data[g].title
+            break;
+          }
+        }
+      }
+      this.$message.success('添加成功',10)
       var uses = {
         address: '',
         city: '',
