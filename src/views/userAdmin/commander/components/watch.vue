@@ -60,7 +60,7 @@
             <a-table :pagination="WatchPage" rowKey="id" size="default" :columns="columns" :data-source="datas">
               <span slot="ids" slot-scope="text"><a @click="missionTo(text)" >{{ text }}</a></span>
               <div slot="state" slot-scope="text">
-                <a-badge :status="(text !== 1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text !== 1)?(( text!==2 )?((text===3)?'已超时':'已取消'):'已完成'):'进行中'"> </a-badge>
+                <a-badge :status="(text !== 1)?(( text!==2 )?((text===3)?'error':'default'):'success'):'processing'" :text="(text !== 1)?(( text!==2 )?((text===3)?'已归档':'已取消'):'已完成'):'进行中'"> </a-badge>
               </div>
               <span slot="use" slot-scope="text"><a @click="missionTo(text.id)" >查看</a></span>
             </a-table>

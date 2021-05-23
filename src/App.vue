@@ -1,10 +1,10 @@
 <template>
   <a-config-provider :locale="locale">
     <div id="app">
-      <div v-if="this.$store.state.data.controlMap">
+      <div v-if="this.$store.state.data.controlMap" style="width: 100%;height: 100%;overflow: hidden;position: absolute;z-index:6;left: 0;top: 0;">
         <choose-map/>
       </div>
-      <router-view/>
+      <router-view style="position: absolute;z-index:5;left: 0;top: 0;" />
     </div>
   </a-config-provider>
 </template>

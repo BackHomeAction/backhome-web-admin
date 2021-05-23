@@ -77,22 +77,6 @@
             <a-divider type="vertical" v-if="record.volunteer" />
             <a @click="handleView(record)" v-if="record.volunteer">查看</a>
           </template>
-        <!-- <a-dropdown>
-          <a class="ant-dropdown-link">
-            更多 <a-icon type="down" />
-          </a>
-          <a-menu slot="overlay">
-            <a-menu-item>
-              <a href="javascript:;">详情</a>
-            </a-menu-item>
-            <a-menu-item>
-              <a href="javascript:;">禁用</a>
-            </a-menu-item>
-            <a-menu-item>
-              <a href="javascript:;">删除</a>
-            </a-menu-item>
-          </a-menu>
-        </a-dropdown> -->
         </span>
       </s-table>
     </a-card>
@@ -102,7 +86,6 @@
 </template>
 
 <script>
-// import dayjs from '@/utils/dayjs'
 import { STable, RegionSelector } from '@/components'
 import { getVolunteerList } from '@/api/volunteerAdmin'
 import { cleanObject } from '@/utils/util'

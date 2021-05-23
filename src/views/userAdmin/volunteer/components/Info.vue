@@ -83,8 +83,8 @@
           <a-badge v-if="text === 1 && getHoursFromTime(row.startTime) > 24 && getHoursFromTime(row.startTime) <= 48" color="orange" text="优先" />
           <a-badge v-if="text === 1 && getHoursFromTime(row.startTime) > 48" color="blue" text="正常" />
           <a-badge v-if="text === 2" color="green" text="已完成" />
-          <a-badge v-if="text === 3" color="purple" text="已归档" />
-          <a-badge v-if="text === 4" status="default" text="已取消" />
+          <a-badge v-if="text === 3" color="blue" text="已归档" />
+          <a-badge v-if="text === 4" status="default" color="gray" text="已取消" />
         </span>
         <span slot="action" slot-scope="text, row">
           <template>

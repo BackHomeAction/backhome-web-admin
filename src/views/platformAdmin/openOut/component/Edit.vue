@@ -137,6 +137,7 @@ export default {
       }
     },
     createThree: function () {
+      this.pageLoading = true
       if (this.state === 1 && this.datas.name !== '' && this.datas.appId !== '' && this.datas.accessKey !== '') {
         const client = this.datas
         threeNew({
@@ -152,6 +153,10 @@ export default {
           }
           this.pageLoading = false
         }).catch(res => {
+          this.$notification.error({
+            message: '失败',
+            description: '创建失败'
+          })
           this.pageLoading = false
         })
       }
