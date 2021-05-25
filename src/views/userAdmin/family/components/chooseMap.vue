@@ -138,7 +138,9 @@ export default {
               geometries: this.marketAray,
               styles: {
                 "marker": new TMap.MarkerStyle({
-                  "src": 'https://mapapi.qq.com/web/lbs/javascriptGL/demo/img/markerDefault.png'
+                  "src": 'https://fwwb2020-common.tgucsdn.com/images/map/lost_place.png',
+                  'width': 35,
+                  'height': 35
                 })
               }
             })
@@ -198,6 +200,7 @@ export default {
       })
     },
     chooseIt: function (num,index) {
+      console.log(num,'数据')
       for(let g=0;g<this.data.length;g++){
         if(g !== index) {
           if (this.data[g].choose === false) {
@@ -227,6 +230,14 @@ export default {
       if(!this.$store.state.data.chooseUses) {this.$store.state.data.chooseUses = []}
       this.$store.state.data.chooseUses.push(uses)
       this.changes(num.location.lat,num.location.lng)
+      var bounds = new TMap.LatLngBounds()
+      let position= new window.TMap.LatLng(num.location.lat, num.location.lng)
+      if (bounds.isEmpty() || !bounds.contains(position)) {
+        bounds.extend(position)
+      }
+      this.map.fitBounds(bounds, {
+        padding:30
+      })
     },
     exitMap: function () {
       this.$store.state.data.controlMap = false
@@ -238,6 +249,7 @@ export default {
       })
       var that = this
       this.map.on('click',function (event) {
+        that.objAray = ''
         if(that.objAray){that.objAray.setMap(null)}
         that.marketLL = [event.latLng.lat,event.latLng.lng]
         that.changes(event.latLng.lat,event.latLng.lng)

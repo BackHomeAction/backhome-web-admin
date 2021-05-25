@@ -154,8 +154,8 @@ export default {
           if (this.regionPoxy[0] !== null) {
             this.loadingPage = true
             this.form.province = this.regionPoxy[0]
-            this.form.district = this.regionPoxy[1]
-            this.form.city = this.regionPoxy[2]
+            this.form.district = this.regionPoxy[2]
+            this.form.city = this.regionPoxy[1]
             this.form.id = parseInt(this.form.id)
             this.adminBean = this.form
             const adminBean = this.adminBean

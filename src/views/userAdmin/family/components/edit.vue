@@ -117,8 +117,8 @@ export default {
         this.loadings = false
       } else {
         this.form.province = this.regionProxy[0]
-        this.form.district = this.regionProxy[1]
-        this.form.city = this.regionProxy[2]
+        this.form.district = this.regionProxy[2]
+        this.form.city = this.regionProxy[1]
         var family = this.form
         familyDataChange({
           ...family,

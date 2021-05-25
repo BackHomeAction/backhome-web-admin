@@ -52,7 +52,7 @@
           <a-table :pagination="WatchPages" :columns="columns" :data-source="datas" rowKey="id">
             <span slot="sex" slot-scope="text"> {{ text ? (text === 1 ? '男' : '女') : '' }}</span>
             <span slot="state" slot-scope="text">
-              <a-badge :status="text?'success':'default'" :text="text?'正常':'已停用'"></a-badge>
+              <a-badge :status="text===1?'success':'default'" :text="text===1?'正常':'已停用'"></a-badge>
             </span>
             <span slot="location" slot-scope="text">
               {{ ((text.province)!==null)?(text.province + ' ' + text.city + ' ' + text.district):'' }}
@@ -134,27 +134,31 @@ export default {
       this.advanced = !this.advanced
     },
     searchFamily: function () {
+      console.log(1)
       this.loadingPage = true
       if (this.search) {
+        console.log(2)
         const search = this.search
         if (this.search.region) {
+          console.log(3)
           this.search.province = this.search.region[0]
-          this.search.district = this.search.region[1]
-          this.search.city = this.search.region[2]
+          this.search.city = this.search.region[1]
+          this.search.district = this.search.region[2]
           delete search.region
         } else {
           delete search.region
-          getFamilyData({ ...search }).then(res => {
-            console.log(res)
-            this.datas = []
-            this.datas = res.data.data
-            this.WatchPages.total = res.data.totalCount
-            this.WatchPages.pageSize = 10
-            this.loadingPage = false
-          }).catch(res => {
-            this.loadingPage = false
-          })
         }
+        getFamilyData({ ...search }).then(res => {
+          console.log(res)
+          this.datas = []
+          this.datas = res.data.data
+          this.WatchPages.total = res.data.totalCount
+          this.WatchPages.pageSize = 10
+          this.loadingPage = false
+        }).catch(res => {
+          console.log(res)
+          this.loadingPage = false
+        })
       } else {
         this.getAll()
       }
