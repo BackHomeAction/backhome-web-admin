@@ -102,7 +102,8 @@ export default {
       this.$store.state.data.users = this.$store.getters.userInfo
       if (this.userData.roleId === 5 || this.userData.roleId === 4) {
         this.showOther = false
-        adminTeam({}).then(res => {
+        adminTeam().then(res => {
+          console.log(res, '数据报告')
           this.$store.state.data.dataSource = res.data
           this.dataSource = [
             { item: '结案率', '全国': Math.ceil(this.$store.state.data.dataSource.country.finishCaseRate * 100) },

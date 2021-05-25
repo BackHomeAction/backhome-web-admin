@@ -12,10 +12,10 @@
           </a-col>
           <a-col :md="12" :xl="14">
             <a-form-model :model="form" :label-col="labelCol" :wrapper-col="wrapperCol" ref="ruleForm">
-              <a-form-model-item label="姓名" required prop="name">
+              <a-form-model-item label="姓名" prop="name">
                 <a-input v-model="form.name" placeholder="请输入" />
               </a-form-model-item>
-              <a-form-model-item label="身份证号" required prop="idcard">
+              <a-form-model-item label="身份证号" prop="idcard">
                 <a-input v-model="form.idcard" placeholder="请输入" />
               </a-form-model-item>
               <a-form-model-item label="手机号" prop="phone" v-if="record && record.id && record.volunteer">
@@ -25,7 +25,7 @@
                 <region-selector v-model="form.region" />
               </a-form-model-item>
               <a-form-model-item label="性别" prop="sex">
-                <a-radio-group v-model="form.sex">
+                <a-radio-group v-model="form.sex" @change="takeState()" >
                   <a-radio :value="1">
                     男
                   </a-radio>
@@ -35,7 +35,7 @@
                 </a-radio-group>
               </a-form-model-item>
               <a-form-model-item label="状态" prop="state" v-if="record && record.id && record.volunteer">
-                <a-radio-group v-model="form.state">
+                <a-radio-group v-model="form.state" @change="takeState()" >
                   <a-radio :value="1">
                     启用
                   </a-radio>
@@ -90,6 +90,11 @@ export default {
     }
   },
   methods: {
+    takeState: function () {
+      const ex = this.form
+      this.form = {}
+      this.form = ex
+    },
     stopShow: function () {
       this.visibles = false
     },
@@ -98,7 +103,6 @@ export default {
       volDelete({
         volunteerId: this.record.id
       }).then(res => {
-        console.log(res)
         if (res.status === 200) {
           this.$notification.success({
             message: '成功',
@@ -131,16 +135,11 @@ export default {
           this.form.phone && (submitForm.volunteer.phone = this.form.phone)
           submitForm.volunteer.state = this.form.state
         }
-
-        console.log(submitForm)
-
         this.isSubmitting = true
         try {
           if (this.record && this.record.id) {
-            // edit
             await editVolunteer({ id: this.record.id, ...submitForm })
           } else {
-            // add
             await addVolunteer(submitForm)
           }
           this.$notification.success({
@@ -186,11 +185,11 @@ export default {
           }
           this.form.name = data.name
           this.form.idcard = data.idcard
-          this.form.sex = data.sex
+          const sex = data.sex
+          this.form.sex = sex
           if (data.province && data.city && data.district) {
             this.form.region = [data.province, data.city, data.district]
           }
-          console.log(this.form)
         } catch (e) {
           console.log(e)
           this.$emit('onGoBack')

@@ -38,7 +38,7 @@
             <a-col :md="!advanced && 8 || 24" :sm="24">
               <span class="table-page-search-submitButtons" :style="advanced && { float: 'right', overflow: 'hidden' } || {} ">
                 <a-button type="primary" @click="$refs.table.refresh(true)">查询</a-button>
-                <a-button style="margin-left: 8px" @click="() => queryParam = {}">重置</a-button>
+                <a-button style="margin-left: 8px" @click="() => queryParam = null">重置</a-button>
                 <a @click="toggleAdvanced" style="margin-left: 8px">
                   {{ advanced ? '收起' : '展开' }}
                   <a-icon :type="advanced ? 'up' : 'down'"/>
@@ -119,11 +119,8 @@ export default {
   },
   data () {
     return {
-      // 高级搜索 展开/关闭
       advanced: false,
-      // 查询参数
       queryParam: {},
-      // 表头
       columns: [
         {
           title: '用户 ID',
@@ -157,11 +154,9 @@ export default {
           scopedSlots: { customRender: 'action' }
         }
       ],
-      // 加载数据方法 必须为 Promise 对象
       loadData: parameter => {
         console.log('loadData.parameter', parameter)
         const query = cleanObject(Object.assign(parameter, this.queryParam))
-        // 特殊处理地区选择器
         if (query.region) {
           query.province = query.region[0]
           query.city = query.region[1]
@@ -170,6 +165,7 @@ export default {
         }
         return getVolunteerList(query)
           .then(res => {
+            console.log(res)
             return res.data
           })
       },

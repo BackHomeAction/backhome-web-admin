@@ -23,11 +23,11 @@
                   </a-select>
                 </a-form-item>
               </a-col>
-              <a-col :md="8" :sm="24">
-                <a-form-item label="手机号">
-                  <a-input v-model="search.phone" placeholder="请输入"/>
-                </a-form-item>
-              </a-col>
+              <!--              <a-col :md="8" :sm="24">-->
+              <!--                <a-form-item label="手机号">-->
+              <!--                  <a-input v-model="search.phone" placeholder="请输入"/>-->
+              <!--                </a-form-item>-->
+              <!--              </a-col>-->
               <a-col :md="16" :sm="24">
                 <a-form-item label="地区">
                   <region-selector v-model="search.region" />
@@ -175,25 +175,25 @@ export default {
           delete search.region
         } else {
           delete search.region
-          console.log(search)
-          adminList({ ...search }).then(res => {
-            console.log(res)
-            this.datas = []
-            this.datas = res.data.data
-            if (!res.data.data) {
-              this.datas = []
-            }
-            this.loadingPage = false
-          }).catch(res => {
-            this.loadingPage = false
-          })
         }
+        console.log(search)
+        adminList({ ...search }).then(res => {
+          this.datas = []
+          this.datas = res.data.data
+          if (!res.data.data) {
+            this.datas = []
+          }
+          this.loadingPage = false
+        }).catch(res => {
+          this.loadingPage = false
+        })
       } else {
         this.getAll()
         this.loadingPage = false
       }
     },
     getAll: function () {
+      this.search = {}
       this.dataGetFun()
     },
     editPage: function (data) {
