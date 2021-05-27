@@ -104,7 +104,7 @@ export default {
       columns: [
         {
           title: '任务ID',
-          width: '160px',
+          width: '100px',
           dataIndex: 'id',
           scopedSlots: { customRender: 'ids' }
         },
@@ -112,19 +112,18 @@ export default {
           title: '状态',
           dataIndex: 'state',
           scopedSlots: { customRender: 'state' },
-          width: '250px'
+          width: '150px'
         },
         {
           title: '走失地点',
           dataIndex: 'address',
-          scopedSlots: { customRender: 'identity' },
-          width: '500px'
+          scopedSlots: { customRender: 'identity' }
         },
         {
           title: '创建时间',
           dataIndex: 'startTime',
           scopedSlots: { customRender: 'time' },
-          width: '400px'
+          width: '200px'
         },
         {
           title: '操作',
