@@ -4,7 +4,7 @@
       <div v-if="this.$store.state.data.controlMap" style="width: 100%;height: 100%">
         <choose-map/>
       </div>
-      <router-view v-if="!this.$store.state.data.controlMap"  />
+      <router-view v-if="!this.$store.state.data.controlMap" />
     </div>
   </a-config-provider>
 </template>
