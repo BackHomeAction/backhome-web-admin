@@ -113,7 +113,7 @@ export default {
       columns: [
         {
           title: '任务ID',
-          width: '160px',
+          width: '100px',
           dataIndex: 'id',
           scopedSlots: { customRender: 'id' }
         },
@@ -121,18 +121,17 @@ export default {
           title: '状态',
           dataIndex: 'state',
           scopedSlots: { customRender: 'state' },
-          width: '250px'
+          width: '150px'
         },
         {
           title: '走失地点',
-          scopedSlots: { customRender: 'where' },
-          width: '500px'
+          scopedSlots: { customRender: 'where' }
         },
         {
           title: '创建时间',
           dataIndex: 'startTime',
           scopedSlots: { customRender: 'time' },
-          width: '400px'
+          width: '200px'
         },
         {
           title: '操作',
@@ -144,29 +143,26 @@ export default {
       oldMancol: [
         {
           title: '姓名',
-          width: '160px',
           dataIndex: 'name'
         },
         {
           title: '性别',
           dataIndex: 'sex',
           scopedSlots: { customRender: 'sex' },
-          width: '250px'
+          width: '100px'
         },
         {
           title: '出生日期 ',
-          dataIndex: 'birthDate',
-          width: '500px'
+          dataIndex: 'birthDate'
         },
         {
           title: '居住地区',
-          dataIndex: 'province',
-          width: '400px'
+          dataIndex: 'province'
         },
         {
           title: '创建时间',
           dataIndex: 'createdAt',
-          width: '400px'
+          width: '200px'
         },
         {
           title: '操作',
