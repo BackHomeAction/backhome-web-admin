@@ -4,7 +4,11 @@
       <div v-if="this.$store.state.data.controlMap" style="width: 100%;height: 100%">
         <choose-map/>
       </div>
+<<<<<<< HEAD
       <router-view style="position: relative;z-index:3;" />
+=======
+      <router-view v-if="!this.$store.state.data.controlMap" />
+>>>>>>> master
     </div>
   </a-config-provider>
 </template>

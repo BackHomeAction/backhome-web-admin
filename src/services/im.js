@@ -6,7 +6,7 @@ import { getImUserSig } from '../api/im'
 export default class IM {
   constructor () {
     this.tim = TIM.create({
-      SDKAppID: process.env.VUE_APP_TIM_APPID
+      SDKAppID: parseInt(process.env.VUE_APP_TIM_APPID, 10)
     })
     this.tim.setLogLevel(process.env.NODE_ENV.localeCompare('development') === 0 ? 0 : 1)
     this.tim.registerPlugin({ 'tim-upload-plugin': TIMUploadPlugin })
