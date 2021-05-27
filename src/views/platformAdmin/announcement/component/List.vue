@@ -134,7 +134,6 @@ export default {
       if (this.search) {
         this.loading = true
         const search = this.search
-        console.log(search)
         listSearch({ ...search }).then(res => {
           console.log(res)
           this.dataOflist = []

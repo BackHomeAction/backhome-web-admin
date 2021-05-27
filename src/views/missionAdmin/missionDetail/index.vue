@@ -28,6 +28,9 @@
             <a-tab-pane key="log" tab="案件日志">
               <tab-item-log />
             </a-tab-pane>
+            <a-tab-pane key="memory" tab="备忘录">
+              <tab-item-memory />
+            </a-tab-pane>
           </a-tabs>
         </div>
       </a-spin>
@@ -44,6 +47,7 @@ import TabItemLog from './components/TabItemLog.vue'
 import TabItemVolunteerList from './components/TabItemVolunteerList.vue'
 import TabItemInfo from './components/TabItemInfo.vue'
 import TabItemChat from './components/TabItemChat'
+import TabItemMemory from './components/TabltemMemory'
 import Ws from '@/services/websocket'
 import IM from '@/services/im'
 import { joinIMGroup, leaveIMGroup } from '@/api/im'
@@ -63,7 +67,7 @@ const SocketStateTypes = {
 
 export default {
   name: 'MissionDetail',
-  components: { BasicInfo, TabItemMap, TabItemFaceRecord, TabItemLog, TabItemVolunteerList, TabItemInfo, TabItemChat },
+  components: { BasicInfo, TabItemMap, TabItemFaceRecord, TabItemLog, TabItemVolunteerList, TabItemInfo, TabItemChat, TabItemMemory },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo'])
   },
@@ -78,6 +82,7 @@ export default {
   mounted () {
     const query = this.$route.query
     this.caseId = parseInt(query.id, 10)
+    this.$store.state.data.caseId = this.caseId
     this.init()
   },
   beforeDestroy () {

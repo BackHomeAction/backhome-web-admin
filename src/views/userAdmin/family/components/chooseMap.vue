@@ -87,6 +87,7 @@ export default {
         lng = this.latlng[1]
       }
       if(pla){
+        this.marketAray = []
         this.$jsonp('https://apis.map.qq.com/ws/place/v1/search', {
           region: (this.$store.state.data.oldManData.oldmanEdit.city),
           keyword: pla,
@@ -236,7 +237,7 @@ export default {
         bounds.extend(position)
       }
       this.map.fitBounds(bounds, {
-        padding:30
+        padding:55
       })
     },
     exitMap: function () {
@@ -249,7 +250,7 @@ export default {
       })
       var that = this
       this.map.on('click',function (event) {
-        that.objAray = ''
+        that.marketAray = []
         if(that.objAray){that.objAray.setMap(null)}
         that.marketLL = [event.latLng.lat,event.latLng.lng]
         that.changes(event.latLng.lat,event.latLng.lng)
