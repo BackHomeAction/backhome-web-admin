@@ -9,15 +9,6 @@
               <a-form-model-item label="备忘标题" required>
                 <a-input v-model="datas.title" :placeholder="placeholder" ></a-input>
               </a-form-model-item>
-              <a-form-model-item label="备忘域" required>
-                <a-select v-model="datas.isGlobal" placeholder="请选择" @change="getChanges">
-                  <a-select-option :value="1">全局域</a-select-option>
-                  <a-select-option :value="2">案件域</a-select-option>
-                </a-select>
-              </a-form-model-item>
-              <a-form-model-item label="案件ID" required v-if="idshow" >
-                <a-input v-model="datas.caseId" :placeholder="placeholder"></a-input>
-              </a-form-model-item>
               <a-form-model-item label="备忘内容" required>
                 <a-textarea
                   v-model="datas.content"
@@ -82,7 +73,6 @@ export default {
       placeholder: '请输入',
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
-      idshow: false,
       showAvatarUploader: false
     }
   },
@@ -91,25 +81,20 @@ export default {
   },
   methods: {
     createMem () {
+      this.loadings = true
       const data = {}
       data.title = this.datas.title
-      data.isGlobal = this.datas.isGlobal
+      data.isGlobal = '1'
       data.content = this.datas.content
-      if (data.isGlobal === 2) {
-        data.caseId = parseInt(this.datas.caseId)
-      }
       data.imgUrl = JSON.stringify(this.img)
-      // data.adminId = this.$store.state.user.info.roleId
-      // data.avatarUrl = this.$store.state.user.info.avatarUrl
-      // data.name = this.$store.state.user.info.name
-      console.log(data)
       addMemory({ ...data }).then(res => {
-        console.log(res)
+        this.loadings = false
         if (res.status === 200) {
           this.$notification.success({
             message: '创建成功',
             description: '即将返回列表'
           })
+          this.goBack()
         }
       })
     },
@@ -118,7 +103,6 @@ export default {
       const data = {}
       data.title = this.datas.title
       data.content = this.datas.content
-      data.isGlobal = this.datas.isGlobal
       data.id = this.datas.id
       if (data.isGlobal === 2) {
         data.caseId = parseInt(this.datas.caseId)
