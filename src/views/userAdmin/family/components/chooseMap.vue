@@ -139,7 +139,7 @@ export default {
               geometries: this.marketAray,
               styles: {
                 "marker": new TMap.MarkerStyle({
-                  "src": 'https://fwwb2020-common.tgucsdn.com/images/map/lost_place.png',
+                  "src": 'https://fwwb2020-common.tgucsdn.com/images/map/offen_place.png',
                   'width': 35,
                   'height': 35
                 })

@@ -1,6 +1,6 @@
 <template>
   <div class="map">
-    <div id="map-container" ref="map-container" style="position: relative;z-index: 1;"/>
+    <div id="map-container" ref="map-container" style="position: relative;z-index: 1;" />
     <a-drawer
       title="标记点设置"
       placement="top"
@@ -11,7 +11,7 @@
       :wrap-style="{ position: 'absolute' }"
       @close="onClose"
       :drawerStyle="{ overflow: 'hidden' }"
-      :height="img[0]?'80%':'60%'"
+      :height="img[0]?'88%':'65%'"
     >
       <a-form-model layout="horizontal" :label-col="labelCol" :wrapper-col="wrapperCol" :model="datas[0]">
         <a-row :gutter="48" style="display: flex;justify-content: center;align-items: center">
@@ -25,6 +25,13 @@
                 placeholder="Controlled autosize"
                 :auto-size="{ minRows: 3, maxRows: 5 }"
               />
+            </a-form-model-item>
+            <a-form-model-item label="点类型" required>
+              <a-select v-model="datas.type" placeholder="请选择" :default-value="datas.type">
+                <a-select-option :value="1">集合点</a-select-option>
+                <a-select-option :value="2">线索点</a-select-option>
+                <a-select-option :value="3">标记点</a-select-option>
+              </a-select>
             </a-form-model-item>
             <a-form-model-item label="备忘照片" required>
               <a-button @click="() => {showAvatarUploader = true}" ><a-icon type="arrow-up"/>上传图片</a-button>
@@ -56,7 +63,7 @@
 <script>
 /* eslint-disable no-undef */
 import { mapGetters } from 'vuex'
-import { getMarkets, addMarkets, updateMarket } from '@/api/market'
+import { getMarkets, addMarkets, updateMarket, getTrack } from '@/api/market'
 import { ImageCropper } from '@/components'
 export default {
   components: {
@@ -71,12 +78,19 @@ export default {
       showGet: false,
       placeholder: '请输入',
       pointGet: [],
-      volteerMark: [],
-      volObj: null,
-      adminObj: null,
-      adminMark: [],
+      commonMark: [],
+      clueMark: [],
+      commonObj: null,
+      clueObj: null,
+      gatherObj: null,
+      gatherMark: [],
+      gatherTex: [],
+      clueTex: [],
+      linePeople: [],
+      poLine: null,
+      commonTex: [],
       control: 0,
-      textArra: [],
+      infoWindow: null,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
       markers: {
@@ -89,17 +103,48 @@ export default {
         'src': 'https://fwwb2020-common.tgucsdn.com/images/map/lost_place.png',
         'width': 35,
         'height': 35
-      }, {
-        'src': 'https://fwwb2020-common.tgucsdn.com/images/map/lost_place.png',
-        'width': 35,
-        'height': 35
-      }]
+      }],
+      colorControl: 0,
+      lineArray: [],
+      polineStyle: [
+        { 'color': '#F2BECA',
+          'width': 2,
+          'borderWidth': 3,
+          'borderColor': '#FFD6DF',
+          'lineCap': 'round' },
+        { 'color': '#85B792',
+          'width': 2,
+          'borderWidth': 3,
+          'borderColor': '#9CCBA6',
+          'lineCap': 'round' },
+        { 'color': '#4A88A1',
+          'width': 2,
+          'borderWidth': 3,
+          'borderColor': '#64AFC8',
+          'lineCap': 'round' },
+        { 'color': '#F8DA00',
+          'width': 2,
+          'borderWidth': 3,
+          'borderColor': '#FFEA58',
+          'lineCap': 'round' },
+        { 'color': '#5C6996',
+          'width': 2,
+          'borderWidth': 3,
+          'borderColor': '#8392C9',
+          'lineCap': 'round' },
+        { 'color': 'rgba(241,132,93)',
+          'width': 2,
+          'borderWidth': 3,
+          'borderColor': 'rgba(251,167,127)',
+          'lineCap': 'round' }],
+      lineTex: []
     }
   },
   mounted () {
     this.initMap()
     this.initMarkers()
     this.getMarket()
+    this.getLine()
   },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo', 'onlineMembers'])
@@ -109,6 +154,83 @@ export default {
       this.datas = []
       this.img = []
     },
+    getMarket () {
+      getMarkets({ caseId: this.$store.state.data.caseId }).then(res => {
+        this.firstMark(res.data)
+      }).catch(res => {
+      })
+    },
+    firstMark (data) {
+      for (let n = 0; n < data.length; n++) {
+        var type = data[n].type
+        if (type === 1) {
+          this.gatherMark.push({
+            'id': this.gatherMark.length + 1,
+            'position': new window.TMap.LatLng(data[n].latitude, data[n].longitude),
+            'styleId': 'market'
+          })
+          this.gatherTex.push({
+            name: data[n].name,
+            description: data[n].description,
+            imgUrl: data[n].imgUrl,
+            id: data[n].id,
+            type: data[n].type
+          })
+        }
+        // 线索点
+        if (type === 2) {
+          this.clueMark.push({
+            'id': this.clueMark.length + 1,
+            'position': new window.TMap.LatLng(data[n].latitude, data[n].longitude),
+            'styleId': 'market'
+          })
+          this.clueTex.push({
+            name: data[n].name,
+            description: data[n].description,
+            imgUrl: data[n].imgUrl,
+            id: data[n].id,
+            type: data[n].type
+          })
+        }
+        // 标记点
+        if (type === 3) {
+          this.commonMark.push({
+            'id': this.commonMark.length + 1,
+            'position': new window.TMap.LatLng(data[n].latitude, data[n].longitude),
+            'styleId': 'market'
+          })
+          this.commonTex.push({
+            name: data[n].name,
+            description: data[n].description,
+            imgUrl: data[n].imgUrl,
+            id: data[n].id,
+            type: data[n].type
+          })
+        }
+      }
+      this.gatherObj = new TMap.MultiMarker({
+        map: this.map,
+        styles: {
+          'market': new TMap.MarkerStyle(this.styles[0])
+        },
+        geometries: this.gatherMark
+      })
+      this.clueObj = new TMap.MultiMarker({
+        map: this.map,
+        styles: {
+          'market': new TMap.MarkerStyle(this.styles[0])
+        },
+        geometries: this.clueMark
+      })
+      this.commonObj = new TMap.MultiMarker({
+        map: this.map,
+        styles: {
+          'market': new TMap.MarkerStyle(this.styles[0])
+        },
+        geometries: this.commonMark
+      })
+      this.watchMarket()
+    },
     newMarket () {
       const data = {}
       data.name = this.datas.name
@@ -117,51 +239,78 @@ export default {
       data.caseId = this.$store.state.data.caseId
       data.latitude = this.pointGet[0]
       data.longitude = this.pointGet[1]
-      data.type = 2
+      data.type = this.datas.type
       addMarkets({ ...data }).then(res => {
         if (res.status === 200) {
           this.noti('添加成功', '新标记点添加成功')
         }
-        const num = this.adminMark.length + 1
-        // 文本和点标记加组，同时加组
-        const arraySon = {
-          'id': num,
-          'position': new window.TMap.LatLng(this.pointGet[0], this.pointGet[1]),
-          'styleId': 'marker'
-        }
-        const text = {
-          name: data.name,
-          description: data.description,
-          imgUrl: data.imgUrl,
-          id: res.data.id
-        }
-        this.textArra.push(text)
-        this.adminMark.push(arraySon)
-        this.adminObj = new TMap.MultiMarker({
-          map: this.map,
-          geometries: this.adminMark,
-          styles: {
-            'marker': new TMap.MarkerStyle(this.styles[0])
-          }
-        })
+        this.getMarket()
         this.watchMarket()
         this.showGet = false
       })
     },
+    windowWatch (lat, lng) {
+      if (this.infoWindow) {
+        this.infoWindow.close()
+      }
+      this.$jsonp('https://apis.map.qq.com/ws/place/v1/search', {
+        region: this.currentMissionInfo.province,
+        boundary: 'nearby(' + lat + ',' + lng + ',5000,1)',
+        output: 'jsonp&callback=cb',
+        key: '75ABZ-3LBEJ-4JDF5-FJG6X-QZ4Q7-TDBMN',
+        page_size: 1
+      }).then(res => {
+        this.infoWindow = new TMap.InfoWindow({
+          map: this.map,
+          position: new TMap.LatLng(lat, lng),
+          offset: { x: 0, y: -15 }, // 设置信息窗相对position偏移像素
+          content: res.data[0].title
+        })
+        this.infoWindow.open()
+      })
+    },
     watchMarket () {
-      this.adminObj.on('dblclick', (e) => {
+      this.gatherObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
+      this.clueObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
+      this.commonObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
+      this.gatherObj.on('dblclick', (e) => {
+        if (this.infoWindow) {
+          this.infoWindow.close()
+        }
         this.datas = []
+        this.img = []
         this.control = 1
-        this.datas = this.textArra[e.geometry.id - 1]
-        this.img = JSON.parse(this.textArra[e.geometry.id - 1].imgUrl)
+        this.datas = this.gatherTex[e.geometry.id - 1]
+        this.img = JSON.parse(this.gatherTex[e.geometry.id - 1].imgUrl)
+      })
+      this.clueObj.on('dblclick', (e) => {
+        if (this.infoWindow) {
+          this.infoWindow.close()
+        }
+        this.datas = []
+        this.img = []
+        this.control = 1
+        this.datas = this.clueTex[e.geometry.id - 1]
+        this.img = JSON.parse(this.clueTex[e.geometry.id - 1].imgUrl)
+      })
+      this.commonObj.on('dblclick', (e) => {
+        if (this.infoWindow) {
+          this.infoWindow.close()
+        }
+        this.datas = []
+        this.img = []
+        this.control = 1
+        this.datas = this.commonTex[e.geometry.id - 1]
+        this.img = JSON.parse(this.commonTex[e.geometry.id - 1].imgUrl)
       })
     },
     saves () {
-      console.log(this.datas)
+      this.infoWindow.close()
       const data = {}
       data.name = this.datas.name
       data.description = this.datas.description
       data.imgUrl = JSON.stringify(this.img)
+      data.type = this.datas.type
       updateMarket({ id: this.datas.id, ...data }).then(res => {
         if (res.status === 200) {
           this.noti('修改成功', '标记修改成功')
@@ -176,11 +325,6 @@ export default {
     onClose () {
       this.showGet = false
     },
-    getMarket () {
-      getMarkets().then(res => {
-      }).catch(res => {
-      })
-    },
     initMap () {
       const info = this.currentMissionInfo
       this.map = new TMap.Map(this.$refs['map-container'], {
@@ -192,14 +336,63 @@ export default {
       this.mapEvent()
       // 地图回调监听函数
       this.map.on('dblclick', function (res) {
+        console.log(res)
         that.control = 0
         that.datas = []
         that.pointGet = [res.latLng.lat, res.latLng.lng]
         if (that.pointGet) {
           that.datas = []
           that.showGet = true
-          console.log(this.datas)
         }
+      })
+    },
+    createLine (data) {
+      for (var a = 0; a < data.length; a++) {
+        var lines = []
+        var line = []
+        var num = data[a].trackPoints.length
+        console.log(data[a].trackPoints.length)
+        for (let l = 0; l < num; l++) {
+          lines[l] = new TMap.LatLng(data[a].trackPoints[l].latitude, data[a].trackPoints[l].longitude)
+        }
+        console.log(a)
+        this.linePeople.push(data[a].volunteerId)
+        line[a] = {
+          'id': a || '0',
+          'styleId': 'sty' + ((a % 6) + 1),
+          'paths': lines
+        }
+        this.lineTex.push(data[a].volunteer.volunteerInformation.name)
+      }
+      console.log(line)
+      this.poLine = new TMap.MultiPolyline({
+        map: this.map,
+        styles: {
+          'sty1': new TMap.PolylineStyle(this.polineStyle[0]),
+          'sty2': new TMap.PolylineStyle(this.polineStyle[1]),
+          'sty3': new TMap.PolylineStyle(this.polineStyle[2]),
+          'sty4': new TMap.PolylineStyle(this.polineStyle[3]),
+          'sty5': new TMap.PolylineStyle(this.polineStyle[4]),
+          'sty6': new TMap.PolylineStyle(this.polineStyle[5])
+        },
+        geometries: line
+      })
+      this.poLine.on('click', (e) => {
+        if (this.infoWindow) {
+          this.infoWindow.close()
+        }
+        this.infoWindow = new TMap.InfoWindow({
+          map: this.map,
+          position: new TMap.LatLng(e.latLng.lat, e.latLng.lng),
+          offset: { x: 0, y: -3 }, // 设置信息窗相对position偏移像素
+          content: `志愿者: ` + this.lineTex[e.geometry.id]
+        })
+        this.infoWindow.open()
+      })
+    },
+    getLine () {
+      getTrack({ caseId: this.$store.state.data.caseId }).then(res => {
+        this.createLine(res.data)
       })
     },
     mapEvent () {

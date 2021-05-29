@@ -4,7 +4,16 @@ const marketApi = {
   getMarket: '/mark',
   addMarket: '/mark/admin/add',
   updateMarket: '/mark/admin/update',
-  deleteMarket: '/mark/admin/delete'
+  deleteMarket: '/mark/admin/delete',
+  getTrack: '/track'
+}
+
+export function getTrack (params) {
+  return request({
+    url: marketApi.getTrack,
+    method: 'get',
+    params
+  })
 }
 
 export function getMarkets (params) {
