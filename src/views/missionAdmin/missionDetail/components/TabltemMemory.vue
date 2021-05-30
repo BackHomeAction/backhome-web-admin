@@ -33,7 +33,7 @@
             {{ cardShow.name }}
           </a-descriptions-item>
           <a-descriptions-item label="控制域">
-            {{ cardShow.isGlobal===1 ? '全局备忘' : '案件备忘:'+$store.state.data.caseId }}
+            {{ cardShow.isGlobal===1 ? '全局备忘' : '案件ID:'+$store.state.data.caseId }}
           </a-descriptions-item>
           <a-descriptions-item label="内容" :span="12">
             {{ cardShow.content }}

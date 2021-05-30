@@ -33,7 +33,7 @@
                 <a-select-option :value="3">标记点</a-select-option>
               </a-select>
             </a-form-model-item>
-            <a-form-model-item label="备忘照片" required>
+            <a-form-model-item label="备忘照片">
               <a-button @click="() => {showAvatarUploader = true}" ><a-icon type="arrow-up"/>上传图片</a-button>
             </a-form-model-item>
             <div style="margin-bottom: 8px;margin-top: -5px;display: flex;flex:0;">
@@ -170,7 +170,7 @@ export default {
     },
     firstMark (data) {
       for (let n = 0; n < data.length; n++) {
-        var type = data[n].type
+        const type = data[n].type
         if (type === 1) {
           this.gatherMark.push({
             'id': this.gatherMark.length + 1,
@@ -340,11 +340,10 @@ export default {
         center: new TMap.LatLng(info.latitude, info.longitude),
         scaleControl: true
       })
-      var that = this
+      const that = this
       this.mapEvent()
       // 地图回调监听函数
       this.map.on('dblclick', function (res) {
-        console.log(res)
         that.control = 0
         that.datas = []
         that.pointGet = [res.latLng.lat, res.latLng.lng]
@@ -355,24 +354,36 @@ export default {
       })
     },
     createLine (data) {
-      for (var a = 0; a < data.length; a++) {
-        var lines = []
-        var line = []
-        var num = data[a].trackPoints.length
-        console.log(data[a].trackPoints.length)
+      const line = []
+      const useLine = []
+      for (let a = 0; a < data.length; a++) {
+        const lines = []
+        const num = data[a].trackPoints.length
         for (let l = 0; l < num; l++) {
           lines[l] = new TMap.LatLng(data[a].trackPoints[l].latitude, data[a].trackPoints[l].longitude)
         }
-        console.log(a)
-        this.linePeople.push(data[a].volunteerId)
-        line[a] = {
-          'id': a || '0',
-          'styleId': 'sty' + ((a % 6) + 1),
-          'paths': lines
+        if (lines) {
+          line.push({
+            'id': a.toString(),
+            'styleId': 'sty' + ((a % 6) + 1),
+            'paths': lines
+          })
         }
-        this.lineTex.push(data[a].volunteer.volunteerInformation.name)
       }
-      console.log(line)
+      if (line) {
+        let d = 0
+        for (let e = 0; e < line.length; e++) {
+          if (line[e].paths.length) {
+            line[e].id = d.toString()
+            useLine.push(line[e])
+            this.lineTex.push({
+              name: data[e].volunteer.volunteerInformation.name,
+              phone: data[e].volunteer.phone
+            })
+            d++
+          }
+        }
+      }
       this.poLine = new TMap.MultiPolyline({
         map: this.map,
         styles: {
@@ -383,17 +394,25 @@ export default {
           'sty5': new TMap.PolylineStyle(this.polineStyle[4]),
           'sty6': new TMap.PolylineStyle(this.polineStyle[5])
         },
-        geometries: line
+        geometries: useLine
       })
       this.poLine.on('click', (e) => {
         if (this.infoWindow) {
           this.infoWindow.close()
         }
+        const conten = ` <div style="width: 128px;height: 80px;display: flex;justify-content: center;align-items: center;flex-wrap: wrap">
+        <div style="width: 200px;height: 10px;">
+          <p style="text-align: center;">志愿者: ` + this.lineTex[e.geometry.id].name + `</p>
+        </div>
+        <div style="width: 200px;height: 30px">
+            <p style="text-align: center;">手机号: ` + this.lineTex[e.geometry.id].phone + `</p>
+        </div>
+    </div>`
         this.infoWindow = new TMap.InfoWindow({
           map: this.map,
           position: new TMap.LatLng(e.latLng.lat, e.latLng.lng),
-          offset: { x: 0, y: -3 }, // 设置信息窗相对position偏移像素
-          content: `志愿者: ` + this.lineTex[e.geometry.id]
+          offset: { x: 0, y: -3 },
+          content: conten
         })
         this.infoWindow.open()
       })
