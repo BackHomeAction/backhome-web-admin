@@ -16,7 +16,7 @@
                   :auto-size="{ minRows: 3, maxRows: 5 }"
                 />
               </a-form-model-item>
-              <a-form-model-item label="备忘照片" required>
+              <a-form-model-item label="备忘照片">
                 <a-button @click="() => {showAvatarUploader = true}" ><a-icon type="arrow-up"/>上传图片</a-button>
               </a-form-model-item>
               <div style="margin-bottom: 8px;margin-top: -5px;display: flex;flex:0;">
