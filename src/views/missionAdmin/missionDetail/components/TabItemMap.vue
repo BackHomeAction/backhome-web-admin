@@ -65,6 +65,7 @@
 import { mapGetters } from 'vuex'
 import { getMarkets, addMarkets, updateMarket, getTrack } from '@/api/market'
 import { ImageCropper } from '@/components'
+import Ws from '@/services/websocket'
 export default {
   components: {
     ImageCropper
@@ -72,6 +73,7 @@ export default {
   data () {
     return {
       map: null,
+      ws: Ws.getInstance(),
       img: [],
       datas: [],
       showAvatarUploader: false,
@@ -153,11 +155,20 @@ export default {
     this.initMarkers()
     this.getMarket()
     this.getLine()
+    this.initWs()
   },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo', 'onlineMembers'])
   },
   methods: {
+    initWs () {
+      this.ws.connect()
+      this.ws.subscribe(`/track/${this.$store.state.data.caseId}`, this.gettracks)
+    },
+    gettracks (gets) {
+      console.log(gets)
+      console.log('sockets')
+    },
     getFirst () {
       this.datas = []
       this.img = []
