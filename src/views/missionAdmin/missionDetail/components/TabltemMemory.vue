@@ -55,6 +55,7 @@
         v-model="addShow"
         title="新增案件备忘"
         width="800px"
+        :footer="null"
         centered
         @ok="() => (addShow = false)">
         <tab-item-addmemor @ok="() => (addShow = false)" @addMemo="getNew" />

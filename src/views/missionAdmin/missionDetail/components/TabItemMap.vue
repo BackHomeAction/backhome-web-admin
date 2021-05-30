@@ -100,7 +100,15 @@ export default {
         volunteers: null
       },
       styles: [{
-        'src': 'https://fwwb2020-common.tgucsdn.com/images/map/lost_place.png',
+        'src': 'https://fwwb2020-common.tgucsdn.com/images/map/gather.png',
+        'width': 35,
+        'height': 35
+      }, {
+        'src': 'https://fwwb2020-common.tgucsdn.com/images/map/clue.png',
+        'width': 35,
+        'height': 35
+      }, {
+        'src': 'https://fwwb2020-common.tgucsdn.com/images/map/mark.png',
         'width': 35,
         'height': 35
       }],
@@ -218,14 +226,14 @@ export default {
       this.clueObj = new TMap.MultiMarker({
         map: this.map,
         styles: {
-          'market': new TMap.MarkerStyle(this.styles[0])
+          'market': new TMap.MarkerStyle(this.styles[1])
         },
         geometries: this.clueMark
       })
       this.commonObj = new TMap.MultiMarker({
         map: this.map,
         styles: {
-          'market': new TMap.MarkerStyle(this.styles[0])
+          'market': new TMap.MarkerStyle(this.styles[2])
         },
         geometries: this.commonMark
       })
@@ -431,7 +439,11 @@ export default {
         id: 'layer-marker-lostplace',
         map: this.map,
         styles: {
-          'lostplace-marker': new TMap.MarkerStyle(this.styles[0])
+          'lostplace-marker': new TMap.MarkerStyle({
+            'src': 'https://fwwb2020-common.tgucsdn.com/images/map/lost_place.png',
+            'width': 35,
+            'height': 35
+          })
         },
         geometries: [{
           'id': 'marker-lostplace',

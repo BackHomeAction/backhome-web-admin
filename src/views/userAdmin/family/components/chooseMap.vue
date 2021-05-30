@@ -12,7 +12,7 @@
             @search="inputSearch"
             style="float: left;width: 440px;height: 50px;"
             size="large"
-            placeholder="input search text"
+            placeholder="请输入搜索地点"
             enter-button/>
           <transition name="change">
             <div class="listMap" v-if="listShow">
@@ -25,7 +25,7 @@
                   style="margin-left: 8px"
                   v-if="!item.choose">
                   <a-list-item-meta :description="item.address">
-                    <a slot="title" href="https://www.antdv.com/">{{ item.title }}</a>
+                    <a slot="title" @click="watchTake(item)">{{ item.title }}</a>
                   </a-list-item-meta>
                   <a-button type="primary" style="margin-right: 5px" @click="() => {chooseIt(item,index);item.choose = true;var ex =data;data = [];data = ex}" >添加</a-button>
                 </a-list-item>
@@ -40,7 +40,6 @@
 <script charset="utf-8" src="https://map.qq.com/api/js?v=2.exp&key=75ABZ-3LBEJ-4JDF5-FJG6X-QZ4Q7-TDBMN"></script>
 <script src="https://mapapi.qq.com/web/mapComponents/geoLocation/v/geolocation.min.js"></script>
 <script>
-import { arrayChange, marketGet } from '@/api/TMaps'
 export default {
   name: 'ChooseMap',
   mounted () {
@@ -64,6 +63,7 @@ export default {
       listShow: false,
       map: null,
       center: null,
+      infoWindow: null,
       choosePla: null,
       markets: null,
       latlng: [39.984120, 116.307484],
@@ -74,7 +74,23 @@ export default {
     }
   },
   methods: {
+    watchTake (item) {
+      if (this.infoWindow) {
+        this.infoWindow.close()
+      }
+       this.infoWindow = new TMap.InfoWindow({
+          map: this.map,
+          position: new TMap.LatLng(item.location.lat, item.location.lng),
+          offset: { x: 0, y: -30 }, // 设置信息窗相对position偏移像素
+          content: item.title
+        })
+        this.listShow = false
+        this.infoWindow.open()
+    },
     inputSearch: function () {
+      if (this.infoWindow) {
+        this.infoWindow.close()
+      }
       this.listShow = true
       let pla = this.searchInput
       let city = this.city
@@ -91,7 +107,7 @@ export default {
         this.$jsonp('https://apis.map.qq.com/ws/place/v1/search', {
           region: (this.$store.state.data.oldManData.oldmanEdit.city),
           keyword: pla,
-          boundary:'nearby('+lat+','+lng+',500000,1)',
+          boundary:'nearby('+lat+','+lng+',100000,1)',
           output: 'jsonp&callback=cb',
           key: '75ABZ-3LBEJ-4JDF5-FJG6X-QZ4Q7-TDBMN',
           page_size: 20
@@ -257,7 +273,7 @@ export default {
         that.placeRequest(event.latLng.lat,event.latLng.lng)
       })
       this.map.on('dragstart',()=>{
-        if(!this.objAray){
+        if(!this.marketAray || !this.objAray){
           this.listShow = false
         }
       })
@@ -266,7 +282,15 @@ export default {
         geometries:[{
           "id": '1',
           "position": this.center,
-        }]
+          "styleId": 'marker',
+        }],
+        styles: {
+                "marker": new TMap.MarkerStyle({
+                  "src": 'https://fwwb2020-common.tgucsdn.com/images/map/lost_place.png',
+                  'width': 35,
+                  'height': 35
+                })
+              }
       })
     },
     changeCenter: function (lat,lng) {
@@ -276,7 +300,8 @@ export default {
       var thisLan = new TMap.LatLng(lat,lng)
       this.marketLayer.updateGeometries({
         "id": '1',
-        "position": thisLan
+        "position": thisLan,
+        "styleId": 'marker',
       })
       this.changeCenter(lat,lng)
     },
