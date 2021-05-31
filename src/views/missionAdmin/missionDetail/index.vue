@@ -76,7 +76,8 @@ export default {
       caseId: null,
       isLoadingInfo: true,
       ws: Ws.getInstance(),
-      im: IM.getInstance()
+      im: IM.getInstance(),
+      newTrack: []
     }
   },
   mounted () {
@@ -112,6 +113,14 @@ export default {
       this.ws.disconnect()
     },
     async newCaseInfoCallback (res) {
+      if (JSON.parse(res.body).message === '志愿者位置变更') {
+        const news = JSON.parse(res.body).data.track
+        if (this.$refs.map) {
+          this.$nextTick(() => {
+            this.$refs.map.setTracks(news)
+          })
+        }
+      }
       const data = JSON.parse(res.body)
       if (data.status === SocketStateTypes.MISSION_INFO_CHANGED) {
         await this.$store.dispatch('initCurrentMission', {
