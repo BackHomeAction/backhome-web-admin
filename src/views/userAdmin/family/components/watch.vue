@@ -125,14 +125,12 @@ export default {
         },
         {
           title: '走失地点',
-          scopedSlots: { customRender: 'where' },
-          width: '500px'
+          scopedSlots: { customRender: 'where' }
         },
         {
           title: '创建时间',
           dataIndex: 'startTime',
-          scopedSlots: { customRender: 'time' },
-          width: '400px'
+          scopedSlots: { customRender: 'time' }
         },
         {
           title: '操作',
@@ -155,18 +153,15 @@ export default {
         },
         {
           title: '出生日期 ',
-          dataIndex: 'birthDate',
-          width: '500px'
+          dataIndex: 'birthDate'
         },
         {
           title: '居住地区',
-          dataIndex: 'province',
-          width: '400px'
+          dataIndex: 'province'
         },
         {
           title: '创建时间',
-          dataIndex: 'createdAt',
-          width: '400px'
+          dataIndex: 'createdAt'
         },
         {
           title: '操作',

@@ -7,6 +7,7 @@ const data = {
     allVolss: '',
     users: [],
     pla: [],
+    track: [],
     chooseUses: [],
     memoryControl: 0,
     caseId: '',

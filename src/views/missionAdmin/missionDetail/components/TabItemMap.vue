@@ -49,7 +49,7 @@
                 新建
               </a-button>
               <a-button @click="getFirst" type="danger" ghost style="margin-left: 20px;" >
-                重置
+                删除
               </a-button>
             </a-form-model-item>
           </a-col>
@@ -63,8 +63,9 @@
 <script>
 /* eslint-disable no-undef */
 import { mapGetters } from 'vuex'
-import { getMarkets, addMarkets, updateMarket, getTrack } from '@/api/market'
+import { getMarkets, addMarkets, updateMarket, getTrack, deleteMarket } from '@/api/market'
 import { ImageCropper } from '@/components'
+import Ws from '@/services/websocket'
 export default {
   components: {
     ImageCropper
@@ -74,6 +75,7 @@ export default {
       map: null,
       img: [],
       datas: [],
+      ws: Ws.getInstance(),
       showAvatarUploader: false,
       showGet: false,
       placeholder: '请输入',
@@ -90,6 +92,7 @@ export default {
       poLine: null,
       commonTex: [],
       control: 0,
+      lineHistory: [],
       infoWindow: null,
       labelCol: { span: 5 },
       wrapperCol: { span: 14 },
@@ -159,14 +162,44 @@ export default {
   },
   methods: {
     getFirst () {
-      this.datas = []
-      this.img = []
+      console.log(this.datas.id)
+      deleteMarket({ id: this.datas.id }).then(res => {
+        if (res.status === 200) {
+          this.noti('删除成功')
+          this.getMarket()
+        }
+      })
+      this.showGet = false
+      this.watchMarket()
     },
     getMarket () {
-      getMarkets({ caseId: this.$store.state.data.caseId }).then(res => {
-        this.firstMark(res.data)
-      }).catch(res => {
-      })
+      if (this.gatherObj || this.commonObj || this.clueObj) {
+        this.gatherMark = []
+        this.commonMark = []
+        this.clueMark = []
+        this.gatherObj.setGeometries([])
+        this.commonObj.setGeometries([])
+        this.clueObj.setGeometries([])
+        getMarkets({ caseId: this.$store.state.data.caseId }).then(res => {
+          console.log(res)
+          this.firstMark(res.data)
+        }).catch(res => {
+        })
+      } else {
+        getMarkets({ caseId: this.$store.state.data.caseId }).then(res => {
+          this.firstMark(res.data)
+        }).catch(res => {
+        })
+      }
+    },
+    setTracks (res) {
+      const id = res[0].volunteerId
+      for (let volunteerIds = 0; volunteerIds < this.lineHistory.length; volunteerIds++) {
+        if (id === this.lineHistory[volunteerIds].volunteerId) {
+          this.lineHistory[volunteerIds].trackPoints = res
+          this.createLine(this.lineHistory)
+        }
+      }
     },
     firstMark (data) {
       for (let n = 0; n < data.length; n++) {
@@ -252,9 +285,9 @@ export default {
         if (res.status === 200) {
           this.noti('添加成功', '新标记点添加成功')
         }
+        this.showGet = false
         this.getMarket()
         this.watchMarket()
-        this.showGet = false
       })
     },
     windowWatch (lat, lng) {
@@ -278,42 +311,52 @@ export default {
       })
     },
     watchMarket () {
-      this.gatherObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
-      this.clueObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
-      this.commonObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
-      this.gatherObj.on('dblclick', (e) => {
-        if (this.infoWindow) {
-          this.infoWindow.close()
-        }
-        this.datas = []
-        this.img = []
-        this.control = 1
-        this.datas = this.gatherTex[e.geometry.id - 1]
-        this.img = JSON.parse(this.gatherTex[e.geometry.id - 1].imgUrl)
-      })
-      this.clueObj.on('dblclick', (e) => {
-        if (this.infoWindow) {
-          this.infoWindow.close()
-        }
-        this.datas = []
-        this.img = []
-        this.control = 1
-        this.datas = this.clueTex[e.geometry.id - 1]
-        this.img = JSON.parse(this.clueTex[e.geometry.id - 1].imgUrl)
-      })
-      this.commonObj.on('dblclick', (e) => {
-        if (this.infoWindow) {
-          this.infoWindow.close()
-        }
-        this.datas = []
-        this.img = []
-        this.control = 1
-        this.datas = this.commonTex[e.geometry.id - 1]
-        this.img = JSON.parse(this.commonTex[e.geometry.id - 1].imgUrl)
-      })
+      if (this.gatherObj || this.commonObj || this.clueObj) {
+        this.gatherObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
+        this.clueObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
+        this.commonObj.on('click', (e) => { this.windowWatch(e.latLng.lat, e.latLng.lng) })
+      }
+      if (this.gatherObj) {
+        this.gatherObj.on('dblclick', (e) => {
+          if (this.infoWindow) {
+            this.infoWindow.close()
+          }
+          this.datas = []
+          this.img = []
+          this.control = 1
+          this.datas = this.gatherTex[e.geometry.id - 1]
+          this.img = JSON.parse(this.gatherTex[e.geometry.id - 1].imgUrl)
+        })
+      }
+      if (this.clueObj) {
+        this.clueObj.on('dblclick', (e) => {
+          if (this.infoWindow) {
+            this.infoWindow.close()
+          }
+          this.datas = []
+          this.img = []
+          this.control = 1
+          this.datas = this.clueTex[e.geometry.id - 1]
+          this.img = JSON.parse(this.clueTex[e.geometry.id - 1].imgUrl)
+        })
+      }
+      if (this.commonObj) {
+        this.commonObj.on('dblclick', (e) => {
+          if (this.infoWindow) {
+            this.infoWindow.close()
+          }
+          this.datas = []
+          this.img = []
+          this.control = 1
+          this.datas = this.commonTex[e.geometry.id - 1]
+          this.img = JSON.parse(this.commonTex[e.geometry.id - 1].imgUrl)
+        })
+      }
     },
     saves () {
-      this.infoWindow.close()
+      if (this.infoWindow) {
+        this.infoWindow.close()
+      }
       const data = {}
       data.name = this.datas.name
       data.description = this.datas.description
@@ -326,10 +369,9 @@ export default {
           this.showGet = false
         }
       })
-      this.gatherObj = null
-      this.commonObj = null
-      this.clueObj = null
+      this.showGet = false
       this.getMarket()
+      this.watchMarket()
     },
     handleAvataruploaded (e) {
       this.img.push(e)
@@ -423,6 +465,7 @@ export default {
     },
     getLine () {
       getTrack({ caseId: this.$store.state.data.caseId }).then(res => {
+        this.lineHistory = res.data
         this.createLine(res.data)
       })
     },
