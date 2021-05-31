@@ -59,7 +59,7 @@
                   </div>
                   <div class="project-item">
                     <div style="color: #c63f47">紧急</div>
-                    <div class="datetime" style="color:#c1c1c1" >{{ timewatch(item.lostTime) }}</div>
+                    <div class="datetime" style="color:#c1c1c1" >{{ timewatch(item.startTime) }}</div>
                   </div>
                 </div>
               </div>
@@ -82,7 +82,7 @@
                   </div>
                   <div class="project-item">
                     <div style="color: #008891">优先</div>
-                    <div class="datetime" style="color: #c1c1c1" >{{ timewatch(item.lostTime) }}</div>
+                    <div class="datetime" style="color: #c1c1c1" >{{ timewatch(item.startTime) }}</div>
                   </div>
                 </div>
               </div>
@@ -104,7 +104,7 @@
                   </div>
                   <div class="project-item">
                     <div>一般</div>
-                    <div class="datetime" style="color: #c1c1c1" >{{ timewatch(item.lostTime) }}</div>
+                    <div class="datetime" style="color: #c1c1c1" >{{ timewatch(item.startTime) }}</div>
                   </div>
                 </div>
               </div>
@@ -161,14 +161,20 @@ import { getMissionListAll } from '@/api/mission'
 import { getVolunteerList, VolunteerAll, VolunteerFire, VolunteerNum } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 import charts from '@/views/dashboard/component/charts'
-
+import moment from 'moment'
+import zhCN from 'ant-design-vue/es/locale/zh_CN'
+import 'moment/locale/zh-cn'
 export default {
   mounted () {
+    moment.locale('zh-cn')
     this.$store.state.data.users = this.$store.getters.userInfo
     this.users = this.$store.getters.userInfo
     this.$store.state.data.ids = this.$store.getters.userInfo.district
     this.$store.state.data.citys = this.$store.getters.userInfo.citys
     this.getAllData(this.$store.getters.userInfo.district, this.$store.getters.userInfo.citys)
+    // setInterval(() => {
+    //   this.getAllData(this.$store.getters.userInfo.district, this.$store.getters.userInfo.citys)
+    // }, 5000)
     this.getDymic()
   },
   name: 'Workplace',
@@ -183,6 +189,7 @@ export default {
   data () {
     return {
       padding: [20, 20, 20, 20],
+      locale: zhCN,
       timeFix: timeFix(),
       loading1: true,
       loading2: true,
@@ -220,14 +227,12 @@ export default {
     getHour: function (time) {
       return dayjs().diff(time, 'hour')
     },
-    getUser: function () {
-
-    },
     getAllData: function (district, city) {
       if (this.users.roleId !== 3) {
         district = null
       }
       getMissionListAll({ district: city }).then(res => {
+        console.log(res)
         if (res.data.length) {
           this.missionShow = true
         }
@@ -241,16 +246,16 @@ export default {
         var b = 0
         var c = 0
         for (var i = 0; i < this.missionLists.length; i++) {
-          var lostTime = dayjs().diff(this.missionLists[i].lostTime, 'hour')
-          if (lostTime < 24) {
+          var startTime = dayjs().diff(this.missionLists[i].startTime, 'hour')
+          if (startTime < 24) {
             this.warningList[a] = this.missionLists[i]
             a++
           }
-          if (lostTime >= 24 && lostTime < 48) {
+          if (startTime >= 24 && startTime < 48) {
             this.redList[b] = this.missionLists[i]
             b++
           }
-          if (lostTime >= 48) {
+          if (startTime >= 48) {
             this.commonList[c] = this.missionLists[i]
             c++
           }
