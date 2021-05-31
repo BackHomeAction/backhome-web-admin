@@ -12,7 +12,7 @@
               <a-form-model-item label="备忘内容" required>
                 <a-textarea
                   v-model="datas.content"
-                  placeholder="Controlled autosize"
+                  :placeholder="placeholder"
                   :auto-size="{ minRows: 3, maxRows: 5 }"
                 />
               </a-form-model-item>

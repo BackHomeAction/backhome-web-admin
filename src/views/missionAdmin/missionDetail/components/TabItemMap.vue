@@ -22,7 +22,7 @@
             <a-form-model-item label="内容" required>
               <a-textarea
                 v-model="datas.description"
-                placeholder="Controlled autosize"
+                placeholder="请输入"
                 :auto-size="{ minRows: 3, maxRows: 5 }"
               />
             </a-form-model-item>
@@ -65,7 +65,6 @@
 import { mapGetters } from 'vuex'
 import { getMarkets, addMarkets, updateMarket, getTrack } from '@/api/market'
 import { ImageCropper } from '@/components'
-import Ws from '@/services/websocket'
 export default {
   components: {
     ImageCropper
@@ -73,7 +72,6 @@ export default {
   data () {
     return {
       map: null,
-      ws: Ws.getInstance(),
       img: [],
       datas: [],
       showAvatarUploader: false,
@@ -118,33 +116,33 @@ export default {
       lineArray: [],
       polineStyle: [
         { 'color': '#F2BECA',
-          'width': 2,
-          'borderWidth': 3,
+          'width': 3,
+          'borderWidth': 4,
           'borderColor': '#FFD6DF',
           'lineCap': 'round' },
         { 'color': '#85B792',
-          'width': 2,
-          'borderWidth': 3,
+          'width': 3,
+          'borderWidth': 4,
           'borderColor': '#9CCBA6',
           'lineCap': 'round' },
         { 'color': '#4A88A1',
-          'width': 2,
-          'borderWidth': 3,
+          'width': 3,
+          'borderWidth': 4,
           'borderColor': '#64AFC8',
           'lineCap': 'round' },
         { 'color': '#F8DA00',
-          'width': 2,
-          'borderWidth': 3,
+          'width': 3,
+          'borderWidth': 4,
           'borderColor': '#FFEA58',
           'lineCap': 'round' },
         { 'color': '#5C6996',
-          'width': 2,
-          'borderWidth': 3,
+          'width': 3,
+          'borderWidth': 4,
           'borderColor': '#8392C9',
           'lineCap': 'round' },
         { 'color': 'rgba(241,132,93)',
-          'width': 2,
-          'borderWidth': 3,
+          'width': 3,
+          'borderWidth': 4,
           'borderColor': 'rgba(251,167,127)',
           'lineCap': 'round' }],
       lineTex: []
@@ -155,20 +153,11 @@ export default {
     this.initMarkers()
     this.getMarket()
     this.getLine()
-    this.initWs()
   },
   computed: {
     ...mapGetters(['currentMission', 'currentMissionInfo', 'onlineMembers'])
   },
   methods: {
-    initWs () {
-      this.ws.connect()
-      this.ws.subscribe(`/track/${this.$store.state.data.caseId}`, this.gettracks)
-    },
-    gettracks (gets) {
-      console.log(gets)
-      console.log('sockets')
-    },
     getFirst () {
       this.datas = []
       this.img = []

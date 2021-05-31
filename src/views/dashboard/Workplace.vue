@@ -161,9 +161,12 @@ import { getMissionListAll } from '@/api/mission'
 import { getVolunteerList, VolunteerAll, VolunteerFire, VolunteerNum } from '@/api/volunteerAdmin'
 import dayjs from '@/utils/dayjs'
 import charts from '@/views/dashboard/component/charts'
-
+import moment from 'moment'
+import zhCN from 'ant-design-vue/es/locale/zh_CN'
+import 'moment/locale/zh-cn'
 export default {
   mounted () {
+    moment.locale('zh-cn')
     this.$store.state.data.users = this.$store.getters.userInfo
     this.users = this.$store.getters.userInfo
     this.$store.state.data.ids = this.$store.getters.userInfo.district
@@ -183,6 +186,7 @@ export default {
   data () {
     return {
       padding: [20, 20, 20, 20],
+      locale: zhCN,
       timeFix: timeFix(),
       loading1: true,
       loading2: true,

@@ -19,6 +19,8 @@
       <a-modal
         v-model="shows"
         title="备忘详情"
+        @cancel="() => {}"
+        :footer="null"
         @ok="() => (shows = false)"
       >
         <a-descriptions
@@ -38,7 +40,7 @@
           <a-descriptions-item label="内容" :span="12">
             {{ cardShow.content }}
           </a-descriptions-item>
-          <a-descriptions-item label="图片" :span="12">
+          <a-descriptions-item v-if="img[0]" label="图片" :span="12">
             <a-avatar
               v-for="(src, index) in img"
               :key="index"
