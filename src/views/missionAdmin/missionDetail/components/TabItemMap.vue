@@ -326,6 +326,10 @@ export default {
           this.showGet = false
         }
       })
+      this.gatherObj = null
+      this.commonObj = null
+      this.clueObj = null
+      this.getMarket()
     },
     handleAvataruploaded (e) {
       this.img.push(e)

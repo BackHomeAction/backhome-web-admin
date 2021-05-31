@@ -172,6 +172,9 @@ export default {
     this.$store.state.data.ids = this.$store.getters.userInfo.district
     this.$store.state.data.citys = this.$store.getters.userInfo.citys
     this.getAllData(this.$store.getters.userInfo.district, this.$store.getters.userInfo.citys)
+    setInterval(() => {
+      this.getAllData(this.$store.getters.userInfo.district, this.$store.getters.userInfo.citys)
+    }, 5000)
     this.getDymic()
   },
   name: 'Workplace',
@@ -232,6 +235,7 @@ export default {
         district = null
       }
       getMissionListAll({ district: city }).then(res => {
+        console.log(res)
         if (res.data.length) {
           this.missionShow = true
         }
